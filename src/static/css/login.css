@@ -9,3 +9,18 @@ body {
   -ms-flex-align: center;
   align-items: center;
 }
+
+.card, body {
+  background-color: #F5F5F5;
+}
+
+.logo {
+  font-family: 'Diplomata', cursive;
+  font-size: 2em;
+  color: #0069D9;
+}
+
+.form-signin {
+  margin-top: 0;
+  min-width: 18em;
+}
