@@ -28,15 +28,19 @@ USER_ROLE_TYPE = [
 
 
 class SignUpForm(UserCreationForm):
-    username = forms.CharField(label=_('用户名'))
-    password1 = forms.CharField(label=_('密码'))
-    password2 = forms.CharField(label=_('确认密码'))
+    username = forms.CharField(label=_('用户名'), error_messages={'required': "此字段必须填写！"})
+    password1 = forms.CharField(label=_('密码'), error_messages={'required': "此字段必须填写！"})
+    password2 = forms.CharField(label=_('确认密码'), error_messages={'required': "此字段必须填写！"})
     roles = forms.MultipleChoiceField(
         label=_('用户角色'),
+        error_messages={'required': "必须选择一个以上用户角色！"},
         widget=forms.CheckboxSelectMultiple,
         choices=USER_ROLE_TYPE,
         required=True,
     )
+    error_messages = {
+        'password_mismatch': _("两次输入的密码不一致，请重新输入."),
+    }
 
     class Meta(UserCreationForm.Meta):
         model = User
