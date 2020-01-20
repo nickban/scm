@@ -4,11 +4,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from scm.forms import MyAuthenticationForm
+from scm.views import SignUpView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/login/', auth_views.LoginView.as_view(authentication_form=MyAuthenticationForm), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('accounts/signup/', SignUpView.as_view(), name='signup'),
     path('', include('scm.urls')),
 ]
 if settings.DEBUG:
