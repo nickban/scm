@@ -117,7 +117,7 @@ class Sample(models.Model):
                                    on_delete=models.CASCADE,
                                    related_name='samples')
     sample_no = models.PositiveIntegerField('样板号')
-    has_os_sample = models.BooleanField('是否有原版', )
+    has_os_sample = models.BooleanField('是否有原版?', )
     brand = models.ForeignKey(Brand,
                               verbose_name='品牌',
                               on_delete=models.CASCADE,
