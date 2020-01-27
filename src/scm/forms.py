@@ -92,17 +92,7 @@ class SignUpForm(UserCreationForm):
         return user
 
 
-class MyClearableFileInput(ClearableFileInput):
-    initial_text = '当前文件'
-    input_text = '替换'
-    clear_checkbox_label = '删除'
-
-
 class NewpostForm(forms.ModelForm):
-    attachment = forms.FileField(label='附件',
-                                 required=False,
-                                 widget=MyClearableFileInput(attrs={'placeholder': 'dd'}))
-
     class Meta:
         model = Post
-        fields = ('title', 'content', 'created_by', 'catagory', 'attachment')
+        fields = ('title', 'content', 'created_by', 'catagory')
