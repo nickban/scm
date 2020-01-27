@@ -2,9 +2,10 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django import forms
 from .models import (User, Factory,
                      Merchandiser, Designer, Shipping, Finance,
-                     Qc, Office, Admin, Merchandiser_Manager)
+                     Qc, Office, Admin, Merchandiser_Manager, Post)
 from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
+from django.forms.widgets import ClearableFileInput
 
 
 class MyAuthenticationForm(AuthenticationForm):
@@ -89,3 +90,19 @@ class SignUpForm(UserCreationForm):
         if 9 in roles:
             Merchandiser_Manager.objects.create(user=user)
         return user
+
+
+class MyClearableFileInput(ClearableFileInput):
+    initial_text = '当前文件'
+    input_text = '替换'
+    clear_checkbox_label = '删除'
+
+
+class NewpostForm(forms.ModelForm):
+    attachment = forms.FileField(label='附件',
+                                 required=False,
+                                 widget=MyClearableFileInput(attrs={'placeholder': 'dd'}))
+
+    class Meta:
+        model = Post
+        fields = ('title', 'content', 'created_by', 'catagory', 'attachment')

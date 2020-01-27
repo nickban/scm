@@ -1,27 +1,17 @@
 from django.shortcuts import redirect
-from django.views.generic import TemplateView, CreateView
-from .models import User
-from .forms import SignUpForm
+from django.views.generic import TemplateView, CreateView, ListView, UpdateView, DetailView, DeleteView
+from .models import User, Post
+from .forms import SignUpForm, NewpostForm
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.contrib.auth.views import reverse_lazy
+from .decorators import office_required
 
 
-def home(request):
-    user = request.user
-    if user.is_authenticated:
-        if user.is_factory or \
-                user.is_merchandiser or \
-                user.is_designer or \
-                user.is_office or \
-                user.is_merchandiser_manager:
-            return redirect('sample:sample_list')
-        elif user.is_qc or \
-                user.is_shipping:
-            return redirect('order:order_list')
-        elif user.is_admin:
-            return redirect('admin:function_list')
-        else:
-            return redirect('finance:invoice_list')
-    return redirect('login')
+@method_decorator([login_required], name='dispatch')
+class home(TemplateView):
+    template_name = 'home.html'
 
 
 class SignUpView(CreateView):
@@ -49,3 +39,45 @@ class FunctionList(TemplateView):
 
 class InvoiceList(TemplateView):
     template_name = 'invoice_list.html'
+
+
+@method_decorator([login_required], name='dispatch')
+class PostList(ListView):
+    model = Post
+    ordering = ('create_time', )
+    context_object_name = 'posts'
+    template_name = 'post_list.html'
+
+
+@method_decorator([login_required, office_required], name='dispatch')
+class PostAdd(CreateView):
+    model = Post
+    form_class = NewpostForm
+    template_name = 'post_add.html'
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('post:postlist')
+
+
+@method_decorator([login_required, office_required], name='dispatch')
+class PostEdit(UpdateView):
+    model = Post
+    fields = ['title', 'content', 'created_by', 'catagory', 'attachment']
+    template_name = 'post_edit.html'
+    success_url = reverse_lazy('post:postlist')
+
+
+@method_decorator([login_required], name='dispatch')
+class PostDetail(DetailView):
+    model = Post
+    context_object_name = 'post'
+    template_name = 'post_detail.html'
+
+
+@method_decorator([login_required, office_required], name='dispatch')
+class PostDelete(DeleteView):
+    model = Post
+    context_object_name = 'post'
+    template_name = 'post_delete.html'
+    success_url = reverse_lazy('post:postlist')

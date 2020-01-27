@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (Sample, User, Style, Brand, Merchandiser, Designer,
-                     Factory, Shipping, Qc, Finance, Office, Admin, Merchandiser_Manager)
+                     Factory, Shipping, Qc, Finance, Office, Admin, Merchandiser_Manager, Post)
 
 admin.site.register(User)
 admin.site.register(Sample)
@@ -15,3 +15,4 @@ admin.site.register(Admin)
 admin.site.register(Shipping)
 admin.site.register(Qc)
 admin.site.register(Merchandiser_Manager)
+admin.site.register(Post)

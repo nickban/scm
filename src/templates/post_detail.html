@@ -1,0 +1,27 @@
+
+{% extends 'base_home.html' %}
+{% load basename %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+{% include 'header.html'%}
+    <div class="card">
+        <div class="card-header text-left">
+            信息类别:{{ post.catagory }}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title text-center">{{ post.title }}</h5>
+            <p class="card-text">{{ post.content }}</p>
+            <p class="text-right">发布人: {{ post.created_by }}</p>
+            <p class="text-right">发布时间:{{ post.create_time|date:"SHORT_DATE_FORMAT"  }}</p>
+        </div>
+        <div class="card-footer text-left">
+
+            {% if post.attachment %}
+                <p>附件:<a href="{{ post.attachment.url }}">{{ post.attachment.name|basename }}</a>大小: {{ post.attachment.size|filesizeformat}}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

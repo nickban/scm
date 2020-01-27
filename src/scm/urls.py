@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     # 入口链接按角色分类
-    path('', views.home, name='home'),
+    path('', views.home.as_view(), name='home'),
 
     # 样板地址导航
     path('sample/', include(([
@@ -24,4 +24,14 @@ urlpatterns = [
     path('finance/', include(([
         path('', views.InvoiceList.as_view(), name='invoice_list'),
     ], 'scm'), namespace='finance')),
+
+    # post地址导航
+    path('post/', include(([
+        path('list/', views.PostList.as_view(), name='postlist'),
+        path('add/', views.PostAdd.as_view(), name='postadd'),
+        path('<int:pk>/', views.PostEdit.as_view(), name='postedit'),
+        path('<int:pk>/detail/', views.PostDetail.as_view(), name='postdetail'),
+        path('<int:pk>/delete/', views.PostDelete.as_view(), name='postdelete'),
+    ], 'scm'), namespace='post')),
+
 ]

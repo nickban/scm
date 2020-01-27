@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
@@ -166,6 +167,33 @@ class Sample(models.Model):
                               max_length=50,
                               choices=SAMPLE_STATUS,
                               blank=True)
+
+
+N = '通知'
+M = '手册'
+NOTIFICATION_CATAGORY = [
+    (N, '通知'),
+    (M, '手册'),
+]
+
+
+class Post(models.Model):
+    title = models.CharField('标题', max_length=100)
+    content = models.TextField('内容')
+    create_time = models.DateField('发布日期', auto_now_add=True)
+    created_by = models.ForeignKey(Office, on_delete=models.CASCADE, verbose_name='发布人')
+    catagory = models.CharField('类别', max_length=100, choices=NOTIFICATION_CATAGORY)
+
+    def get_absolute_url(self):
+        return reverse('post:postedit', args=[str(self.id)])
+
+
+class PostAttachment(models.Model):
+    file = models.FileField(upload_to='post/', blank=True)
+    post = models.ForeignKey(Post,
+                             on_delete=models.CASCADE,
+                             verbose_name='关联信息',
+                             related_name='postattachments')
 
 
 class Order(models.Model):
