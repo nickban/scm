@@ -19,8 +19,8 @@
             {% endfor %}
             </ul>
         </div>
-        <a class="btn btn-outline-primary" href="{% url 'post:postattach' post.pk %}" role="button">附件</a>
-        <input class="btn btn-outline-primary" type="submit" value="提交">
+        <input class="btn btn-outline-primary" type="submit" value="保存">
         <a class="btn btn-outline-primary" href="{% url 'post:postdelete' post.pk %}" role="button">删除</a>
+        <a class="btn btn-outline-primary" href="{% url 'post:postattach' post.pk %}" role="button">添加附件</a>
     </form>
 {% endblock %}

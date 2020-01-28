@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
+from django.dispatch import receiver
+import os
 # Create your models here.
 
 
@@ -194,6 +196,17 @@ class PostAttachment(models.Model):
                              on_delete=models.CASCADE,
                              verbose_name='关联信息',
                              related_name='postattachments')
+
+
+@receiver(models.signals.post_delete, sender=PostAttachment)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `MediaFile` object is deleted.
+    """
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
 
 
 class Order(models.Model):

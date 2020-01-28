@@ -102,6 +102,10 @@ class PostDetail(DetailView):
     context_object_name = 'post'
     template_name = 'post_detail.html'
 
+    def get_context_data(self, **kwargs):
+        kwargs['attachments'] = self.get_object().postattachments.all()
+        return super().get_context_data(**kwargs)
+
 
 @method_decorator([login_required, office_required], name='dispatch')
 class PostDelete(DeleteView):

@@ -18,10 +18,16 @@
             <p class="text-right">发布时间:{{ post.create_time|date:"SHORT_DATE_FORMAT"  }}</p>
         </div>
         <div class="card-footer text-left">
-
-            {% if post.attachment %}
-                <p>附件:<a href="{{ post.attachment.url }}">{{ post.attachment.name|basename }}</a>大小: {{ post.attachment.size|filesizeformat}}</p>
-            {% endif %}
+            <div id="div_id_attachment" class="form-group attachment ">
+                <label for="div_id_attachment">附件</label>
+                <ul>
+                {% for attach in attachments %}
+                    <li>
+                        <a href="{{ attach.file.url }}">{{ attach.file.name |basename }}</a> 
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock %}
