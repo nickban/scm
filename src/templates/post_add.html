@@ -2,31 +2,11 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block css %}
-    <link rel="stylesheet" href="{% static 'css/fileupload.css' %}">
-    <link rel="stylesheet" href="{% static 'css/fileinput.css' %}">
-{% endblock %}
-
 {% block content %}
 {% include 'header.html'%}
     <form  method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.title | as_crispy_field }}
-        {{ form.content | as_crispy_field }}
-        {{ form.created_by | as_crispy_field }}
-        {{ form.catagory | as_crispy_field }}
-        <div id="div_id_attachment" class="form-group attachment ">
-            <label for="div_id_attachment">附件</label>
-            <input id="fileupload" type="file" name="files[]" class="inputfile" data-url="//jquery-file-upload.appspot.com/" multiple>
-            <label for="fileupload">选择文件..</label>
-        </div>
+        {{ form| crispy }}
         <button class="btn btn-primary" type="submit">提交</button>
     </form>
-{% endblock %}
-
-{% block script%}
-<script src="{% static 'js/jquery.ui.widget.js' %}"></script>
-<script src="{% static 'js/jquery.iframe-transport.js' %}"></script>
-<script src="{% static 'js/jquery.fileupload.js' %}"></script>
-<script src="{% static 'js/fileupload.js' %}"></script>
 {% endblock %}

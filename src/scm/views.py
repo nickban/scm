@@ -1,12 +1,18 @@
-from django.shortcuts import redirect
-from django.views.generic import TemplateView, CreateView, ListView, UpdateView, DetailView, DeleteView
-from .models import User, Post
-from .forms import SignUpForm, NewpostForm
+from django.shortcuts import redirect, render, get_object_or_404
+from django.views.generic import (TemplateView,
+                                  CreateView, ListView, UpdateView, DetailView,
+                                  DeleteView)
+from .models import User, Post, PostAttachment
+from .forms import SignUpForm, NewpostForm, PostAttachmentForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.views import reverse_lazy
 from .decorators import office_required
+from django.core.files.storage import FileSystemStorage
+from django.http import JsonResponse
+from django.views import View
+from django.db import transaction
 
 
 @method_decorator([login_required], name='dispatch')
@@ -55,17 +61,39 @@ class PostAdd(CreateView):
     form_class = NewpostForm
     template_name = 'post_add.html'
 
-    def form_valid(self, form):
-        form.save()
-        return redirect('post:postlist')
+
+def postattach(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == 'POST':
+        form = PostAttachmentForm(request.POST, request.FILES)
+        if form.is_valid():
+            with transaction.atomic():
+                attach = form.save(commit=False)
+                attach.post = post
+                attach.save()
+                data = {"files": [{
+                        "name": attach.file.name,
+                        "url": attach.file.url, },
+                        ]}
+        else:
+            data = {'is_valid': False}
+        return JsonResponse(data)
+    else:
+        form = PostAttachmentForm()
+    return render(request, 'postattach.html', {'form': form, 'post': post})
 
 
 @method_decorator([login_required, office_required], name='dispatch')
 class PostEdit(UpdateView):
     model = Post
-    fields = ['title', 'content', 'created_by', 'catagory', 'attachment']
+    fields = ['title', 'content', 'created_by', 'catagory']
     template_name = 'post_edit.html'
+    context_object_name = 'post'
     success_url = reverse_lazy('post:postlist')
+
+    def get_context_data(self, **kwargs):
+        kwargs['attachments'] = self.get_object().postattachments.all()
+        return super().get_context_data(**kwargs)
 
 
 @method_decorator([login_required], name='dispatch')
@@ -81,3 +109,15 @@ class PostDelete(DeleteView):
     context_object_name = 'post'
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post:postlist')
+
+
+@method_decorator([login_required, office_required], name='dispatch')
+class PostAttachDelete(DeleteView):
+    model = PostAttachment
+    pk_url_kwarg = 'postattach_pk'
+    context_object_name = 'postattach'
+    template_name = 'postattach_delete.html'
+
+    def get_success_url(self):
+        post = self.object.post
+        return reverse_lazy('post:postedit', kwargs={'pk': post.pk})

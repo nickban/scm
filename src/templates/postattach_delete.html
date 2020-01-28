@@ -1,0 +1,14 @@
+
+
+{% extends 'base_home.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+{% include 'header.html'%}
+    <form class="my-3" method="post">{% csrf_token %}
+        <h3>确定要删除此附件吗?</h3>
+        <p>标题：{{ postattach.file.name }}</p>
+        <input class="btn btn-outline-primary" type="submit" value="确认">
+    </form>
+{% endblock %}

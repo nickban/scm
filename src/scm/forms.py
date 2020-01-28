@@ -2,10 +2,9 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django import forms
 from .models import (User, Factory,
                      Merchandiser, Designer, Shipping, Finance,
-                     Qc, Office, Admin, Merchandiser_Manager, Post)
+                     Qc, Office, Admin, Merchandiser_Manager, Post, PostAttachment)
 from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
-from django.forms.widgets import ClearableFileInput
 
 
 class MyAuthenticationForm(AuthenticationForm):
@@ -96,3 +95,9 @@ class NewpostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ('title', 'content', 'created_by', 'catagory')
+
+
+class PostAttachmentForm(forms.ModelForm):
+    class Meta:
+        model = PostAttachment
+        fields = ('file',)

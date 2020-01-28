@@ -31,7 +31,8 @@ urlpatterns = [
         path('add/', views.PostAdd.as_view(), name='postadd'),
         path('<int:pk>/', views.PostEdit.as_view(), name='postedit'),
         path('<int:pk>/detail/', views.PostDetail.as_view(), name='postdetail'),
+        path('<int:pk>/attach/', views.postattach, name='postattach'),
+        path('<int:pk>/attach/<int:postattach_pk>/delete/', views.PostAttachDelete.as_view(), name='postattachdelete'),
         path('<int:pk>/delete/', views.PostDelete.as_view(), name='postdelete'),
     ], 'scm'), namespace='post')),
-
 ]

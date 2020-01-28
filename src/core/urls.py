@@ -6,6 +6,9 @@ from django.contrib.auth import views as auth_views
 from scm.forms import MyAuthenticationForm
 from scm.views import SignUpView
 
+
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/login/', auth_views.LoginView.as_view(authentication_form=MyAuthenticationForm), name='login'),

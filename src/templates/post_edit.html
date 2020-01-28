@@ -1,6 +1,7 @@
 
 {% extends 'base_home.html' %}
 {% load static %}
+{% load basename %}
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -8,6 +9,17 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form |crispy }}
+        <div id="div_id_attachment" class="form-group attachment ">
+            <label for="div_id_attachment">附件</label>
+            <ul>
+            {% for attach in attachments %}
+                <li>
+                    <a href="{{ attach.file.url }}">{{ attach.file.name |basename }}</a><a href="{% url 'post:postattachdelete' pk=post.pk  postattach_pk=attach.pk %}"><i class="icon-cancel-outline" ></i></a> 
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        <a class="btn btn-outline-primary" href="{% url 'post:postattach' post.pk %}" role="button">附件</a>
         <input class="btn btn-outline-primary" type="submit" value="提交">
         <a class="btn btn-outline-primary" href="{% url 'post:postdelete' post.pk %}" role="button">删除</a>
     </form>

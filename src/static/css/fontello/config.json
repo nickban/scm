@@ -1,0 +1,22 @@
+{
+  "name": "",
+  "css_prefix_text": "icon-",
+  "css_use_suffix": false,
+  "hinting": true,
+  "units_per_em": 1000,
+  "ascent": 850,
+  "glyphs": [
+    {
+      "uid": "24aba8757d4a7b49568c98a577a85df3",
+      "css": "cancel-outline",
+      "code": 59392,
+      "src": "typicons"
+    },
+    {
+      "uid": "43fl9m553j1z5937vfjz0lgolrlspxwl",
+      "css": "ok",
+      "code": 59393,
+      "src": "typicons"
+    }
+  ]
+}
