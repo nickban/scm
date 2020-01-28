@@ -53,6 +53,8 @@ class PostList(ListView):
     ordering = ('create_time', )
     context_object_name = 'posts'
     template_name = 'post_list.html'
+    paginate_by = 10
+    queryset = Post.objects.all()
 
 
 @method_decorator([login_required, office_required], name='dispatch')
@@ -61,7 +63,9 @@ class PostAdd(CreateView):
     form_class = NewpostForm
     template_name = 'post_add.html'
 
-
+# file upload view for jqury.
+@login_required
+@office_required
 def postattach(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == 'POST':

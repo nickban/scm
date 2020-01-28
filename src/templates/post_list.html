@@ -2,33 +2,41 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
+
+
+{% block css%}
+<link rel="stylesheet" href="{% static 'css/paginator.css' %}">
+{% endblock %}
+
 {% block content %}
 {% include 'header.html'%}
   {% if request.user.is_office %}
     <a class="btn btn-outline-primary my-3" href="{% url 'post:postadd'%}" role="button">新建通知</a>
   {% endif %}
   <table class="table table-hover">
-      <thead>
-        <tr>
-          <th scope="col">发布日期</th>
-          <th scope="col">标题</th>
-          <th scope="col">发布人</th>
-          <th scope="col">类别</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for post in posts %}
+    <thead>
+      <tr>
+        <th>发布日期</th>
+        <th>标题</th>
+        <th>发布人</th>
+        <th>类别</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for post in posts %}
         <tr>
           <td>{{ post.create_time|date:"SHORT_DATE_FORMAT"  }}</td>
           {% if request.user.is_office %}
-            <td><a href="{% url 'post:postedit' post.pk %}">{{ post.title }}</a></td>
+          <td><a href="{% url 'post:postedit' post.pk %}">{{ post.title }}</a></td>
           {% else %}
-            <td><a href="{% url 'post:postdetail' post.pk %}">{{ post.title }}</a></td>
+          <td><a href="{% url 'post:postdetail' post.pk %}">{{ post.title }}</a></td>
           {% endif %}
           <td>{{ post.created_by }}</td>
           <td>{{ post.catagory }}</td>
         </tr>
-        {% endfor %}
-        </tbody>
+      {% endfor %}
+    </tbody>
   </table>
+{% include 'paginator.html'%}
+
 {% endblock %}
