@@ -1,5 +1,3 @@
-
-
 {% extends 'base_home.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
@@ -9,6 +7,6 @@
     <form class="my-3" method="post">{% csrf_token %}
         <h3>确定要删除此消息吗?</h3>
         <p>标题：{{ post.title }}</p>
-        <input class="btn btn-outline-primary" type="submit" value="确认">
+        <input class="btn btn-outline-primary" type="submit" value="确认删除">
     </form>
 {% endblock %}

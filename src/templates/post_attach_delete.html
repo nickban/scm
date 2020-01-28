@@ -9,6 +9,6 @@
     <form class="my-3" method="post">{% csrf_token %}
         <h3>确定要删除此附件吗?</h3>
         <p>标题：{{ postattach.file.name }}</p>
-        <input class="btn btn-outline-primary" type="submit" value="确认">
+        <input class="btn btn-outline-primary" type="submit" value="确认删除">
     </form>
 {% endblock %}

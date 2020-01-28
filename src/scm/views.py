@@ -79,8 +79,7 @@ def postattach(request, pk):
             data = {'is_valid': False}
         return JsonResponse(data)
     else:
-        form = PostAttachmentForm()
-    return render(request, 'postattach.html', {'form': form, 'post': post})
+        return render(request, 'post_attach.html', {'post': post})
 
 
 @method_decorator([login_required, office_required], name='dispatch')
@@ -120,7 +119,7 @@ class PostAttachDelete(DeleteView):
     model = PostAttachment
     pk_url_kwarg = 'postattach_pk'
     context_object_name = 'postattach'
-    template_name = 'postattach_delete.html'
+    template_name = 'post_attach_delete.html'
 
     def get_success_url(self):
         post = self.object.post
