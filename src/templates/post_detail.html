@@ -7,11 +7,12 @@
 {% block content %}
 {% include 'header.html'%}
     <div class="card">
-        <div class="card-header text-left">
-            信息类别:{{ post.catagory }}
+        <div class="card-header text-center">
+            <h3>{{ post.title }}</h3>
+            <!-- <p>{{ post.catagory }}</p> -->
         </div>
         <div class="card-body">
-            <h5 class="card-title text-center">{{ post.title }}</h5>
+            <!-- <h5 class="card-title text-center">{{ post.title }}</h5> -->
             <p class="card-text">{{ post.content }}</p>
             <p class="text-right">发布人: {{ post.created_by }}</p>
             <p class="text-right">发布时间:{{ post.create_time|date:"SHORT_DATE_FORMAT"  }}</p>
