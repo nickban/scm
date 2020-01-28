@@ -19,6 +19,7 @@
             </ul>
         </div>
         <input class="btn btn-outline-primary" type="submit" value="保存">
+        <a class="btn btn-outline-primary" href="{% url 'post:postlist' %}" role="button">返回</a>
         <a class="btn btn-outline-primary" href="{% url 'post:postdelete' post.pk %}" role="button">删除</a>
         <a class="btn btn-outline-primary" href="{% url 'post:postattach' post.pk %}" role="button">添加附件</a>
     </form>
