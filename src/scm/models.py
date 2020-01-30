@@ -103,28 +103,6 @@ class Brand(models.Model):
     def __str__(self):
         return self.name
 
-# 色卡部分定义
-
-
-class Fabric_Shop(models.Model):
-    name = models.CharField('档口名', max_length=100)
-
-
-class Fabric_Item(models.Model):
-    name = models.CharField('品名', max_length=100)
-    fabric_shop = models.ForeignKey(Fabric_Shop,
-                                    on_delete=models.CASCADE,
-                                    related_name='fabricitems')
-
-
-class Swatch(models.Model):
-    fabric_item = models.ForeignKey(Fabric_Item,
-                                    on_delete=models.CASCADE,
-                                    related_name='swatches')
-    pic = models.ImageField(upload_to='swatches/', blank=True)
-    created_by = models.ForeignKey(User,
-                                   on_delete=models.CASCADE,
-                                   related_name='swatches')
 
 # 样板部分模块定义
 
@@ -138,9 +116,6 @@ class Sample(models.Model):
         (SENT_FACTORY, '送工厂'),
         (COMPLETED, '完成'),
     ]
-    os_avatar = models.ImageField('款式图',
-                                  upload_to='samples/avatar/',
-                                  blank=True)
     created_date = models.DateTimeField('创建日期', auto_now=True)
     sample_no = models.PositiveIntegerField('样板号')
     has_os_sample = models.BooleanField('是否有原版?', )
@@ -170,60 +145,98 @@ class Sample(models.Model):
                                    max_digits=5,
                                    decimal_places=2,
                                    null=True, blank=True)
-    qutation_form = models.ImageField('报价单',
-                                      upload_to='samples/qutation/',
-                                      blank=True)
     alteration = models.TextField('做板评语', blank=True)
-    swatches = models.ManyToManyField(Swatch, null=True, blank=True)
-    size_spec_factory = models.ImageField('尺寸表(工厂)',
-                                          upload_to='samples/size_spec_factory/',
-                                          blank=True)
     status = models.CharField('样板状态',
                               max_length=50,
                               choices=SAMPLE_STATUS,
                               blank=True)
 
 
+class Sample_size_spec_factory(models.Model):
+    file = models.FileField(upload_to='sample/sample_size_spec_factory/', blank=True)
+    sample = models.OneToOneField(Sample, on_delete=models.CASCADE)
+
+
+@receiver(models.signals.post_delete, sender=Sample_size_spec_factory)
+def auto_delete_file_sample_size_spec_factory(sender, instance, **kwargs):
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
+
+
+class Sample_swatches(models.Model):
+    pic = models.ImageField(upload_to='sample/sample_swatches/', blank=True)
+    sample = models.OneToOneField(Sample, on_delete=models.CASCADE)
+
+
+@receiver(models.signals.post_delete, sender=Sample_swatches)
+def auto_delete_file_sample_swatches(sender, instance, **kwargs):
+    if instance.pic:
+        if os.path.isfile(instance.pic.path):
+            os.remove(instance.pic.path)
+
+
+class Sample_os_avatar(models.Model):
+    img = models.ImageField(upload_to='sample/sample_os_avatar/', blank=True)
+    sample = models.OneToOneField(Sample, on_delete=models.CASCADE)
+
+
+@receiver(models.signals.post_delete, sender=Sample_os_avatar)
+def auto_delete_file_sample_os_avatar(sender, instance, **kwargs):
+    if instance.img:
+        if os.path.isfile(instance.img.path):
+            os.remove(instance.img.path)
+
+
+class Sample_qutation_form(models.Model):
+    file = models.FileField(upload_to='sample/sample_qutation_form/', blank=True)
+    sample = models.OneToOneField(Sample, on_delete=models.CASCADE)
+
+
+@receiver(models.signals.post_delete, sender=Sample_qutation_form)
+def auto_delete_file_sample_qutation_form(sender, instance, **kwargs):
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
+
+
 class Sample_os_pics(models.Model):
-    img = models.ImageField(upload_to='samples/os_pics/', blank=True)
+    img = models.ImageField(upload_to='sample/sample_os_pics/', blank=True)
     sample = models.ForeignKey(Sample,
                                on_delete=models.CASCADE,
-                               verbose_name='样板',
                                related_name='os_pics')
 
 
 @receiver(models.signals.post_delete, sender=Sample_os_pics)
-def auto_delete_file_sampleospics(sender, instance, **kwargs):
-    if instance.os_pic:
-        if os.path.isfile(instance.os_pic.path):
-            os.remove(instance.os_pic.path)
+def auto_delete_file_sample_os_pics(sender, instance, **kwargs):
+    if instance.img:
+        if os.path.isfile(instance.img.path):
+            os.remove(instance.img.path)
 
 
-class Sample_pics(models.Model):
-    pic = models.ImageField(upload_to='samples/pics/', blank=True)
+class Sample_pics_factory(models.Model):
+    pic = models.ImageField(upload_to='sample/sample_pics_factory/', blank=True)
     sample = models.ForeignKey(Sample,
                                on_delete=models.CASCADE,
-                               verbose_name='样板',
-                               related_name='pics')
+                               related_name='pics_factory')
 
 
-@receiver(models.signals.post_delete, sender=Sample_pics)
-def auto_delete_file_samplepics(sender, instance, **kwargs):
+@receiver(models.signals.post_delete, sender=Sample_pics_factory)
+def auto_delete_file_sample_pics_factory(sender, instance, **kwargs):
     if instance.pic:
         if os.path.isfile(instance.pic.path):
             os.remove(instance.pic.path)
 
 
 class Sample_size_specs(models.Model):
-    file = models.FileField(upload_to='samples/size_specs/', blank=True)
+    file = models.FileField(upload_to='sample/sample_size_specs/', blank=True)
     sample = models.ForeignKey(Sample,
                                on_delete=models.CASCADE,
-                               verbose_name='样板',
                                related_name='size_specs')
 
 
 @receiver(models.signals.post_delete, sender=Sample_size_specs)
-def auto_delete_file_sizespecs(sender, instance, **kwargs):
+def auto_delete_file_sample_size_specs(sender, instance, **kwargs):
     if instance.file:
         if os.path.isfile(instance.file.path):
             os.remove(instance.file.path)

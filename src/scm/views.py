@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import (TemplateView,
                                   CreateView, ListView, UpdateView, DetailView,
                                   DeleteView)
-from .models import User, Post, PostAttachment, Sample, Sample_os_pics, Sample_size_specs, Sample_pics
+from .models import User, Post, PostAttachment, Sample, Sample_os_pics, Sample_size_specs
 from .forms import (SignUpForm, NewpostForm, PostAttachmentForm,
                     NewsampleForm, SampleForm, SamplesizespecsForm)
 from django.contrib.auth import login
@@ -93,7 +93,7 @@ class SamplesizespecDelete(DeleteView):
 
 @method_decorator([login_required], name='dispatch')
 class SamplepicDelete(DeleteView):
-    model = Sample_pics
+    model = Sample_os_pics
     pk_url_kwarg = 'sample_pic_pk'
     context_object_name = 'samplepic'
     template_name = 'sample_pic_delete.html'

@@ -107,17 +107,16 @@ class PostAttachmentForm(forms.ModelForm):
 class NewsampleForm(forms.ModelForm):
     class Meta:
         model = Sample
-        fields = ('os_avatar', 'has_os_sample', 'sample_no', 'brand',
+        fields = ('has_os_sample', 'sample_no', 'brand',
                   'merchandiser', 'designer', 'factory',)
 
 
 class SampleForm(forms.ModelForm):
     class Meta:
         model = Sample
-        fields = ('os_avatar', 'has_os_sample', 'sample_no', 'brand',
+        fields = ('has_os_sample', 'sample_no', 'brand',
                   'merchandiser', 'designer', 'factory', 'style', 'qutation',
-                  'qutation_form', 'parcel_date', 'alteration', 'swatches',
-                  'size_spec_factory')
+                  'parcel_date', 'alteration')
         widgets = {
                   'alteration': forms.Textarea(attrs={'rows': 5}),
                   }
