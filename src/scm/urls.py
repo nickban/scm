@@ -7,7 +7,15 @@ urlpatterns = [
 
     # 样板地址导航
     path('sample/', include(([
-        path('', views.SampleList.as_view(), name='sample_list'),
+        path('', views.SampleList.as_view(), name='samplelist'),
+        path('add/', views.SampleAdd.as_view(), name='sampleadd'),
+        path('<int:pk>/', views.SampleEdit.as_view(), name='sampleedit'),
+        path('<int:pk>/detail/', views.SampleDetail.as_view(), name='sampledetail'),
+        path('<int:pk>/delete/', views.SampleDelete.as_view(), name='sampledelete'),
+        path('<int:pk>/os_pic/<int:sample_ospic_pk>/delete/', views.SampleospicDelete.as_view(), name='sampleospicdelete'),
+        path('<int:pk>/pic/<int:sample_pic_pk>/delete/', views.SamplepicDelete.as_view(), name='samplepicdelete'),
+        path('<int:pk>/sizespec/<int:sample_sizespec_pk>/delete/', views.SamplesizespecDelete.as_view(), name='samplesizespecdelete'),
+        path('<int:pk>/sizespec/add/', views.samplesizespecadd, name='samplesizespecadd'),
     ], 'scm'), namespace='sample')),
 
     # 订单地址导航
@@ -27,11 +35,11 @@ urlpatterns = [
 
     # post地址导航
     path('post/', include(([
-        path('list/', views.PostList.as_view(), name='postlist'),
+        path('', views.PostList.as_view(), name='postlist'),
         path('add/', views.PostAdd.as_view(), name='postadd'),
         path('<int:pk>/', views.PostEdit.as_view(), name='postedit'),
         path('<int:pk>/detail/', views.PostDetail.as_view(), name='postdetail'),
-        path('<int:pk>/attach/', views.postattach, name='postattach'),
+        path('<int:pk>/attach/add/', views.postattach, name='postattach'),
         path('<int:pk>/attach/<int:postattach_pk>/delete/', views.PostAttachDelete.as_view(), name='postattachdelete'),
         path('<int:pk>/delete/', views.PostDelete.as_view(), name='postdelete'),
     ], 'scm'), namespace='post')),

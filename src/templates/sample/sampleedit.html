@@ -1,0 +1,162 @@
+{% extends 'base_home.html' %}
+{% load static %}
+{% load basename %}
+{% load crispy_forms_tags %}
+
+{% block css%}
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock%}
+
+{% block content %}
+<form class="my-3">
+    <div class="row">
+        <div class="col-12 col-md-3 text-left">
+            <img  class="rounded" src="{{ sample.os_avatar.url }}" width=140 height=140 alt="款式图">
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="form-group ">
+                {{ form.sample_no |as_crispy_field }}
+            </div>
+            <div class="form-group ">
+                {{ form.brand |as_crispy_field }}
+            </div>
+            <div class="mt-1 form-group">
+                {{ form.has_os_sample |as_crispy_field }}
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="form-group">
+                {{ form.designer |as_crispy_field }}
+            </div>
+            <div class="form-group ">
+                {{ form.merchandiser |as_crispy_field }}
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="form-group">
+                {{ form.style |as_crispy_field }}
+            </div>
+            <div class="form-group ">
+                {{ form.parcel_date |as_crispy_field }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                {{ form.alteration |as_crispy_field }}
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-6 ">
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="div_size_specs">附件</label>
+                    <a href="{% url 'sample:samplesizespecadd' sample.pk %}" role="button">
+                    <i class="fas fa-file-upload fa-1x"></i></a>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group ">
+                    <ul class="text-left">
+                    {% for size_spec in size_specs %}
+                        <li class="mx-3">
+                            <a href="{{ size_spec.file.url }}">{{ size_spec.file.name |basename }}</a> 
+                            <a href="{% url 'sample:samplesizespecdelete' pk=sample.pk  sample_sizespec_pk=size_spec.pk %}">
+                            <i class="far fa-trash-alt"></i></a> 
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="div_size_specs">附件</label>
+                    <a href="{% url 'sample:samplesizespecadd' sample.pk %}" role="button">
+                    <i class="fas fa-file-upload fa-1x"></i></a>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <ul>
+                    {% for size_spec in size_specs %}
+                        <li class="mx-3">
+                            <a href="{{ size_spec.file.url }}">{{ size_spec.file.name |basename }}</a> 
+                            <a href="{% url 'sample:samplesizespecdelete' pk=sample.pk  sample_sizespec_pk=size_spec.pk %}">
+                            <i class="far fa-trash-alt"></i></a> 
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <div class="row">
+        <div class="col-12 col-md-3 ">
+            <div class="form-group ">
+                {{ form.factory |as_crispy_field }}
+            </div>
+        </div>
+        <div class="col-12 col-md-3 ">
+            <div class="form-group ">
+                {{ form.qutation |as_crispy_field }}
+            </div>
+        </div>
+        <div class="col-12 col-md-3 ">
+            <div class="form-group ">
+                {{ form.qutation_form |as_crispy_field }}
+            </div>
+        </div>
+        <div class="col-12 col-md-3 ">
+            <div class="form-group ">
+                {{ form.size_spec_factory |as_crispy_field }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-3 ">
+            <div class="form-group">
+                <label for="">色卡</label>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 ">
+            <div class="form-group">
+                <label for="">样板照片</label>
+            </div>
+        </div>
+    </div>
+     <div class="row">
+        <div class="col-sm ">
+            <div class="form-group">
+                <button type="submit" class="btn btn-block btn-outline-primary my-3">上一个</button>
+            </div>
+        </div>
+        <div class="col-sm ">
+            <div class="form-group">
+                <button type="submit" class="btn btn-block btn-outline-primary my-3">保存</button>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <button type="submit" class="btn btn-block btn-outline-primary my-3">返回</button>
+            </div>
+        </div>
+        <div class=" col-sm">
+            <div class="form-group">
+                <button type="submit" class="btn btn-block btn-outline-primary my-3">删除</button>
+            </div>
+        </div>
+        <div class=" col-sm">
+            <div class="form-group">
+                <button type="submit" class="btn btn-block btn-outline-primary my-3">下一个</button>
+            </div>
+        </div>    
+    </div>
+    </form>
+{% endblock %}

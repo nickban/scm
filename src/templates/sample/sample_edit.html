@@ -1,0 +1,44 @@
+{% extends 'base_home.html' %}
+{% load static %}
+{% load basename %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form |crispy }}
+        <!-- <div id="div_os_pic" class="form-group">
+            <label for="div_os_pic">原板照片</label>
+            <ul>
+            {% for os_pic in os_pics %}
+                <li>
+                    <a href="{{ os_pic.img.url }}">{{ os_pic.img.name |basename }}</a><a href="{% url 'sample:sampleospicdelete' pk=sample.pk  sample_ospic_pk=os_pic.pk %}"><i class="icon-cancel-circled" ></i></a> 
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        <div id="div_pic" class="form-group">
+            <label for="div_pic">完成样板照片</label>
+            <ul>
+            {% for pic in pics %}
+                <li>
+                    <a href="{{ pic.img.url }}">{{ pic.img.name |basename }}</a><a href="{% url 'sample:samplepicdelete' pk=sample.pk  sample_pic_pk=pic.pk %}"><i class="icon-cancel-circled" ></i></a> 
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        <div id="div_size_specs" class="form-group">
+            <label for="div_size_specs">尺寸表</label>
+            <ul>
+            {% for size_spec in size_specs %}
+                <li>
+                    <a href="{{ size_spec.file.url }}">{{ size_spec.file.name |basename }}</a><a href="{% url 'sample:samplesizespecdelete' pk=sample.pk  sample_sizespec_pk=size_spec.pk %}"><i class="icon-cancel-circled" ></i></a> 
+                </li>
+            {% endfor %}
+            </ul>
+        </div> -->
+
+
+        <input class="btn btn-outline-primary" type="submit" value="保存">
+    </form>
+{% endblock %}

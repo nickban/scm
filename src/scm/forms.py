@@ -2,7 +2,8 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django import forms
 from .models import (User, Factory,
                      Merchandiser, Designer, Shipping, Finance,
-                     Qc, Office, Admin, Merchandiser_Manager, Post, PostAttachment)
+                     Qc, Office, Admin, Merchandiser_Manager, Post, PostAttachment,
+                     Sample, Sample_size_specs)
 from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
 
@@ -100,4 +101,29 @@ class NewpostForm(forms.ModelForm):
 class PostAttachmentForm(forms.ModelForm):
     class Meta:
         model = PostAttachment
+        fields = ('file',)
+
+
+class NewsampleForm(forms.ModelForm):
+    class Meta:
+        model = Sample
+        fields = ('os_avatar', 'has_os_sample', 'sample_no', 'brand',
+                  'merchandiser', 'designer', 'factory',)
+
+
+class SampleForm(forms.ModelForm):
+    class Meta:
+        model = Sample
+        fields = ('os_avatar', 'has_os_sample', 'sample_no', 'brand',
+                  'merchandiser', 'designer', 'factory', 'style', 'qutation',
+                  'qutation_form', 'parcel_date', 'alteration', 'swatches',
+                  'size_spec_factory')
+        widgets = {
+                  'alteration': forms.Textarea(attrs={'rows': 5}),
+                  }
+
+
+class SamplesizespecsForm(forms.ModelForm):
+    class Meta:
+        model = Sample_size_specs
         fields = ('file',)

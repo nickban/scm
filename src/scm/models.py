@@ -103,22 +103,45 @@ class Brand(models.Model):
     def __str__(self):
         return self.name
 
+# 色卡部分定义
+
+
+class Fabric_Shop(models.Model):
+    name = models.CharField('档口名', max_length=100)
+
+
+class Fabric_Item(models.Model):
+    name = models.CharField('品名', max_length=100)
+    fabric_shop = models.ForeignKey(Fabric_Shop,
+                                    on_delete=models.CASCADE,
+                                    related_name='fabricitems')
+
+
+class Swatch(models.Model):
+    fabric_item = models.ForeignKey(Fabric_Item,
+                                    on_delete=models.CASCADE,
+                                    related_name='swatches')
+    pic = models.ImageField(upload_to='swatches/', blank=True)
+    created_by = models.ForeignKey(User,
+                                   on_delete=models.CASCADE,
+                                   related_name='swatches')
+
+# 样板部分模块定义
+
 
 class Sample(models.Model):
     NEW = 'NEW'
+    SENT_FACTORY = 'SENT_F'
     COMPLETED = 'COMPLETED'
     SAMPLE_STATUS = [
-        (NEW, 'NEW'),
-        (COMPLETED, 'COMPLETED'),
+        (NEW, '新建'),
+        (SENT_FACTORY, '送工厂'),
+        (COMPLETED, '完成'),
     ]
-    os_avatar = models.ImageField('原版头像',
+    os_avatar = models.ImageField('款式图',
                                   upload_to='samples/avatar/',
                                   blank=True)
     created_date = models.DateTimeField('创建日期', auto_now=True)
-    created_by = models.ForeignKey(User,
-                                   verbose_name='创建人',
-                                   on_delete=models.CASCADE,
-                                   related_name='samples')
     sample_no = models.PositiveIntegerField('样板号')
     has_os_sample = models.BooleanField('是否有原版?', )
     brand = models.ForeignKey(Brand,
@@ -136,7 +159,8 @@ class Sample(models.Model):
     style = models.ForeignKey(Style,
                               verbose_name='款式',
                               on_delete=models.CASCADE,
-                              related_name='samples')
+                              related_name='samples',
+                              null=True)
     factory = models.ForeignKey(Factory,
                                 verbose_name='工厂',
                                 on_delete=models.CASCADE,
@@ -149,26 +173,62 @@ class Sample(models.Model):
     qutation_form = models.ImageField('报价单',
                                       upload_to='samples/qutation/',
                                       blank=True)
-    os_pic = models.ImageField('原版照片',
-                               upload_to='samples/os_pics/',
-                               blank=True)
-    sample_pic = models.ImageField('样板照片',
-                                   upload_to='samples/pics/',
-                                   blank=True)
-    swatch_pic = models.ImageField('色卡',
-                                   upload_to='samples/swatch/',
-                                   blank=True)
-    alteration = models.TextField('制版评语', blank=True)
-    size_spec = models.FileField('评语附件',
-                                 upload_to='samples/size_spec/',
-                                 blank=True)
-    size_spec_factory = models.ImageField('样板尺寸表',
+    alteration = models.TextField('做板评语', blank=True)
+    swatches = models.ManyToManyField(Swatch, null=True, blank=True)
+    size_spec_factory = models.ImageField('尺寸表(工厂)',
                                           upload_to='samples/size_spec_factory/',
                                           blank=True)
     status = models.CharField('样板状态',
                               max_length=50,
                               choices=SAMPLE_STATUS,
                               blank=True)
+
+
+class Sample_os_pics(models.Model):
+    img = models.ImageField(upload_to='samples/os_pics/', blank=True)
+    sample = models.ForeignKey(Sample,
+                               on_delete=models.CASCADE,
+                               verbose_name='样板',
+                               related_name='os_pics')
+
+
+@receiver(models.signals.post_delete, sender=Sample_os_pics)
+def auto_delete_file_sampleospics(sender, instance, **kwargs):
+    if instance.os_pic:
+        if os.path.isfile(instance.os_pic.path):
+            os.remove(instance.os_pic.path)
+
+
+class Sample_pics(models.Model):
+    pic = models.ImageField(upload_to='samples/pics/', blank=True)
+    sample = models.ForeignKey(Sample,
+                               on_delete=models.CASCADE,
+                               verbose_name='样板',
+                               related_name='pics')
+
+
+@receiver(models.signals.post_delete, sender=Sample_pics)
+def auto_delete_file_samplepics(sender, instance, **kwargs):
+    if instance.pic:
+        if os.path.isfile(instance.pic.path):
+            os.remove(instance.pic.path)
+
+
+class Sample_size_specs(models.Model):
+    file = models.FileField(upload_to='samples/size_specs/', blank=True)
+    sample = models.ForeignKey(Sample,
+                               on_delete=models.CASCADE,
+                               verbose_name='样板',
+                               related_name='size_specs')
+
+
+@receiver(models.signals.post_delete, sender=Sample_size_specs)
+def auto_delete_file_sizespecs(sender, instance, **kwargs):
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
+
+# 信息部分定义
 
 
 N = '通知'
@@ -199,11 +259,7 @@ class PostAttachment(models.Model):
 
 
 @receiver(models.signals.post_delete, sender=PostAttachment)
-def auto_delete_file_on_delete(sender, instance, **kwargs):
-    """
-    Deletes file from filesystem
-    when corresponding `MediaFile` object is deleted.
-    """
+def auto_delete_file_postattachment(sender, instance, **kwargs):
     if instance.file:
         if os.path.isfile(instance.file.path):
             os.remove(instance.file.path)

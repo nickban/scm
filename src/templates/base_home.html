@@ -9,9 +9,10 @@
     <!-- bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <!-- logo body css -->
-    <link rel="stylesheet" href="{% static 'css/fontello/css/fontello.css' %}">
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <link href="https://fonts.googleapis.com/css?family=Diplomata|Noto+Serif+SC|Zhi+Mang+Xing&display=swap" rel="stylesheet">
+    <!-- font awesome -->
+    <script src="https://kit.fontawesome.com/f8abbdff71.js" crossorigin="anonymous"></script>
     {% block css%}
     {% endblock %}
   </head>
@@ -36,6 +37,7 @@
               {% endif %}
             </div>
           </div>
+          {% include 'header.html'%}
           <div class="card mb-3">
             <div class="card-body">
               {% for message in messages %}
