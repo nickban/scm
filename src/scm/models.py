@@ -153,7 +153,7 @@ class Sample(models.Model):
                                      on_delete=models.CASCADE,
                                      related_name='samples')
     designer = models.ForeignKey(Designer,
-                                 verbose_name='设计师',
+                                 verbose_name='买手',
                                  on_delete=models.CASCADE,
                                  related_name='samples')
     style = models.ForeignKey(Style,
