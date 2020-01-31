@@ -10,7 +10,7 @@
 
 {% block content %}
   {% if request.user.is_office or request.user.is_merchandiser %}
-    <a class="btn btn-outline-primary my-3" href="{% url 'sample:sampleadd'%}" role="button">新建样板</a>
+    <a class="btn btn-outline-primary my-3" href="{% url 'sample:sampleaddstep1'%}" role="button">新建样板</a>
   {% endif %}
   <table class="table table-hover">
     <thead>

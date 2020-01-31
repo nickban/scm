@@ -3,7 +3,7 @@ from django import forms
 from .models import (User, Factory,
                      Merchandiser, Designer, Shipping, Finance,
                      Qc, Office, Admin, Merchandiser_Manager, Post, PostAttachment,
-                     Sample, Sample_size_specs)
+                     Sample, Sample_size_specs, Sample_os_avatar)
 from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
 
@@ -108,7 +108,7 @@ class NewsampleForm(forms.ModelForm):
     class Meta:
         model = Sample
         fields = ('has_os_sample', 'sample_no', 'brand',
-                  'merchandiser', 'designer', 'factory',)
+                  'merchandiser', 'designer')
 
 
 class SampleForm(forms.ModelForm):
@@ -126,3 +126,9 @@ class SamplesizespecsForm(forms.ModelForm):
     class Meta:
         model = Sample_size_specs
         fields = ('file',)
+
+
+class SampleosavatarForm(forms.ModelForm):
+    class Meta:
+        model = Sample_os_avatar
+        fields = ('img',)

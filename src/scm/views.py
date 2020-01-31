@@ -4,7 +4,8 @@ from django.views.generic import (TemplateView,
                                   DeleteView)
 from .models import User, Post, PostAttachment, Sample, Sample_os_pics, Sample_size_specs
 from .forms import (SignUpForm, NewpostForm, PostAttachmentForm,
-                    NewsampleForm, SampleForm, SamplesizespecsForm)
+                    NewsampleForm, SampleForm, SamplesizespecsForm,
+                    SampleosavatarForm)
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -14,6 +15,7 @@ from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.views import View
 from django.db import transaction
+from django.core.exceptions import ObjectDoesNotExist
 
 
 @method_decorator([login_required], name='dispatch')
@@ -45,11 +47,32 @@ class SampleList(ListView):
 
 
 @method_decorator([login_required], name='dispatch')
-class SampleAdd(CreateView):
+class SampleAddStep1(CreateView):
     model = Sample
     form_class = NewsampleForm
     template_name = 'sample_add.html'
-    success_url = reverse_lazy('sample:samplelist')
+
+    def form_valid(self, form):
+        sample = form.save()
+        return redirect('sample:sampleaddstep2', pk=sample.pk)
+
+
+@method_decorator([login_required], name='dispatch')
+class SampleAddStep2(UpdateView):
+    model = Sample
+    form_class = NewsampleForm
+    template_name = 'sample_add.html'
+
+    def form_valid(self, form):
+        sample = form.save()
+        return redirect('sample:sampleaddstep2', pk=sample.pk)
+
+    def get_context_data(self, **kwargs):
+        try:
+            kwargs['os_avatar'] = self.get_object().os_avatar
+        except ObjectDoesNotExist:
+            kwargs['os_avatar'] = ''
+        return super().get_context_data(**kwargs)
 
 
 @method_decorator([login_required], name='dispatch')
@@ -122,6 +145,30 @@ def samplesizespecadd(request, pk):
         return JsonResponse(data)
     else:
         return render(request, 'sample_size_spec_add.html', {'sample': sample})
+
+# sample os avatar upload
+
+
+@login_required
+def sampleosavataradd(request, pk):
+    sample = get_object_or_404(Sample, pk=pk)
+    previous_url = request.META.get('HTTP_REFERER')
+    if request.method == 'POST':
+        form = SampleosavatarForm(request.POST, request.FILES)
+        if form.is_valid():
+            with transaction.atomic():
+                osavatar = form.save(commit=False)
+                osavatar.sample = sample
+                osavatar.save()
+                data = {"files": [{
+                        "name": osavatar.img.name,
+                        "url": osavatar.img.url, },
+                        ]}
+        else:
+            data = {'is_valid': False}
+        return JsonResponse(data)
+    else:
+        return render(request, 'sample_os_avatar_add.html', {'sample': sample, 'previous_url': previous_url})
 
 
 class SampleDetail(TemplateView):

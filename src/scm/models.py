@@ -139,7 +139,8 @@ class Sample(models.Model):
     factory = models.ForeignKey(Factory,
                                 verbose_name='工厂',
                                 on_delete=models.CASCADE,
-                                related_name='samples')
+                                related_name='samples',
+                                null=True, blank=True)
     parcel_date = models.DateField('寄件日期', null=True, blank=True)
     qutation = models.DecimalField('工厂报价',
                                    max_digits=5,
@@ -178,7 +179,8 @@ def auto_delete_file_sample_swatches(sender, instance, **kwargs):
 
 class Sample_os_avatar(models.Model):
     img = models.ImageField(upload_to='sample/sample_os_avatar/', blank=True)
-    sample = models.OneToOneField(Sample, on_delete=models.CASCADE)
+    sample = models.OneToOneField(Sample, on_delete=models.CASCADE, primary_key=True,
+                                  related_name='os_avatar')
 
 
 @receiver(models.signals.post_delete, sender=Sample_os_avatar)

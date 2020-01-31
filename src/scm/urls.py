@@ -8,8 +8,10 @@ urlpatterns = [
     # 样板地址导航
     path('sample/', include(([
         path('', views.SampleList.as_view(), name='samplelist'),
-        path('add/', views.SampleAdd.as_view(), name='sampleadd'),
+        path('add/step1/', views.SampleAddStep1.as_view(), name='sampleaddstep1'),
+        path('add/<int:pk>/step2/', views.SampleAddStep2.as_view(), name='sampleaddstep2'),
         path('<int:pk>/', views.SampleEdit.as_view(), name='sampleedit'),
+        path('<int:pk>/osavatar/add/', views.sampleosavataradd, name='sampleosavataradd'),
         path('<int:pk>/detail/', views.SampleDetail.as_view(), name='sampledetail'),
         path('<int:pk>/delete/', views.SampleDelete.as_view(), name='sampledelete'),
         path('<int:pk>/os_pic/<int:sample_ospic_pk>/delete/', views.SampleospicDelete.as_view(), name='sampleospicdelete'),
