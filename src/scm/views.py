@@ -2,7 +2,8 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import (TemplateView,
                                   CreateView, ListView, UpdateView, DetailView,
                                   DeleteView)
-from .models import User, Post, PostAttachment, Sample, Sample_os_pics, Sample_size_specs
+from .models import (User, Post, PostAttachment, Sample, Sample_os_pics,
+                     Sample_size_specs, Sample_os_avatar)
 from .forms import (SignUpForm, NewpostForm, PostAttachmentForm,
                     NewsampleForm, SampleForm, SamplesizespecsForm,
                     SampleosavatarForm)
@@ -85,7 +86,6 @@ class SampleEdit(UpdateView):
 
     def get_context_data(self, **kwargs):
         kwargs['os_pics'] = self.get_object().os_pics.all()
-        kwargs['pics'] = self.get_object().pics.all()
         kwargs['size_specs'] = self.get_object().size_specs.all()
         return super().get_context_data(**kwargs)
 
@@ -108,6 +108,18 @@ class SamplesizespecDelete(DeleteView):
     pk_url_kwarg = 'sample_sizespec_pk'
     context_object_name = 'samplesizespec'
     template_name = 'sample_sizespec_delete.html'
+
+    def get_success_url(self):
+        sample = self.object.sample
+        return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+
+
+@method_decorator([login_required], name='dispatch')
+class SampleosavatarDelete(DeleteView):
+    model = Sample_os_avatar
+    pk_url_kwarg = 'sample_osavatar_pk'
+    context_object_name = 'sample_osavatar'
+    template_name = 'sample_osavatar_delete.html'
 
     def get_success_url(self):
         sample = self.object.sample

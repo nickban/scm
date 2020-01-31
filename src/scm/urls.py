@@ -12,12 +12,13 @@ urlpatterns = [
         path('add/<int:pk>/step2/', views.SampleAddStep2.as_view(), name='sampleaddstep2'),
         path('<int:pk>/', views.SampleEdit.as_view(), name='sampleedit'),
         path('<int:pk>/osavatar/add/', views.sampleosavataradd, name='sampleosavataradd'),
+        path('<int:pk>/osavatar/<int:sample_osavatar_pk>/delete/', views.SampleosavatarDelete.as_view(), name='sampleosavatardelete'),
         path('<int:pk>/detail/', views.SampleDetail.as_view(), name='sampledetail'),
         path('<int:pk>/delete/', views.SampleDelete.as_view(), name='sampledelete'),
         path('<int:pk>/os_pic/<int:sample_ospic_pk>/delete/', views.SampleospicDelete.as_view(), name='sampleospicdelete'),
         path('<int:pk>/pic/<int:sample_pic_pk>/delete/', views.SamplepicDelete.as_view(), name='samplepicdelete'),
-        path('<int:pk>/sizespec/<int:sample_sizespec_pk>/delete/', views.SamplesizespecDelete.as_view(), name='samplesizespecdelete'),
-        path('<int:pk>/sizespec/add/', views.samplesizespecadd, name='samplesizespecadd'),
+        path('<int:pk>/sizespecs/<int:sample_sizespec_pk>/delete/', views.SamplesizespecDelete.as_view(), name='samplesizespecdelete'),
+        path('<int:pk>/sizespecs/add/', views.samplesizespecadd, name='samplesizespecadd'),
     ], 'scm'), namespace='sample')),
 
     # 订单地址导航

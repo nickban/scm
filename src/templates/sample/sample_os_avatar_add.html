@@ -10,7 +10,6 @@
 {% block content %}
     <form  method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ previous_url }}
         <div id="div_id_attachment" class="form-group attachment ">
             <label for="div_id_attachment">附件</label>
             <input id="fileupload" type="file" name="img" class="inputfile" data-url="{% url 'sample:sampleosavataradd' sample.pk %}">
