@@ -8,5 +8,6 @@
         <p>确定要删除此附件吗?</p>
         <p><img src="{{ sampleospic.img.url }}"  width=100px, height=100px></p>
         <input class="btn btn-outline-primary" type="submit" value="确认删除">
+        <input type="hidden" name="previous_url" value="{{previous_url}}" />
     </form>
 {% endblock %}

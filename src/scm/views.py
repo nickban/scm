@@ -6,7 +6,7 @@ from .models import (User, Post, PostAttachment, Sample, Sample_os_pics,
                      Sample_size_specs, Sample_os_avatar)
 from .forms import (SignUpForm, NewpostForm, PostAttachmentForm,
                     NewsampleForm, SampleForm, SamplesizespecsForm,
-                    SampleosavatarForm)
+                    SampleosavatarForm, SampleospicsForm)
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -73,6 +73,8 @@ class SampleAddStep2(UpdateView):
             kwargs['os_avatar'] = self.get_object().os_avatar
         except ObjectDoesNotExist:
             kwargs['os_avatar'] = ''
+        kwargs['os_pics'] = self.get_object().os_pics.all()
+        kwargs['size_specs'] = self.get_object().size_specs.all()
         return super().get_context_data(**kwargs)
 
 
@@ -99,7 +101,17 @@ class SampleospicDelete(DeleteView):
 
     def get_success_url(self):
         sample = self.object.sample
-        return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+        previous_url = self.request.POST.get('previous_url')
+        print(previous_url)
+        if "step2" in previous_url:
+            return reverse_lazy('sample:sampleaddstep2', kwargs={'pk': sample.pk})
+        else:
+            return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+
+    def get_context_data(self, **kwargs):
+        previous_url = self.request.META.get('HTTP_REFERER')
+        kwargs['previous_url'] = previous_url
+        return super().get_context_data(**kwargs)
 
 
 @method_decorator([login_required], name='dispatch')
@@ -111,7 +123,16 @@ class SamplesizespecDelete(DeleteView):
 
     def get_success_url(self):
         sample = self.object.sample
-        return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+        previous_url = self.request.POST.get('previous_url')
+        if "step2" in previous_url:
+            return reverse_lazy('sample:sampleaddstep2', kwargs={'pk': sample.pk})
+        else:
+            return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+
+    def get_context_data(self, **kwargs):
+        previous_url = self.request.META.get('HTTP_REFERER')
+        kwargs['previous_url'] = previous_url
+        return super().get_context_data(**kwargs)
 
 
 @method_decorator([login_required], name='dispatch')
@@ -150,6 +171,7 @@ class SamplepicDelete(DeleteView):
 @login_required
 def samplesizespecadd(request, pk):
     sample = get_object_or_404(Sample, pk=pk)
+    previous_url = request.META.get('HTTP_REFERER')
     if request.method == 'POST':
         form = SamplesizespecsForm(request.POST, request.FILES)
         if form.is_valid():
@@ -165,7 +187,7 @@ def samplesizespecadd(request, pk):
             data = {'is_valid': False}
         return JsonResponse(data)
     else:
-        return render(request, 'sample_size_spec_add.html', {'sample': sample})
+        return render(request, 'sample_size_spec_add.html', {'sample': sample, 'previous_url': previous_url})
 
 # sample os avatar upload
 
@@ -190,6 +212,31 @@ def sampleosavataradd(request, pk):
         return JsonResponse(data)
     else:
         return render(request, 'sample_os_avatar_add.html', {'sample': sample, 'previous_url': previous_url})
+
+
+# sample os_pics upload
+
+
+@login_required
+def sampleospicadd(request, pk):
+    sample = get_object_or_404(Sample, pk=pk)
+    previous_url = request.META.get('HTTP_REFERER')
+    if request.method == 'POST':
+        form = SampleospicsForm(request.POST, request.FILES)
+        if form.is_valid():
+            with transaction.atomic():
+                ospic = form.save(commit=False)
+                ospic.sample = sample
+                ospic.save()
+                data = {"files": [{
+                        "name": ospic.img.name,
+                        "url": ospic.img.url, },
+                        ]}
+        else:
+            data = {'is_valid': False}
+        return JsonResponse(data)
+    else:
+        return render(request, 'sample_os_pic_add.html', {'sample': sample, 'previous_url': previous_url})
 
 
 class SampleDetail(TemplateView):

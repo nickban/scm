@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-3">
             <div class="form-group alert alert-primary text-center">
-                <span>第一步</span>
+                <span>第一步(创建)</span>
             </div>
             <div class="form-group">
                 {{ form.sample_no | as_crispy_field}}
@@ -34,7 +34,7 @@
         </div>
         <div class="col-9">
             <div class="form-group alert alert-primary text-center">
-                <span>第二步</span>
+                <span>第二步(上传资料)</span>
             </div>
             <div class="row">
                 <div class="col-4">
@@ -55,27 +55,51 @@
                     </div>
                     {% endif %}
                 </div>
-                <div class="col-4">
-                    {% if sample.pk %}
-                    <div class="col-auto">
-                        <div class="form-group">
-                            <a href="{% url 'sample:samplesizespecadd' sample.pk %}" role="button">
-                            <i class="fas fa-file-upload fa-2x"></i></a>
-                            <span>评语附件</span>
+                <div class="col-8">
+                    <div class="col-12">
+                        {% if sample.pk %}
+                        <div class="col-auto">
+                            <div class="form-group">
+                                <a href="{% url 'sample:samplesizespecadd' sample.pk %}" role="button">
+                                <i class="fas fa-file-upload fa-2x"></i></a>
+                                <span>评语附件</span>
+                                <div class="form-group">
+                                    <ul class="mt-2 list-unstyled">
+                                        {% for size_spec in size_specs %}
+                                            <li class="mx-3">
+                                                <a href="{{ size_spec.file.url }}">{{ size_spec.file.name |basename }}</a> 
+                                                <a href="{% url 'sample:samplesizespecdelete' pk=sample.pk  sample_sizespec_pk=size_spec.pk %}">
+                                                <i class="mx-2 far fa-trash-alt fa-1x"></i></a> 
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
-                </div>
-                <div class="col-4">
-                    {% if sample.pk %}
-                    <div class="col-auto">
-                        <div class="form-group">
-                            <a href="{% url 'sample:samplesizespecadd' sample.pk %}" role="button">
-                            <i class="fas fa-file-upload fa-2x"></i></a>
-                            <span>更多原板图片</span>
+                    <div class="col-12">
+                        {% if sample.pk %}
+                        <div class="col-auto">
+                            <div class="form-group">
+                                <a href="{% url 'sample:sampleospicadd' sample.pk %}" role="button">
+                                <i class="fas fa-file-upload fa-2x"></i></a>
+                                <span>更多原板图片</span>
+                            </div>
+                            <div class="form-group">
+                                <ul class="mt-2 list-unstyled">
+                                    {% for os_pic in os_pics %}
+                                        <li class="mx-3">
+                                            <a href="{{ os_pic.img.url }}">{{ os_pic.img.name |basename }}</a> 
+                                            <a href="{% url 'sample:sampleospicdelete' pk=sample.pk  sample_ospic_pk=os_pic.pk %}">
+                                            <i class="mx-2 far fa-trash-alt fa-1x"></i></a> 
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
                 </div>
             </div>
         </div>       

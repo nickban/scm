@@ -3,7 +3,8 @@ from django import forms
 from .models import (User, Factory,
                      Merchandiser, Designer, Shipping, Finance,
                      Qc, Office, Admin, Merchandiser_Manager, Post, PostAttachment,
-                     Sample, Sample_size_specs, Sample_os_avatar)
+                     Sample, Sample_size_specs, Sample_os_avatar,
+                     Sample_os_pics)
 from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
 
@@ -109,6 +110,20 @@ class NewsampleForm(forms.ModelForm):
         model = Sample
         fields = ('has_os_sample', 'sample_no', 'brand',
                   'merchandiser', 'designer')
+        error_messages = {
+            'sample_no': {
+                'required': "必填字段！",
+            },
+            'brand': {
+                'required': "必填字段！",
+            },
+            'merchandiser': {
+                'required': "必填字段！",
+            },
+            'designer': {
+                'required': "必填字段！",
+            },
+        }
 
 
 class SampleForm(forms.ModelForm):
@@ -131,4 +146,10 @@ class SamplesizespecsForm(forms.ModelForm):
 class SampleosavatarForm(forms.ModelForm):
     class Meta:
         model = Sample_os_avatar
+        fields = ('img',)
+
+
+class SampleospicsForm(forms.ModelForm):
+    class Meta:
+        model = Sample_os_pics
         fields = ('img',)

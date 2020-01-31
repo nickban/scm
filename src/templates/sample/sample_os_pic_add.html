@@ -12,7 +12,7 @@
         {% csrf_token %}
         <div id="div_id_attachment" class="form-group attachment ">
             <label for="div_id_attachment">附件</label>
-            <input id="fileupload" type="file" name="file" class="inputfile" data-url="{% url 'sample:samplesizespecadd' sample.pk %}" multiple>
+            <input id="fileupload" type="file" name="img" class="inputfile" data-url="{% url 'sample:sampleospicadd' sample.pk %}" multiple>
             <label for="fileupload">选择文件..</label>
         </div>
         {% if  'step2' in previous_url %}

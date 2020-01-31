@@ -117,7 +117,7 @@ class Sample(models.Model):
         (COMPLETED, '完成'),
     ]
     created_date = models.DateTimeField('创建日期', auto_now=True)
-    sample_no = models.PositiveIntegerField('样板号')
+    sample_no = models.CharField('样板号', max_length=100)
     has_os_sample = models.BooleanField('是否有原版?', )
     brand = models.ForeignKey(Brand,
                               verbose_name='品牌',

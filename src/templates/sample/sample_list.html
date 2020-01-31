@@ -32,7 +32,7 @@
         <tr>
           <td>{{ sample.created_date|date:"SHORT_DATE_FORMAT"  }}</td>
           <td><a href="{% url 'sample:sampleedit'  sample.pk %}">{{ sample.sample_no }}</a></td>
-          <td><img src="{{ sample.os_avatar.url }}" width=100px, height=100px></td>
+          <td><img src="{{ sample.os_avatar.img.url }}" width=100px, height=100px></td>
           <td>{{ sample.brand }}</td>
           <td>{{ sample.designer }}</td>
           <td>{{ sample.merchandiser }}</td>
