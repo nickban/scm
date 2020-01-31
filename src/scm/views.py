@@ -123,7 +123,16 @@ class SampleosavatarDelete(DeleteView):
 
     def get_success_url(self):
         sample = self.object.sample
-        return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+        previous_url = self.request.POST.get('previous_url')
+        if "step2" in previous_url:
+            return reverse_lazy('sample:sampleaddstep2', kwargs={'pk': sample.pk})
+        else:
+            return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+
+    def get_context_data(self, **kwargs):
+        previous_url = self.request.META.get('HTTP_REFERER')
+        kwargs['previous_url'] = previous_url
+        return super().get_context_data(**kwargs)
 
 
 @method_decorator([login_required], name='dispatch')
