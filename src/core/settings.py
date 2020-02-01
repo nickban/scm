@@ -40,7 +40,10 @@ INSTALLED_APPS = [
     'scm',
     'crispy_forms',
     'widget_tweaks',
+    'tempus_dominus',
 ]
+
+TEMPUS_DOMINUS_LOCALIZE = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

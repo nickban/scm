@@ -166,15 +166,17 @@ def auto_delete_file_sample_size_spec_factory(sender, instance, **kwargs):
 
 
 class Sample_swatches(models.Model):
-    pic = models.ImageField(upload_to='sample/sample_swatches/', blank=True)
-    sample = models.OneToOneField(Sample, on_delete=models.CASCADE)
+    img = models.ImageField(upload_to='sample/sample_swatches/', blank=True)
+    sample = models.ForeignKey(Sample,
+                               on_delete=models.CASCADE,
+                               related_name='swatches')
 
 
 @receiver(models.signals.post_delete, sender=Sample_swatches)
 def auto_delete_file_sample_swatches(sender, instance, **kwargs):
-    if instance.pic:
-        if os.path.isfile(instance.pic.path):
-            os.remove(instance.pic.path)
+    if instance.img:
+        if os.path.isfile(instance.img.path):
+            os.remove(instance.img.path)
 
 
 class Sample_os_avatar(models.Model):
@@ -217,17 +219,17 @@ def auto_delete_file_sample_os_pics(sender, instance, **kwargs):
 
 
 class Sample_pics_factory(models.Model):
-    pic = models.ImageField(upload_to='sample/sample_pics_factory/', blank=True)
+    img = models.ImageField(upload_to='sample/sample_pics_factory/', blank=True)
     sample = models.ForeignKey(Sample,
                                on_delete=models.CASCADE,
-                               related_name='pics_factory')
+                               related_name='factory_pics')
 
 
 @receiver(models.signals.post_delete, sender=Sample_pics_factory)
 def auto_delete_file_sample_pics_factory(sender, instance, **kwargs):
-    if instance.pic:
-        if os.path.isfile(instance.pic.path):
-            os.remove(instance.pic.path)
+    if instance.img:
+        if os.path.isfile(instance.img.path):
+            os.remove(instance.img.path)
 
 
 class Sample_size_specs(models.Model):

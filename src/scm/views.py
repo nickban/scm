@@ -3,10 +3,13 @@ from django.views.generic import (TemplateView,
                                   CreateView, ListView, UpdateView, DetailView,
                                   DeleteView)
 from .models import (User, Post, PostAttachment, Sample, Sample_os_pics,
-                     Sample_size_specs, Sample_os_avatar)
+                     Sample_size_specs, Sample_os_avatar,
+                     Sample_swatches,
+                     Sample_pics_factory)
 from .forms import (SignUpForm, NewpostForm, PostAttachmentForm,
                     NewsampleForm, SampleForm, SamplesizespecsForm,
-                    SampleosavatarForm, SampleospicsForm)
+                    SampleosavatarForm, SampleospicsForm,
+                    SampleswatchForm, SamplefpicsForm)
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -40,7 +43,7 @@ class SignUpView(CreateView):
 @method_decorator([login_required], name='dispatch')
 class SampleList(ListView):
     model = Sample
-    ordering = ('created_date', )
+    ordering = ('-created_date', )
     context_object_name = 'samples'
     template_name = 'sample_list.html'
     paginate_by = 10
@@ -82,15 +85,19 @@ class SampleAddStep2(UpdateView):
 class SampleEdit(UpdateView):
     model = Sample
     form_class = SampleForm
-    template_name = 'sampleedit.html'
+    template_name = 'sample_edit.html'
     context_object_name = 'sample'
     success_url = reverse_lazy('sample:samplelist')
 
     def get_context_data(self, **kwargs):
         kwargs['os_pics'] = self.get_object().os_pics.all()
         kwargs['size_specs'] = self.get_object().size_specs.all()
+        kwargs['swatches'] = self.get_object().swatches.all()
+        kwargs['fpics'] = self.get_object().factory_pics.all()
         return super().get_context_data(**kwargs)
 
+
+# sample os pic view
 
 @method_decorator([login_required], name='dispatch')
 class SampleospicDelete(DeleteView):
@@ -101,16 +108,51 @@ class SampleospicDelete(DeleteView):
 
     def get_success_url(self):
         sample = self.object.sample
-        previous_url = self.request.POST.get('previous_url')
-        print(previous_url)
-        if "step2" in previous_url:
-            return reverse_lazy('sample:sampleaddstep2', kwargs={'pk': sample.pk})
+        preurl = self.kwargs['preurl']
+        print(preurl)
+        return reverse_lazy('sample:sampleospicscollection', kwargs={'pk': sample.pk, 'preurl': preurl})
+
+
+@login_required
+def sampleospicadd(request, pk):
+    sample = get_object_or_404(Sample, pk=pk)
+    previous_url = request.META.get('HTTP_REFERER')
+    if request.method == 'POST':
+        form = SampleospicsForm(request.POST, request.FILES)
+        if form.is_valid():
+            with transaction.atomic():
+                ospic = form.save(commit=False)
+                ospic.sample = sample
+                ospic.save()
+                data = {"files": [{
+                        "name": ospic.img.name,
+                        "url": ospic.img.url, },
+                        ]}
         else:
-            return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+            data = {'is_valid': False}
+        return JsonResponse(data)
+    else:
+        return render(request, 'sample_os_pic_add.html', {'sample': sample, 'previous_url': previous_url})
+
+
+@method_decorator([login_required], name='dispatch')
+class SampleospicsCollection(ListView):
+    model = Sample_os_pics
+    context_object_name = 'os_pics'
+    template_name = 'sample_os_pics_collection.html'
+
+    def get_queryset(self):
+        sample = get_object_or_404(Sample, pk=self.kwargs['pk'])
+        queryset = sample.os_pics.all()
+        return queryset
 
     def get_context_data(self, **kwargs):
-        previous_url = self.request.META.get('HTTP_REFERER')
-        kwargs['previous_url'] = previous_url
+        sample = get_object_or_404(Sample, pk=self.kwargs['pk'])
+        # previous_url = self.request.META.get('HTTP_REFERER')
+        # kwargs['previous_url'] = previous_url
+        preurl = self.kwargs['preurl']
+        kwargs['sample'] = sample
+        kwargs['preurl'] = preurl
         return super().get_context_data(**kwargs)
 
 
@@ -156,16 +198,16 @@ class SampleosavatarDelete(DeleteView):
         return super().get_context_data(**kwargs)
 
 
-@method_decorator([login_required], name='dispatch')
-class SamplepicDelete(DeleteView):
-    model = Sample_os_pics
-    pk_url_kwarg = 'sample_pic_pk'
-    context_object_name = 'samplepic'
-    template_name = 'sample_pic_delete.html'
+# @method_decorator([login_required], name='dispatch')
+# class SamplepicDelete(DeleteView):
+#     model = Sample_os_pics
+#     pk_url_kwarg = 'sample_pic_pk'
+#     context_object_name = 'samplepic'
+#     template_name = 'sample_pic_delete.html'
 
-    def get_success_url(self):
-        sample = self.object.sample
-        return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+#     def get_success_url(self):
+#         sample = self.object.sample
+#         return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
 
 
 @login_required
@@ -213,30 +255,121 @@ def sampleosavataradd(request, pk):
     else:
         return render(request, 'sample_os_avatar_add.html', {'sample': sample, 'previous_url': previous_url})
 
-
-# sample os_pics upload
+# sample swatch add
 
 
 @login_required
-def sampleospicadd(request, pk):
+def sampleswatchadd(request, pk):
     sample = get_object_or_404(Sample, pk=pk)
-    previous_url = request.META.get('HTTP_REFERER')
     if request.method == 'POST':
-        form = SampleospicsForm(request.POST, request.FILES)
+        form = SampleswatchForm(request.POST, request.FILES)
         if form.is_valid():
             with transaction.atomic():
-                ospic = form.save(commit=False)
-                ospic.sample = sample
-                ospic.save()
+                swatch = form.save(commit=False)
+                swatch.sample = sample
+                swatch.save()
                 data = {"files": [{
-                        "name": ospic.img.name,
-                        "url": ospic.img.url, },
+                        "name": swatch.img.name,
+                        "url": swatch.img.url, },
                         ]}
         else:
             data = {'is_valid': False}
         return JsonResponse(data)
     else:
-        return render(request, 'sample_os_pic_add.html', {'sample': sample, 'previous_url': previous_url})
+        return render(request, 'sample_swatch_add.html', {'sample': sample})
+
+
+@method_decorator([login_required], name='dispatch')
+class SampleswatchCollection(ListView):
+    model = Sample_swatches
+    context_object_name = 'swatches'
+    template_name = 'sample_swatch_collection.html'
+
+    def get_queryset(self):
+        sample = get_object_or_404(Sample, pk=self.kwargs['pk'])
+        queryset = sample.swatches.all()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        sample = get_object_or_404(Sample, pk=self.kwargs['pk'])
+        kwargs['sample'] = sample
+        return super().get_context_data(**kwargs)
+
+
+@method_decorator([login_required], name='dispatch')
+class SampleswatchDelete(DeleteView):
+    model = Sample_swatches
+    pk_url_kwarg = 'sample_swatch_pk'
+    context_object_name = 'swatch'
+    template_name = 'sample_swatch_delete.html'
+
+    def get_success_url(self):
+        sample = self.object.sample
+        return reverse_lazy('sample:sampleswatchcollection', kwargs={'pk': sample.pk})
+
+    def get_context_data(self, **kwargs):
+        sample = get_object_or_404(Sample, pk=self.kwargs['pk'])
+        kwargs['sample'] = sample
+        return super().get_context_data(**kwargs)
+
+# sample factory pics function
+
+
+@login_required
+def samplefpicsadd(request, pk):
+    sample = get_object_or_404(Sample, pk=pk)
+    if request.method == 'POST':
+        form = SamplefpicsForm(request.POST, request.FILES)
+        if form.is_valid():
+            with transaction.atomic():
+                fpics = form.save(commit=False)
+                fpics.sample = sample
+                fpics.save()
+                data = {"files": [{
+                        "name": fpics.img.name,
+                        "url": fpics.img.url, },
+                        ]}
+        else:
+            data = {'is_valid': False}
+        return JsonResponse(data)
+    else:
+        return render(request, 'sample_fpics_add.html', {'sample': sample})
+
+
+@method_decorator([login_required], name='dispatch')
+class SamplefpicsCollection(ListView):
+    model = Sample_pics_factory
+    context_object_name = 'fpics'
+    template_name = 'sample_fpics_collection.html'
+
+    def get_queryset(self):
+        sample = get_object_or_404(Sample, pk=self.kwargs['pk'])
+        queryset = sample.factory_pics.all()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        sample = get_object_or_404(Sample, pk=self.kwargs['pk'])
+        kwargs['sample'] = sample
+        return super().get_context_data(**kwargs)
+
+
+@method_decorator([login_required], name='dispatch')
+class SamplefpicDelete(DeleteView):
+    model = Sample_pics_factory
+    pk_url_kwarg = 'sample_fpic_pk'
+    context_object_name = 'fpic'
+    template_name = 'sample_fpic_delete.html'
+
+    def get_success_url(self):
+        sample = self.object.sample
+        return reverse_lazy('sample:samplefpicscollection', kwargs={'pk': sample.pk})
+
+    def get_context_data(self, **kwargs):
+        sample = get_object_or_404(Sample, pk=self.kwargs['pk'])
+        kwargs['sample'] = sample
+        return super().get_context_data(**kwargs)
+
+# sample os_pics upload
 
 
 class SampleDetail(TemplateView):

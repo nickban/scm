@@ -4,8 +4,10 @@ from .models import (User, Factory,
                      Merchandiser, Designer, Shipping, Finance,
                      Qc, Office, Admin, Merchandiser_Manager, Post, PostAttachment,
                      Sample, Sample_size_specs, Sample_os_avatar,
-                     Sample_os_pics)
+                     Sample_os_pics, Sample_swatches,
+                     Sample_pics_factory)
 from django.db import transaction
+from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -106,6 +108,12 @@ class PostAttachmentForm(forms.ModelForm):
 
 
 class NewsampleForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(NewsampleForm, self).__init__(*args, **kwargs)
+        self.fields['brand'].empty_label = '请选择'
+        self.fields['merchandiser'].empty_label = '请选择'
+        self.fields['designer'].empty_label = '请选择'
+
     class Meta:
         model = Sample
         fields = ('has_os_sample', 'sample_no', 'brand',
@@ -127,6 +135,17 @@ class NewsampleForm(forms.ModelForm):
 
 
 class SampleForm(forms.ModelForm):
+    parcel_date = forms.DateField(widget=DatePicker(), label="寄件日期")
+    qutation = forms.DecimalField(label="工厂报价(元)")
+
+    def __init__(self, *args, **kwargs):
+        super(SampleForm, self).__init__(*args, **kwargs)
+        self.fields['brand'].empty_label = '请选择'
+        self.fields['merchandiser'].empty_label = '请选择'
+        self.fields['designer'].empty_label = '请选择'
+        self.fields['factory'].empty_label = '请选择'
+        self.fields['style'].empty_label = '请选择'
+
     class Meta:
         model = Sample
         fields = ('has_os_sample', 'sample_no', 'brand',
@@ -142,6 +161,16 @@ class SamplesizespecsForm(forms.ModelForm):
         model = Sample_size_specs
         fields = ('file',)
 
+
+class SampleswatchForm(forms.ModelForm):
+    class Meta:
+        model = Sample_swatches
+        fields = ('img',)
+
+class SamplefpicsForm(forms.ModelForm):
+    class Meta:
+        model = Sample_pics_factory
+        fields = ('img',)
 
 class SampleosavatarForm(forms.ModelForm):
     class Meta:

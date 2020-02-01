@@ -1,0 +1,34 @@
+{% extends 'base_home.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block css%}
+<link rel="stylesheet" href="{% static 'css/paginator.css' %}">
+{% endblock %}
+
+{% block content %}
+<div>
+  <!-- 测试用参数 -->
+  <!-- {{previous_url}} -->
+
+  <div class="form-group d-flex align-items-end">
+    <!-- {{preurl}} -->
+    {% for swatch in swatches %}
+    <div>
+      <a href="{{swatch.img.url}}">
+      <img src="{{ swatch.img.url}}" width=300 height=300 class="img-thumbnail"></a>    
+    </div>
+    <div>
+      <a href="{% url 'sample:sampleswatchdelete' pk=sample.pk sample_swatch_pk=swatch.pk %}">
+      <i class="mx-2 far fa-trash-alt fa-1x"></i></a> 
+    </div>
+    {% endfor %}
+  </div>
+
+
+  <div class="form-group">
+      <a class="btn btn-block btn-outline-primary" href="{% url 'sample:sampleedit' pk=sample.pk%}" role="button">返回</a>
+  </div>
+</div>
+
+{% endblock %}
