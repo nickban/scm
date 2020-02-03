@@ -19,7 +19,8 @@
 {% endblock%}
 
 {% block content %}
-<form novalidate>
+<form method="post" novalidate>
+    {% csrf_token %}
     <div class="row">
         <div class="col-12 col-md-3 text-left">
             <img  class="rounded" src="{{ sample.os_avatar.img.url }}" width=120 height=120 alt="款式图">
@@ -50,7 +51,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-3">
+        <div class="col-12 col-md-3">
             <div class="form-group">
                 <a href="{% url 'sample:sampleosavataradd' sample.pk %}" role="button">
                     <i class="fas fa-file-upload fa-2x"></i></a>
@@ -60,35 +61,41 @@
                 {{ form.has_os_sample |as_crispy_field }}
             </div>
         </div>
-        <div class="col-3">
-            <div class="form-group">
-                <a href="{% url 'sample:samplesizespecadd' sample.pk %}" role="button">
-                <i class="fas fa-file-upload fa-2x"></i></a>
-                <span>评语附件</span>
-            </div>
+        <div class="col-12 col-md-3">
             <div class="form-group">
                 <a href="{% url 'sample:sampleospicadd' sample.pk %}" role="button">
                 <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>更多原版照</span>
-                {% if os_pics %}
-                <a href="{% url 'sample:sampleospicscollection' pk=sample.pk preurl='edit' %}">
-                <span class="badge badge-success">查看</span></a>
-                {% else %}
-                <span class="badge badge-warning">未上传</span>
-                {% endif %}
+                <div class="form-group">
+                    {% if os_pics %}
+                    <a href="{% url 'sample:sampleospicscollection' pk=sample.pk preurl='edit' %}">
+                    <h6><span class="badge badge-success">查看</span></a></h6>
+                    {% else %}
+                    <h6><span class="badge badge-warning">未上传</span></h6>
+                    {% endif %}
+                </div>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-12 col-md-6 ">
             <div class="form-group">
-                <ul class="mt-2 list-unstyled">
-                {% for size_spec in size_specs %}
-                    <li class="mx-3">
-                        <a href="{{ size_spec.file.url }}">{{ size_spec.file.name |basename }}</a> 
-                        <a href="{% url 'sample:samplesizespecdelete' pk=sample.pk  sample_sizespec_pk=size_spec.pk %}">
-                        <i class="mx-2 far fa-trash-alt fa-1x"></i></a> 
-                    </li>
-                {% endfor %}
+                <a href="{% url 'sample:samplesizespecadd' sample.pk %}" role="button">
+                <i class="fas fa-file-upload fa-2x"></i></a>
+                <span>评语附件</span>
+                <div class="form-group">
+                {% if size_specs %}
+                    <ul class="list-unstyled">
+                    {% for size_spec in size_specs %}
+                        <li class="">
+                            <a href="{{ size_spec.file.url }}">{{ size_spec.file.name |basename }}</a> 
+                            <a href="{% url 'sample:samplesizespecdelete' pk=sample.pk  sample_sizespec_pk=size_spec.pk %}">
+                            <i class="far fa-trash-alt fa-1x"></i></a> 
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <h6><span class="badge badge-warning">未上传</span></h6>
+                {% endif %}
                 </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -117,12 +124,14 @@
                 <a href="{% url 'sample:sampleswatchadd' sample.pk %}" role="button">
                 <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>色卡</span>
-                {% if swatches %}
-                <a href="{% url 'sample:sampleswatchcollection' pk=sample.pk%}">
-                <span class="badge badge-success">查看</span></a>
-                {% else %}
-                <span class="badge badge-warning">未上传</span>
-                {% endif %}
+                <div class="form-group">
+                    {% if swatches %}
+                    <a href="{% url 'sample:sampleswatchcollection' pk=sample.pk%}">
+                    <h6><span class="badge badge-success">查看</span></a></h6>
+                    {% else %}
+                    <h6><span class="badge badge-warning">未上传</span></h6>
+                    {% endif %}
+                </div>
             </div>
         </div>
         <div class="col-12 col-md-3 ">
@@ -130,69 +139,87 @@
                 <a href="{% url 'sample:samplefpicsadd' sample.pk %}" role="button">
                 <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>成样照片</span>
-                {% if fpics %}
-                <a href="{% url 'sample:samplefpicscollection' pk=sample.pk%}">
-                <span class="badge badge-success">查看</span></a>
+                <div class="form-group">
+                    {% if fpics %}
+                    <a href="{% url 'sample:samplefpicscollection' pk=sample.pk%}">
+                    <h6><span class="badge badge-success">查看</span></a></h6>
+                    {% else %}
+                    <h6><span class="badge badge-warning">未上传</span></h6>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 ">
+            <div class="form-group">
+                <a href="{% url 'sample:samplequotationadd' sample.pk %}" role="button">
+                <i class="fas fa-file-upload fa-2x"></i></a>
+                <span>报价单</span>
+            </div>
+            <div class="form-group">
+                {% if quotation %}
+                <a href="{{quotation.file.url}}">{{quotation.file.name | basename}}</a>
+                <a href="{% url 'sample:samplequotationdelete' pk=sample.pk  sample_quotation_pk=quotation.pk %}">
+                <i class="far fa-trash-alt fa-1x"></i></a>
                 {% else %}
-                <span class="badge badge-warning">未上传</span>
+                <h6><span class="badge badge-warning">未上传</span></h6>
                 {% endif %}
             </div>
         </div>
         <div class="col-12 col-md-3 ">
             <div class="form-group">
-                <a href="{% url 'sample:samplesizespecadd' sample.pk %}" role="button">
+                <a href="{% url 'sample:samplesizespecfadd' sample.pk %}" role="button">
                 <i class="fas fa-file-upload fa-2x"></i></a>
-                <span>报价单</span><span>(未上传)</span>
+                <span>成样尺寸表</span>
             </div>
-        </div>
-        <div class="col-12 col-md-3 ">
             <div class="form-group">
-                <a href="{% url 'sample:samplesizespecadd' sample.pk %}" role="button">
-                <i class="fas fa-file-upload fa-2x"></i></a>
-                <span>成样尺寸表</span><span>(未上传)</span>
+                {% if sizespecf %}
+                <a href="{{sizespecf.file.url}}">{{sizespecf.file.name | basename}}</a>
+                <a href="{% url 'sample:samplesizespecfdelete' pk=sample.pk  sample_sizespecf_pk=sizespecf.pk %}">
+                <i class="far fa-trash-alt fa-1x"></i></a>
+                {% else %}
+                <h6><span class="badge badge-warning">未上传</span></h6>
+                {% endif %}
             </div>
         </div>
     </div>
      <div class="row">
         <div class="col-sm ">
             <div class="form-group">
-                <button type="submit" class="btn btn-block btn-outline-primary my-3">上一个</button>
+                <a class="btn btn-block btn-outline-primary" href="" role="button">上一个</a>
             </div>
         </div>
         <div class="col-sm ">
             <div class="form-group">
-                <button type="submit" class="btn btn-block btn-outline-primary my-3">保存</button>
+                <input type="submit" value="保存" class="btn btn-block btn-outline-primary">
             </div>
         </div>
         <div class="col-sm">
             <div class="form-group">
-                <button type="submit" class="btn btn-block btn-outline-primary my-3">返回</button>
+                <a class="btn btn-block btn-outline-primary" href="{% url 'sample:samplelist' %}" role="button">返回</a>
             </div>
         </div>
         <div class=" col-sm">
             <div class="form-group">
-                <button type="submit" class="btn btn-block btn-outline-primary my-3">删除</button>
+                <a class="btn btn-block btn-outline-primary" href="{% url 'sample:sampledelete' pk=sample.pk%}" role="button">删除</a>
             </div>
         </div>
         <div class=" col-sm">
             <div class="form-group">
-                <button type="submit" class="btn btn-block btn-outline-primary my-3">打印</button>
+                <a class="btn btn-block btn-outline-primary" href="" role="button">打印</a>
             </div>
         </div>
         <div class=" col-sm">
             <div class="form-group">
-                <button type="submit" class="btn btn-block btn-outline-primary my-3">通知工厂</button>
+                <a class="btn btn-block btn-outline-primary" href="" role="button">通知工厂</a>
             </div>
         </div> 
         <div class=" col-sm">
             <div class="form-group">
-                <button type="submit" class="btn btn-block btn-outline-primary my-3">下一个</button>
+                <a class="btn btn-block btn-outline-primary" href="" role="button">下一个</a>
             </div>
         </div>    
     </div>
-
-
-    </form>
+</form>
 {% endblock %}
 
 {% block script %}

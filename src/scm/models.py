@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
 import os
+from django.utils.safestring import mark_safe
 # Create your models here.
 
 
@@ -135,7 +136,7 @@ class Sample(models.Model):
                               verbose_name='款式',
                               on_delete=models.CASCADE,
                               related_name='samples',
-                              null=True)
+                              null=True, blank=True)
     factory = models.ForeignKey(Factory,
                                 verbose_name='工厂',
                                 on_delete=models.CASCADE,
@@ -150,12 +151,14 @@ class Sample(models.Model):
     status = models.CharField('样板状态',
                               max_length=50,
                               choices=SAMPLE_STATUS,
-                              blank=True)
+                              blank=True,
+                              default=NEW)
 
 
 class Sample_size_spec_factory(models.Model):
     file = models.FileField(upload_to='sample/sample_size_spec_factory/', blank=True)
-    sample = models.OneToOneField(Sample, on_delete=models.CASCADE)
+    sample = models.OneToOneField(Sample, on_delete=models.CASCADE,
+                                  related_name='sizespecf')
 
 
 @receiver(models.signals.post_delete, sender=Sample_size_spec_factory)
@@ -192,12 +195,12 @@ def auto_delete_file_sample_os_avatar(sender, instance, **kwargs):
             os.remove(instance.img.path)
 
 
-class Sample_qutation_form(models.Model):
-    file = models.FileField(upload_to='sample/sample_qutation_form/', blank=True)
-    sample = models.OneToOneField(Sample, on_delete=models.CASCADE)
+class Sample_quotation_form(models.Model):
+    file = models.FileField(upload_to='sample/sample_quotation_form/', blank=True)
+    sample = models.OneToOneField(Sample, on_delete=models.CASCADE, related_name='quotation')
 
 
-@receiver(models.signals.post_delete, sender=Sample_qutation_form)
+@receiver(models.signals.post_delete, sender=Sample_quotation_form)
 def auto_delete_file_sample_qutation_form(sender, instance, **kwargs):
     if instance.file:
         if os.path.isfile(instance.file.path):

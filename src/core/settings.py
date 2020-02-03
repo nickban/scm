@@ -40,7 +40,10 @@ INSTALLED_APPS = [
     'scm',
     'crispy_forms',
     'widget_tweaks',
+    # 日期选择器
     'tempus_dominus',
+    # 没有用这空间
+    'tinymce',
 ]
 
 TEMPUS_DOMINUS_LOCALIZE = True

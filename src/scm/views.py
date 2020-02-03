@@ -4,12 +4,13 @@ from django.views.generic import (TemplateView,
                                   DeleteView)
 from .models import (User, Post, PostAttachment, Sample, Sample_os_pics,
                      Sample_size_specs, Sample_os_avatar,
-                     Sample_swatches,
-                     Sample_pics_factory)
+                     Sample_swatches, Sample_quotation_form,
+                     Sample_pics_factory, Sample_size_spec_factory)
 from .forms import (SignUpForm, NewpostForm, PostAttachmentForm,
                     NewsampleForm, SampleForm, SamplesizespecsForm,
                     SampleosavatarForm, SampleospicsForm,
-                    SampleswatchForm, SamplefpicsForm)
+                    SampleswatchForm, SamplefpicsForm, SampleoquotationForm,
+                    SampleosizespecfForm)
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -87,14 +88,25 @@ class SampleEdit(UpdateView):
     form_class = SampleForm
     template_name = 'sample_edit.html'
     context_object_name = 'sample'
-    success_url = reverse_lazy('sample:samplelist')
 
     def get_context_data(self, **kwargs):
         kwargs['os_pics'] = self.get_object().os_pics.all()
         kwargs['size_specs'] = self.get_object().size_specs.all()
         kwargs['swatches'] = self.get_object().swatches.all()
         kwargs['fpics'] = self.get_object().factory_pics.all()
+        try:
+            kwargs['quotation'] = self.get_object().quotation
+        except ObjectDoesNotExist:
+            kwargs['quotation'] = ''
+        try:
+            kwargs['sizespecf'] = self.get_object().sizespecf
+        except ObjectDoesNotExist:
+            kwargs['sizespecf'] = ''
         return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        sample = form.save()
+        return redirect('sample:sampleedit', pk=sample.pk)
 
 
 # sample os pic view
@@ -196,18 +208,6 @@ class SampleosavatarDelete(DeleteView):
         previous_url = self.request.META.get('HTTP_REFERER')
         kwargs['previous_url'] = previous_url
         return super().get_context_data(**kwargs)
-
-
-# @method_decorator([login_required], name='dispatch')
-# class SamplepicDelete(DeleteView):
-#     model = Sample_os_pics
-#     pk_url_kwarg = 'sample_pic_pk'
-#     context_object_name = 'samplepic'
-#     template_name = 'sample_pic_delete.html'
-
-#     def get_success_url(self):
-#         sample = self.object.sample
-#         return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
 
 
 @login_required
@@ -369,15 +369,86 @@ class SamplefpicDelete(DeleteView):
         kwargs['sample'] = sample
         return super().get_context_data(**kwargs)
 
-# sample os_pics upload
+# sample quotation
+
+
+@login_required
+def samplequotationadd(request, pk):
+    sample = get_object_or_404(Sample, pk=pk)
+    if request.method == 'POST':
+        form = SampleoquotationForm(request.POST, request.FILES)
+        if form.is_valid():
+            with transaction.atomic():
+                quotation = form.save(commit=False)
+                quotation.sample = sample
+                quotation.save()
+                data = {"files": [{
+                        "name": quotation.file.name,
+                        "url": quotation.file.url, },
+                        ]}
+        else:
+            data = {'is_valid': False}
+        return JsonResponse(data)
+    else:
+        return render(request, 'sample_quotation_add.html', {'sample': sample})
+
+
+@method_decorator([login_required], name='dispatch')
+class SamplequotationDelete(DeleteView):
+    model = Sample_quotation_form
+    pk_url_kwarg = 'sample_quotation_pk'
+    context_object_name = 'sample_quotation'
+    template_name = 'sample_quotation_delete.html'
+
+    def get_success_url(self):
+        sample = self.object.sample
+        return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+
+# sample sizespec factory
+
+
+@login_required
+def samplesizespecfadd(request, pk):
+    sample = get_object_or_404(Sample, pk=pk)
+    if request.method == 'POST':
+        form = SampleosizespecfForm(request.POST, request.FILES)
+        if form.is_valid():
+            with transaction.atomic():
+                sizespecf = form.save(commit=False)
+                sizespecf.sample = sample
+                sizespecf.save()
+                data = {"files": [{
+                        "name": sizespecf.file.name,
+                        "url": sizespecf.file.url, },
+                        ]}
+        else:
+            data = {'is_valid': False}
+        return JsonResponse(data)
+    else:
+        return render(request, 'sample_sizespecf_add.html', {'sample': sample})
+
+
+@method_decorator([login_required], name='dispatch')
+class SamplesizespecfDelete(DeleteView):
+    model = Sample_size_spec_factory
+    pk_url_kwarg = 'sample_sizespecf_pk'
+    context_object_name = 'sample_sizespecf'
+    template_name = 'sample_sizespecf_delete.html'
+
+    def get_success_url(self):
+        sample = self.object.sample
+        return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
 
 
 class SampleDetail(TemplateView):
     template_name = 'sample_list.html'
 
 
-class SampleDelete(TemplateView):
-    template_name = 'sample_list.html'
+class SampleDelete(DeleteView):
+    model = Sample
+    context_object_name = 'sample'
+    template_name = 'sample_delete.html'
+    success_url = reverse_lazy('sample:samplelist')
 
 # 订单部分试图
 

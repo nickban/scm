@@ -12,7 +12,7 @@
 <form  method="post" novalidate>
     {% csrf_token %}
     <div class="row">
-        <div class="col-3">
+        <div class="col-12 col-md-3">
             <div class="form-group alert alert-primary text-center">
                 <span>第一步(创建)</span>
             </div>
@@ -32,12 +32,12 @@
                 {{ form.has_os_sample | as_crispy_field}}
             </div>
         </div>
-        <div class="col-9">
+        <div class="col-12 col-md-9">
             <div class="form-group alert alert-primary text-center">
                 <span>第二步(上传资料)</span>
             </div>
             <div class="row">
-                <div class="col-4">
+                <div class="col-12 col-md-4">
                     {% if sample.pk %}
                     <div class="col-auto">
                         <div class="form-group">
@@ -55,7 +55,7 @@
                     </div>
                     {% endif %}
                 </div>
-                <div class="col-8">
+                <div class="col-12 col-md-8">
                     <div class="col-12">
                         {% if sample.pk %}
                         <div class="col-auto">
@@ -102,24 +102,24 @@
         </div>       
     </div>
     <div class="row">
-        <div class="col-3">
+        <div class="col-12 col-md-3">
             <div class="form-group">
                 <button type="submit" class="btn btn-block btn-outline-primary">保存</button>
             </div>
         </div>
-        <div class="col-3">
+        <div class="col-12 col-md-3">
             <div class="form-group">
                 <a class="btn btn-block btn-outline-primary" href="{% url 'sample:samplelist' %}" role="button">返回列表</a>
             </div>
         </div>
         {% if sample %}
-        <div class="col-3">
+        <div class="col-12 col-md-3">
             <div class="form-group">
                 <a class="btn btn-block btn-outline-primary" href="{% url 'sample:sampleedit' sample.pk %}" role="button">进入样板详情页</a>
             </div>
         </div>
         {% endif %}
-        <div class="col-3">
+        <div class="col-12 col-md-3">
             <div class="form-group">
                 <a class="btn btn-block btn-outline-primary" href="{% url 'sample:sampleaddstep1' %}" role="button">再建一个</a>
             </div>

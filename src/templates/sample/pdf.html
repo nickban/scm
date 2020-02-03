@@ -1,0 +1,38 @@
+<!-- 此功能尚未完善，页面无法使用css样式 -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- site title -->
+    <title>{% block title %}Yuanse SCM{% endblock %}</title>
+    <style>
+        .sample_osavatar {
+            width: 320px;
+            padding: 10px;
+            border: 5px solid gray;
+            margin: 0;
+        }
+        .sample_info {
+          box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+        .container {
+          padding: 2px 16px;
+        }
+        </style>
+  </head>
+  <body>
+    <div class="sample_osavatar">
+        <img src="{{sample.os_avatar.img.url}}" alt="款式图" width="300" height="300">
+    </div>
+    <div class="sample_info">
+        <ul>
+            <li>{{sample.created_date|date:"SHORT_DATE_FORMAT" }}</li>
+            <li>{{sample.sample_no}}</li>
+            <li>{{sample.brand}}</li>
+            <li>{{sample.designer}}</li>
+            <li>{{sample.merchandiser}}</li>
+        </ul>
+    </div>
+  </body>
+</html>

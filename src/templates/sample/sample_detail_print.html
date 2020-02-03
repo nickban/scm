@@ -1,0 +1,57 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- site title -->
+    <title>{% block title %}缘色样板信息% endblock %}</title>
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- logo body css -->
+    <link rel="stylesheet" href="{% static 'css/sample.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Diplomata|Noto+Serif+SC|Zhi+Mang+Xing&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container ">
+        <div class="card">
+            <div class="card-header text-center">
+                <p class="logo">缘色样板信息</p>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-md-3 info text-muted mb-4 " >
+                        <img class="mb-2" src="{{sample.os_avatar.img.url}}" alt="款式图" width=200 height=200>
+                        <p>样板号:  {{sample.sample_no}}</p>
+                        <p>创建日期:  {{ sample.created_date|date:"SHORT_DATE_FORMAT"  }}</p>
+                        <p>品牌:  {{sample.brand}}</p>
+                        <p>买手:  {{sample.designer}}</p>
+                        <p>跟单:  {{sample.merchandiser}}</p>
+                    </div>
+                    <div class="col-12 col-md-9 alteration text-muted text-left">
+                        <p>做板评语:</p>
+                        <p>{{sample.alteration |linebreaks}}</p>
+                    </div>
+                    <div class="remind text-muted mb-3">
+                        <div class="col-12 text-left" >
+                            <p>注意事项:</p>
+                            <p>1、样板如有评语附件，请同时参考附件要求做板；</p>
+                            <p>2、样板完成，请同时提交色卡，成样照片，报价信息；</p>
+                            <p>3、色卡需在首页清晰注明该面料用于何处，如大身面料或里布面料；</p>
+                            <p>4、所有上传照片需要清晰，端正，并建议在光线充足的条件下拍摄；</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <a href="{% url 'login' %}" class="btn btn-block btn-outline-secondary"
+                        onclick="window.print()"
+                        role="button">打印</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>

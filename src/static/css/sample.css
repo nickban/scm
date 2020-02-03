@@ -1,0 +1,30 @@
+html,
+body {
+  height: 100%;
+}
+
+.card-header {
+    font-family: 'Diplomata', cursive;
+    font-family: 'Noto Serif SC', serif;
+    font-family: 'Zhi Mang Xing', cursive;
+    font-size: 2.5em;
+    color: #444444;
+  }
+
+
+.remind p {
+    font-size: 1.2em;
+    margin-bottom: 0px;
+  }
+  
+.info p {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 1.2em;
+    margin-bottom: 0;
+  }
+
+.alteration {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 1.6em;
+    margin-bottom: 0;
+  }

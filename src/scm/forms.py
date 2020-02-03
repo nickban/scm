@@ -5,7 +5,8 @@ from .models import (User, Factory,
                      Qc, Office, Admin, Merchandiser_Manager, Post, PostAttachment,
                      Sample, Sample_size_specs, Sample_os_avatar,
                      Sample_os_pics, Sample_swatches,
-                     Sample_pics_factory)
+                     Sample_pics_factory, Sample_quotation_form,
+                     Sample_size_spec_factory)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
@@ -135,8 +136,8 @@ class NewsampleForm(forms.ModelForm):
 
 
 class SampleForm(forms.ModelForm):
-    parcel_date = forms.DateField(widget=DatePicker(), label="寄件日期")
-    qutation = forms.DecimalField(label="工厂报价(元)")
+    parcel_date = forms.DateField(widget=DatePicker(), label="寄件日期", required=False)
+    qutation = forms.DecimalField(label="工厂报价(元)", required=False)
 
     def __init__(self, *args, **kwargs):
         super(SampleForm, self).__init__(*args, **kwargs)
@@ -152,7 +153,7 @@ class SampleForm(forms.ModelForm):
                   'merchandiser', 'designer', 'factory', 'style', 'qutation',
                   'parcel_date', 'alteration')
         widgets = {
-                  'alteration': forms.Textarea(attrs={'rows': 5}),
+                  'alteration': forms.Textarea(attrs={'rows': 6}),
                   }
 
 
@@ -167,15 +168,29 @@ class SampleswatchForm(forms.ModelForm):
         model = Sample_swatches
         fields = ('img',)
 
+
 class SamplefpicsForm(forms.ModelForm):
     class Meta:
         model = Sample_pics_factory
         fields = ('img',)
 
+
 class SampleosavatarForm(forms.ModelForm):
     class Meta:
         model = Sample_os_avatar
         fields = ('img',)
+
+
+class SampleoquotationForm(forms.ModelForm):
+    class Meta:
+        model = Sample_quotation_form
+        fields = ('file',)
+
+
+class SampleosizespecfForm(forms.ModelForm):
+    class Meta:
+        model = Sample_size_spec_factory
+        fields = ('file',)
 
 
 class SampleospicsForm(forms.ModelForm):

@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+from . import utils
 
 urlpatterns = [
     # 入口链接按角色分类
@@ -33,6 +34,19 @@ urlpatterns = [
         path('<int:pk>/fpics/add/', views.samplefpicsadd, name='samplefpicsadd'),
         path('<int:pk>/fpics/collection/', views.SamplefpicsCollection.as_view(), name='samplefpicscollection'),
         path('<int:pk>/fpics/<int:sample_fpic_pk>/delete/', views.SamplefpicDelete.as_view(), name='samplefpicdelete'),
+
+        # 样板报价单
+        path('<int:pk>/quotation/add/', views.samplequotationadd, name='samplequotationadd'),
+        path('<int:pk>/quotation/<int:sample_quotation_pk>/delete/', views.SamplequotationDelete.as_view(), name='samplequotationdelete'),
+
+        # 样板成样尺寸表
+        path('<int:pk>/sizespecf/add/', views.samplesizespecfadd, name='samplesizespecfadd'),
+        path('<int:pk>/sizespecf/<int:sample_sizespecf_pk>/delete/', views.SamplesizespecfDelete.as_view(), name='samplesizespecfdelete'),
+
+        # 样板打印
+        path('<int:pk>/pdf/', utils.generate_pdf, name='generatepdf'),
+        path('<int:pk>/html/', utils.generate_html, name='generatehtml'),
+
 
     ], 'scm'), namespace='sample')),
 
