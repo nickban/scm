@@ -466,7 +466,7 @@ def sampledetailprint(request, pk):
 #     sample_filter = SampleFilter(request.GET, queryset=sample_list)
 #     return render(request, 'sample_search.html', {'filter': sample_filter})
 
-
+@method_decorator([login_required], name='dispatch')
 class samplesearch(FilterView):
     filterset_class = SampleFilter
     template_name = 'sample_search.html'
