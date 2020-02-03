@@ -183,11 +183,11 @@
         </div>
     </div>
      <div class="row">
-        <div class="col-sm ">
+        <!-- <div class="col-sm ">
             <div class="form-group">
                 <a class="btn btn-block btn-outline-primary" href="" role="button">上一个</a>
             </div>
-        </div>
+        </div> -->
         <div class="col-sm ">
             <div class="form-group">
                 <input type="submit" value="保存" class="btn btn-block btn-outline-primary">
@@ -205,7 +205,7 @@
         </div>
         <div class=" col-sm">
             <div class="form-group">
-                <a class="btn btn-block btn-outline-primary" href="" role="button">打印</a>
+                <a class="btn btn-block btn-outline-primary" href="{% url 'sample:sampledetailprint' pk=sample.pk%}" role="button">打印</a>
             </div>
         </div>
         <div class=" col-sm">
@@ -213,11 +213,12 @@
                 <a class="btn btn-block btn-outline-primary" href="" role="button">通知工厂</a>
             </div>
         </div> 
-        <div class=" col-sm">
+        <!-- 无法解决筛选后的下一个操作，所以不启用 -->
+        <!-- <div class=" col-sm">
             <div class="form-group">
                 <a class="btn btn-block btn-outline-primary" href="" role="button">下一个</a>
             </div>
-        </div>    
+        </div>     -->
     </div>
 </form>
 {% endblock %}

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- site title -->
-    <title>{% block title %}缘色样板信息% endblock %}</title>
+    <title>{% block title %}缘色样板信息{% endblock %}</title>
     <!-- bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <!-- logo body css -->
@@ -45,7 +45,7 @@
                 </div>
                 <div class="row">
                     <div class="col-12 text-center">
-                        <a href="{% url 'login' %}" class="btn btn-block btn-outline-secondary"
+                        <a href="{% url 'sample:sampleedit' pk=sample.pk %}" class="btn btn-block btn-outline-secondary"
                         onclick="window.print()"
                         role="button">打印</a>
                     </div>

@@ -21,6 +21,9 @@ from django.http import JsonResponse
 from django.views import View
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
+from .filters import SampleFilter
+from django_filters.views import FilterView
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 @method_decorator([login_required], name='dispatch')
@@ -438,6 +441,36 @@ class SamplesizespecfDelete(DeleteView):
     def get_success_url(self):
         sample = self.object.sample
         return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+
+
+# 样板信息打印
+
+def sampledetailprint(request, pk):
+    sample = get_object_or_404(Sample, pk=pk)
+    return render(request, 'sample/sample_detail_print.html', {'sample': sample})
+
+
+# 样板下一个
+
+# def samplenext(request, pk):
+#     sample = get_object_or_404(Sample, pk=pk)
+#     next = sample.get_next_by_created_date()
+#     print(next)
+#     return redirect('sample:sampleedit', pk=next.pk)
+
+
+# 样板查找
+
+# def samplesearch(request):
+#     sample_list = Sample.objects.all()
+#     sample_filter = SampleFilter(request.GET, queryset=sample_list)
+#     return render(request, 'sample_search.html', {'filter': sample_filter})
+
+
+class samplesearch(FilterView):
+    filterset_class = SampleFilter
+    template_name = 'sample_search.html'
+    paginate_by = 10
 
 
 class SampleDetail(TemplateView):

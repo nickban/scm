@@ -35,8 +35,3 @@ def generate_pdf(request, pk):
         response.write(output.read())
 
     return response
-
-
-def generate_html(request, pk):
-    sample = get_object_or_404(Sample, pk=pk)
-    return render(request, 'sample/sample_detail_print.html', {'sample': sample})

@@ -12,7 +12,6 @@ urlpatterns = [
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/signup/', SignUpView.as_view(), name='signup'),
     path('', include('scm.urls')),
-    path('tinymce/', include('tinymce.urls')),
 
 ]
 if settings.DEBUG:

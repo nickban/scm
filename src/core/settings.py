@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'tempus_dominus',
     # 没有用这空间
     'tinymce',
+    # 'pagination'
 ]
 
 TEMPUS_DOMINUS_LOCALIZE = True
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'pagination.middleware.PaginationMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'

@@ -117,7 +117,7 @@ class Sample(models.Model):
         (SENT_FACTORY, '送工厂'),
         (COMPLETED, '完成'),
     ]
-    created_date = models.DateTimeField('创建日期', auto_now=True)
+    created_date = models.DateTimeField('创建日期', auto_now_add=True)
     sample_no = models.CharField('样板号', max_length=100)
     has_os_sample = models.BooleanField('是否有原版?', )
     brand = models.ForeignKey(Brand,

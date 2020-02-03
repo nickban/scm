@@ -44,9 +44,14 @@ urlpatterns = [
         path('<int:pk>/sizespecf/<int:sample_sizespecf_pk>/delete/', views.SamplesizespecfDelete.as_view(), name='samplesizespecfdelete'),
 
         # 样板打印
-        path('<int:pk>/pdf/', utils.generate_pdf, name='generatepdf'),
-        path('<int:pk>/html/', utils.generate_html, name='generatehtml'),
+        # path('<int:pk>/pdf/', utils.generate_pdf, name='generatepdf'),
+        path('<int:pk>/print/', views.sampledetailprint, name='sampledetailprint'),
 
+        # 样板上一个下一个
+        # path('<int:pk>/next/', views.samplenext, name='samplenext'),
+
+        # 样板查找
+        path('search/', views.samplesearch.as_view(), name='samplesearch'),
 
     ], 'scm'), namespace='sample')),
 
