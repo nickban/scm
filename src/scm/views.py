@@ -10,7 +10,7 @@ from .forms import (SignUpForm, NewpostForm, PostAttachmentForm,
                     NewsampleForm, SampleForm, SamplesizespecsForm,
                     SampleosavatarForm, SampleospicsForm,
                     SampleswatchForm, SamplefpicsForm, SampleoquotationForm,
-                    SampleosizespecfForm)
+                    SampleosizespecfForm, SampledetailForm)
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -24,6 +24,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from .filters import SampleFilter
 from django_filters.views import FilterView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
+from django.contrib import messages
+
 
 
 @method_decorator([login_required], name='dispatch')
@@ -45,13 +48,44 @@ class SignUpView(CreateView):
 
 
 @method_decorator([login_required], name='dispatch')
-class SampleList(ListView):
+class SampleListNew(ListView):
     model = Sample
     ordering = ('-created_date', )
     context_object_name = 'samples'
     template_name = 'sample_list.html'
-    paginate_by = 10
-    queryset = Sample.objects.all()
+    # 用datatable替代分页
+    # paginate_by = 10
+
+    def get_queryset(self):
+        loginuser = self.request.user
+        if loginuser.is_merchandiser:
+            return Sample.objects.filter(Q(merchandiser=loginuser.merchandiser),
+                                         Q(status='NEW') | Q(status='SENT_F')).order_by('-created_date')
+        elif loginuser.is_factory:
+            return Sample.objects.filter(factory=loginuser.factory, status='SENT_F').order_by('-created_date')
+        else:
+            return Sample.objects.all().order_by('-created_date')
+
+
+@method_decorator([login_required], name='dispatch')
+class SampleListCompleted(ListView):
+    model = Sample
+    ordering = ('-created_date', )
+    context_object_name = 'samples'
+    template_name = 'sample_list.html'
+    # 用datatable替代分页
+    # paginate_by = 10
+
+    def get_queryset(self):
+        loginuser = self.request.user
+        if loginuser.is_merchandiser:
+            return Sample.objects.filter(Q(merchandiser=loginuser.merchandiser),
+                                         Q(status='COMPLETED'))
+        elif loginuser.is_factory:
+            return Sample.objects.filter(Q(factory=loginuser.factory),
+                                         Q(status='COMPLETED'))
+        else:
+            return Sample.objects.all()
 
 
 @method_decorator([login_required], name='dispatch')
@@ -404,8 +438,13 @@ class SamplequotationDelete(DeleteView):
     template_name = 'sample_quotation_delete.html'
 
     def get_success_url(self):
+        loginuser = self.request.user
         sample = self.object.sample
-        return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+        if loginuser.is_merchandiser:
+            return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+        else:
+            return reverse_lazy('sample:sampledetail', kwargs={'pk': sample.pk})
+
 
 # sample sizespec factory
 
@@ -439,8 +478,13 @@ class SamplesizespecfDelete(DeleteView):
     template_name = 'sample_sizespecf_delete.html'
 
     def get_success_url(self):
+        loginuser = self.request.user
         sample = self.object.sample
-        return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+        if loginuser.is_merchandiser:
+            return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+        else:
+            return reverse_lazy('sample:sampledetail', kwargs={'pk': sample.pk})
+
 
 
 # 样板信息打印
@@ -451,37 +495,88 @@ def sampledetailprint(request, pk):
 
 
 # 样板下一个
-
 # def samplenext(request, pk):
 #     sample = get_object_or_404(Sample, pk=pk)
 #     next = sample.get_next_by_created_date()
 #     print(next)
 #     return redirect('sample:sampleedit', pk=next.pk)
 
-
-# 样板查找
-
+# 样板查找， 此功能用datatable替代
 # def samplesearch(request):
 #     sample_list = Sample.objects.all()
 #     sample_filter = SampleFilter(request.GET, queryset=sample_list)
 #     return render(request, 'sample_search.html', {'filter': sample_filter})
 
-@method_decorator([login_required], name='dispatch')
-class samplesearch(FilterView):
-    filterset_class = SampleFilter
-    template_name = 'sample_search.html'
-    paginate_by = 10
+# @method_decorator([login_required], name='dispatch')
+# class samplesearch(FilterView):
+#     filterset_class = SampleFilter
+#     template_name = 'sample_search.html'
+#     # paginate_by = 10
 
 
-class SampleDetail(TemplateView):
-    template_name = 'sample_list.html'
+# 样板通知工厂
+def samplesentfactory(request, pk):
+    sample = get_object_or_404(Sample, pk=pk)
+    if sample.factory is None:
+        messages.warning(request, '请选择工厂并保存后，才能通知工厂!')
+    else:
+        sample.status = "SENT_F"
+        sample.save()
+        messages.success(request, '样板已经安排给工厂，并已邮件通知!')
+    return redirect('sample:sampleedit', pk=sample.pk)
+
+
+# 样板已完成
+def samplecompleted(request, pk):
+    sample = get_object_or_404(Sample, pk=pk)
+    sample.status = "COMPLETED"
+    sample.save()
+    messages.success(request, '样板已完成, 请在已完成列表查找!')
+    return redirect('sample:sampleedit', pk=sample.pk)
+
+
+# 复制样板
+
+
+def samplecopy(request, pk):
+    oldsample = get_object_or_404(Sample, pk=pk)
+    oldsample.pk = None
+    oldsample.save()
+    return redirect('sample:sampleedit', pk=oldsample.pk)
+
+
+# 样板详情页
+
+
+class SampleDetail(UpdateView):
+    template_name = 'sample_detail.html'
+    model = Sample
+    form_class = SampledetailForm
+    context_object_name = 'sample'
+
+    def form_valid(self, form):
+        sample = form.save()
+        return redirect('sample:sampledetail', pk=sample.pk)
+
+    def get_context_data(self, **kwargs):
+        kwargs['swatches'] = self.get_object().swatches.all()
+        kwargs['fpics'] = self.get_object().factory_pics.all()
+        try:
+            kwargs['quotation'] = self.get_object().quotation
+        except ObjectDoesNotExist:
+            kwargs['quotation'] = ''
+        try:
+            kwargs['sizespecf'] = self.get_object().sizespecf
+        except ObjectDoesNotExist:
+            kwargs['sizespecf'] = ''
+        return super().get_context_data(**kwargs)
 
 
 class SampleDelete(DeleteView):
     model = Sample
     context_object_name = 'sample'
     template_name = 'sample_delete.html'
-    success_url = reverse_lazy('sample:samplelist')
+    success_url = reverse_lazy('sample:samplelistnew')
 
 # 订单部分试图
 

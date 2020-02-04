@@ -27,7 +27,11 @@
 
 
   <div class="form-group">
+    {% if request.user.is_merchandiser or  request.user.is_office %}
       <a class="btn btn-block btn-outline-primary" href="{% url 'sample:sampleedit' pk=sample.pk%}" role="button">返回</a>
+    {% else%}
+      <a class="btn btn-block btn-outline-primary" href="{% url 'sample:sampledetail' pk=sample.pk%}" role="button">返回</a>
+    {% endif %}
   </div>
 </div>
 

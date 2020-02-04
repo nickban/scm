@@ -15,7 +15,11 @@
             <input id="fileupload" type="file" name="file" class="inputfile" data-url="{% url 'sample:samplequotationadd' sample.pk %}">
             <label for="fileupload">选择文件..</label>
         </div>
-            <a class="btn btn-outline-primary" href="{% url 'sample:sampleedit' pk=sample.pk %}" role="button">返回</a>
+        {% if request.user.is_merchandiser or  request.user.is_office %}
+        <a class="btn btn-block btn-outline-primary" href="{% url 'sample:sampleedit' pk=sample.pk%}" role="button">返回</a>
+        {% else%}
+        <a class="btn btn-block btn-outline-primary" href="{% url 'sample:sampledetail' pk=sample.pk%}" role="button">返回</a>
+        {% endif %}
     </form>
 {% endblock %}
 

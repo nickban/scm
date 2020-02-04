@@ -23,7 +23,7 @@
     {% csrf_token %}
     <div class="row">
         <div class="col-12 col-md-3 text-left">
-            <img  class="rounded" src="{{ sample.os_avatar.img.url }}" width=120 height=120 alt="款式图" >
+            <img  class="rounded" src="{{ sample.os_avatar.img.url }}" width=150 height=150 alt="款式图" >
         </div>
         <div class="col-12 col-md-3">
             <div class="form-group">
@@ -53,18 +53,11 @@
     <div class="row">
         <div class="col-12 col-md-3">
             <div class="form-group">
-                <a href="{% url 'sample:sampleosavataradd' sample.pk %}" role="button">
-                    <i class="fas fa-file-upload fa-2x"></i></a>
-                    <span>款式图</span>
-            </div>
-            <div class="form-group">
                 {{ form.has_os_sample |as_crispy_field }}
             </div>
         </div>
         <div class="col-12 col-md-3">
             <div class="form-group">
-                <a href="{% url 'sample:sampleospicadd' sample.pk %}" role="button">
-                <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>更多原版照</span>
                 <div class="form-group">
                     {% if os_pics %}
@@ -78,8 +71,6 @@
         </div>
         <div class="col-12 col-md-6 ">
             <div class="form-group">
-                <a href="{% url 'sample:samplesizespecadd' sample.pk %}" role="button">
-                <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>评语附件</span>
                 <div class="form-group">
                 {% if size_specs %}
@@ -207,11 +198,6 @@
 
         <div class=" col-sm">
             <div class="form-group">
-                <a class="btn btn-block btn-outline-primary" href="{% url 'sample:sampledelete' pk=sample.pk%}" role="button">删除</a>
-            </div>
-        </div>
-        <div class=" col-sm">
-            <div class="form-group">
                 {% if request.user.is_merchandiser or  request.user.is_office %}
                 <a href="{% url 'sample:sampleedit' pk=sample.pk %}" class="btn btn-block btn-outline-primary" onclick="window.print()" role="button">打印</a>
                 {% else%}
@@ -219,25 +205,6 @@
                 {% endif %}
             </div>
         </div>
-        {% if sample.status == 'NEW' %}
-        <div class=" col-sm">
-            <div class="form-group">
-                <a class="btn btn-block btn-outline-primary" href="{% url 'sample:samplesentfactory' pk=sample.pk%}" role="button">通知工厂</a>
-            </div>
-        </div> 
-        {% endif %}
-        {% if sample.status == 'SENT_F' %}
-        <div class=" col-sm">
-            <div class="form-group">
-                <a class="btn btn-block btn-outline-primary" href="{% url 'sample:samplecompleted' pk=sample.pk%}" role="button">样板完成</a>
-            </div>
-        </div> 
-        {% endif %}
-        <!-- <div class=" col-sm">
-            <div class="form-group">
-                <a class="btn btn-block btn-outline-primary" href="{% url 'sample:samplecopy' pk=sample.pk%}" role="button">复制</a>
-            </div>
-        </div>  -->
         <!-- 无法解决筛选后的下一个操作，所以不启用 -->
         <!-- <div class=" col-sm">
             <div class="form-group">

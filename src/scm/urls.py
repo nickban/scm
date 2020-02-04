@@ -8,7 +8,9 @@ urlpatterns = [
 
     # 样板地址导航
     path('sample/', include(([
-        path('', views.SampleList.as_view(), name='samplelist'),
+        # 未完成，已完成样板列表
+        path('', views.SampleListNew.as_view(), name='samplelistnew'),
+        path('completed/', views.SampleListCompleted.as_view(), name='samplelistcompleted'),
         # 样板新增
         path('add/step1/', views.SampleAddStep1.as_view(), name='sampleaddstep1'),
         path('add/<int:pk>/step2/', views.SampleAddStep2.as_view(), name='sampleaddstep2'),
@@ -50,8 +52,17 @@ urlpatterns = [
         # 样板上一个下一个
         # path('<int:pk>/next/', views.samplenext, name='samplenext'),
 
-        # 样板查找
-        path('search/', views.samplesearch.as_view(), name='samplesearch'),
+        # 样板查找,此功能考虑用DATATABLE替代,所以这个视图不用
+        # path('search/', views.samplesearch.as_view(), name='samplesearch'),
+
+        # 样板通知工厂
+        path('<int:pk>/sentfactory/', views.samplesentfactory, name='samplesentfactory'),
+        # 样板已完成
+        path('<int:pk>/completed/', views.samplecompleted, name='samplecompleted'),
+
+        # 临时复制功能
+        path('<int:pk>/copy/', views.samplecopy, name='samplecopy'),
+
 
     ], 'scm'), namespace='sample')),
 

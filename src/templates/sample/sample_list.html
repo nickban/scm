@@ -5,15 +5,17 @@
 
 
 {% block css%}
-<link rel="stylesheet" href="{% static 'css/paginator.css' %}">
+<!-- <link rel="stylesheet" href="{% static 'css/paginator.css' %}"> -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+
 {% endblock %}
 
 {% block content %}
-  {% if request.user.is_office or request.user.is_merchandiser %}
+  <!-- {% if request.user.is_office or request.user.is_merchandiser %}
     <a class="btn btn-outline-primary my-3" href="{% url 'sample:sampleaddstep1'%}" role="button">新建样板</a>
-  {% endif %}
+  {% endif %} -->
   <div class="table-responsive">
-    <table class="table table-hover">
+    <table id="samplelist" class="table table-hover">
       <thead>
         <tr>
           <th>创建日期</th>
@@ -31,8 +33,13 @@
       <tbody>
         {% for sample in samples %}
           <tr>
-            <td>{{ sample.created_date|date:"SHORT_DATE_FORMAT"  }}</td>
+            <td>{{ sample.created_date |date:"SHORT_DATE_FORMAT"  }}</td>
+            <!-- <td>{{ sample.created_date }}</td> -->
+            {% if request.user.is_merchandiser or request.user.is_office %}
             <td><a href="{% url 'sample:sampleedit'  sample.pk %}">{{ sample.sample_no }}</a></td>
+            {% else %}
+            <td><a href="{% url 'sample:sampledetail'  sample.pk %}">{{ sample.sample_no }}</a></td>
+            {% endif %}
             <td><img src="{{ sample.os_avatar.img.url }}" width=100px, height=100px></td>
             <td>{{ sample.brand }}</td>
             <td>{{ sample.designer }}</td>
@@ -54,7 +61,35 @@
       </tbody>
     </table>
   </div>
-  
-{% include 'paginator.html'%}
 
+<!-- {% include 'paginator.html'%} -->
+
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" ></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" ></script>
+
+<script>
+$(document).ready( function () {
+  var table =$('#samplelist').DataTable({
+        "language": {
+          "processing": "处理中...",
+          "loadingRecords": "载入中...",
+          "lengthMenu": "显示 _MENU_ 项结果",
+          "zeroRecords": "没有符合的结果",
+          "info": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+          "infoEmpty": "显示第 0 至 0 项结果，共 0 项",
+          "infoFiltered": "(从 _MAX_ 项结果中过滤)",
+          "infoPostFix":  "",
+          "search": "搜索:",
+          "paginate": {
+            "next": "下一页",
+            "previous": "上一页",
+          }, 
+        },
+        "order": [[ 0, 'desc' ],]
+    });
+} );
+</script>
 {% endblock %}

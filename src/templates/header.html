@@ -5,9 +5,11 @@
   <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">样板</a>
     <div class="dropdown-menu">
-      <a class="dropdown-item" href="{% url 'sample:samplelist' %}">未完成</a>
-      <a class="dropdown-item" href="{% url 'home' %}">已完成</a>
-      <a class="dropdown-item" href="{% url 'sample:samplesearch' %}">查询</a>
+      {% if request.user.is_office or request.user.is_merchandiser %}
+      <a class="dropdown-item" href="{% url 'sample:sampleaddstep1' %}">新建</a>
+      {% endif %}
+      <a class="dropdown-item" href="{% url 'sample:samplelistnew' %}">未完成</a>
+      <a class="dropdown-item" href="{% url 'sample:samplelistcompleted' %}">已完成</a>
     </div>
   </li>
   <li class="nav-item dropdown">

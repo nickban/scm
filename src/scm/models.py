@@ -154,6 +154,9 @@ class Sample(models.Model):
                               blank=True,
                               default=NEW)
 
+    def __str__(self):
+        return self.sample_no
+
 
 class Sample_size_spec_factory(models.Model):
     file = models.FileField(upload_to='sample/sample_size_spec_factory/', blank=True)
