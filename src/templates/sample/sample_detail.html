@@ -23,7 +23,7 @@
     {% csrf_token %}
     <div class="row">
         <div class="col-12 col-md-3 text-left">
-            <img  class="rounded" src="{{ sample.os_avatar.img.url }}" width=150 height=150 alt="款式图" >
+            <img  class="rounded" src="{{ sample.os_avatar.img.url }}" width=150px height=150px  >
         </div>
         <div class="col-12 col-md-3">
             <div class="form-group">
@@ -179,13 +179,13 @@
                 <a class="btn btn-block btn-outline-primary" href="" role="button">上一个</a>
             </div>
         </div> -->
-        <div class="col-sm ">
+        <div class="col-12 col-md-2 ">
             <div class="form-group">
                 <input type="submit" value="保存" class="btn btn-block btn-outline-primary">
             </div>
         </div>
         
-        <div class="col-sm">
+        <div class="col-col-12 col-md-2 ">
             <div class="form-group">
                 {% if sample.status == 'NEW' or sample.status == 'SENT_F'%}
                 <a class="btn btn-block btn-outline-primary" href="{% url 'sample:samplelistnew' %}" role="button">返回</a>
@@ -196,7 +196,7 @@
             </div>
         </div>
 
-        <div class=" col-sm">
+        <div class=" col-col-12 col-md-2 ">
             <div class="form-group">
                 {% if request.user.is_merchandiser or  request.user.is_office %}
                 <a href="{% url 'sample:sampleedit' pk=sample.pk %}" class="btn btn-block btn-outline-primary" onclick="window.print()" role="button">打印</a>
@@ -216,4 +216,9 @@
 {% endblock %}
 
 {% block script %}
+<script>
+    $("img").on("error", function() {
+        $(this).hide();
+    });
+</script>
 {% endblock %}

@@ -23,7 +23,7 @@
     {% csrf_token %}
     <div class="row">
         <div class="col-12 col-md-3 text-left">
-            <img  class="rounded" src="{{ sample.os_avatar.img.url }}" width=120 height=120 alt="款式图" >
+            <img  class="rounded" src="{{ sample.os_avatar.img.url }}" width=120px height=120px  >
         </div>
         <div class="col-12 col-md-3">
             <div class="form-group">
@@ -197,9 +197,9 @@
         <div class="col-sm">
             <div class="form-group">
                 {% if sample.status == 'NEW' or sample.status == 'SENT_F'%}
-                <a class="btn btn-block btn-outline-primary" href="{% url 'sample:samplelistnew' %}" role="button">返回</a>
+                <a class="btn btn-block btn-outline-primary" href="{% url 'sample:samplelistnew' %}" role="button">返回列表</a>
                 {% else %}
-                <a class="btn btn-block btn-outline-primary" href="{% url 'sample:samplelistcompleted' %}" role="button">返回</a>
+                <a class="btn btn-block btn-outline-primary" href="{% url 'sample:samplelistcompleted' %}" role="button">返回列表</a>
                 <!-- <input class="btn btn-block btn-outline-primary" type=button value="返回" onClick="javascript:history.go(-1);"> -->
                 {% endif %}
             </div>
@@ -249,4 +249,9 @@
 {% endblock %}
 
 {% block script %}
+<script>
+    $("img").on("error", function() {
+        $(this).hide();
+    });
+</script>
 {% endblock %}

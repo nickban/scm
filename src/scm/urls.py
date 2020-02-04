@@ -1,53 +1,52 @@
 from django.urls import path, include
-from . import views
-from . import utils
+from .views import order, sample, post, home
 
 urlpatterns = [
     # 入口链接按角色分类
-    path('', views.home.as_view(), name='home'),
+    path('', home.home.as_view(), name='home'),
 
     # 样板地址导航
     path('sample/', include(([
         # 未完成，已完成样板列表
-        path('', views.SampleListNew.as_view(), name='samplelistnew'),
-        path('completed/', views.SampleListCompleted.as_view(), name='samplelistcompleted'),
+        path('', sample.SampleListNew.as_view(), name='samplelistnew'),
+        path('completed/', sample.SampleListCompleted.as_view(), name='samplelistcompleted'),
         # 样板新增
-        path('add/step1/', views.SampleAddStep1.as_view(), name='sampleaddstep1'),
-        path('add/<int:pk>/step2/', views.SampleAddStep2.as_view(), name='sampleaddstep2'),
+        path('add/step1/', sample.SampleAddStep1.as_view(), name='sampleaddstep1'),
+        path('add/<int:pk>/step2/', sample.SampleAddStep2.as_view(), name='sampleaddstep2'),
         # 样板编辑，详情，删除
-        path('<int:pk>/', views.SampleEdit.as_view(), name='sampleedit'),
-        path('<int:pk>/detail/', views.SampleDetail.as_view(), name='sampledetail'),
-        path('<int:pk>/delete/', views.SampleDelete.as_view(), name='sampledelete'),
+        path('<int:pk>/', sample.SampleEdit.as_view(), name='sampleedit'),
+        path('<int:pk>/detail/', sample.SampleDetail.as_view(), name='sampledetail'),
+        path('<int:pk>/delete/', sample.SampleDelete.as_view(), name='sampledelete'),
         # 样板款式图
-        path('<int:pk>/osavatar/add/', views.sampleosavataradd, name='sampleosavataradd'),
-        path('<int:pk>/osavatar/<int:sample_osavatar_pk>/delete/', views.SampleosavatarDelete.as_view(), name='sampleosavatardelete'),
+        path('<int:pk>/osavatar/add/', sample.sampleosavataradd, name='sampleosavataradd'),
+        path('<int:pk>/osavatar/<int:sample_osavatar_pk>/delete/', sample.SampleosavatarDelete.as_view(), name='sampleosavatardelete'),
         # 样板原板照片
-        path('<int:pk>/os_pics/add/', views.sampleospicadd, name='sampleospicadd'),
-        path('<int:pk>/os_pics/collection/<str:preurl>/', views.SampleospicsCollection.as_view(), name='sampleospicscollection'),
-        path('<int:pk>/os_pics/<int:sample_ospic_pk>/delete/<str:preurl>/', views.SampleospicDelete.as_view(), name='sampleospicdelete'),
+        path('<int:pk>/os_pics/add/', sample.sampleospicadd, name='sampleospicadd'),
+        path('<int:pk>/os_pics/collection/<str:preurl>/', sample.SampleospicsCollection.as_view(), name='sampleospicscollection'),
+        path('<int:pk>/os_pics/<int:sample_ospic_pk>/delete/<str:preurl>/', sample.SampleospicDelete.as_view(), name='sampleospicdelete'),
         # 样板起板尺寸表
-        path('<int:pk>/sizespecs/<int:sample_sizespec_pk>/delete/', views.SamplesizespecDelete.as_view(), name='samplesizespecdelete'),
-        path('<int:pk>/sizespecs/add/', views.samplesizespecadd, name='samplesizespecadd'),
+        path('<int:pk>/sizespecs/<int:sample_sizespec_pk>/delete/', sample.SamplesizespecDelete.as_view(), name='samplesizespecdelete'),
+        path('<int:pk>/sizespecs/add/', sample.samplesizespecadd, name='samplesizespecadd'),
         # 样板色卡
-        path('<int:pk>/swatch/add/', views.sampleswatchadd, name='sampleswatchadd'),
-        path('<int:pk>/swatch/collection/', views.SampleswatchCollection.as_view(), name='sampleswatchcollection'),
-        path('<int:pk>/swatch/<int:sample_swatch_pk>/delete/', views.SampleswatchDelete.as_view(), name='sampleswatchdelete'),
+        path('<int:pk>/swatch/add/', sample.sampleswatchadd, name='sampleswatchadd'),
+        path('<int:pk>/swatch/collection/', sample.SampleswatchCollection.as_view(), name='sampleswatchcollection'),
+        path('<int:pk>/swatch/<int:sample_swatch_pk>/delete/', sample.SampleswatchDelete.as_view(), name='sampleswatchdelete'),
         # 样板完成照片
-        path('<int:pk>/fpics/add/', views.samplefpicsadd, name='samplefpicsadd'),
-        path('<int:pk>/fpics/collection/', views.SamplefpicsCollection.as_view(), name='samplefpicscollection'),
-        path('<int:pk>/fpics/<int:sample_fpic_pk>/delete/', views.SamplefpicDelete.as_view(), name='samplefpicdelete'),
+        path('<int:pk>/fpics/add/', sample.samplefpicsadd, name='samplefpicsadd'),
+        path('<int:pk>/fpics/collection/', sample.SamplefpicsCollection.as_view(), name='samplefpicscollection'),
+        path('<int:pk>/fpics/<int:sample_fpic_pk>/delete/', sample.SamplefpicDelete.as_view(), name='samplefpicdelete'),
 
         # 样板报价单
-        path('<int:pk>/quotation/add/', views.samplequotationadd, name='samplequotationadd'),
-        path('<int:pk>/quotation/<int:sample_quotation_pk>/delete/', views.SamplequotationDelete.as_view(), name='samplequotationdelete'),
+        path('<int:pk>/quotation/add/', sample.samplequotationadd, name='samplequotationadd'),
+        path('<int:pk>/quotation/<int:sample_quotation_pk>/delete/', sample.SamplequotationDelete.as_view(), name='samplequotationdelete'),
 
         # 样板成样尺寸表
-        path('<int:pk>/sizespecf/add/', views.samplesizespecfadd, name='samplesizespecfadd'),
-        path('<int:pk>/sizespecf/<int:sample_sizespecf_pk>/delete/', views.SamplesizespecfDelete.as_view(), name='samplesizespecfdelete'),
+        path('<int:pk>/sizespecf/add/', sample.samplesizespecfadd, name='samplesizespecfadd'),
+        path('<int:pk>/sizespecf/<int:sample_sizespecf_pk>/delete/', sample.SamplesizespecfDelete.as_view(), name='samplesizespecfdelete'),
 
         # 样板打印
         # path('<int:pk>/pdf/', utils.generate_pdf, name='generatepdf'),
-        path('<int:pk>/print/', views.sampledetailprint, name='sampledetailprint'),
+        path('<int:pk>/print/', sample.sampledetailprint, name='sampledetailprint'),
 
         # 样板上一个下一个
         # path('<int:pk>/next/', views.samplenext, name='samplenext'),
@@ -56,39 +55,39 @@ urlpatterns = [
         # path('search/', views.samplesearch.as_view(), name='samplesearch'),
 
         # 样板通知工厂
-        path('<int:pk>/sentfactory/', views.samplesentfactory, name='samplesentfactory'),
+        path('<int:pk>/sentfactory/', sample.samplesentfactory, name='samplesentfactory'),
         # 样板已完成
-        path('<int:pk>/completed/', views.samplecompleted, name='samplecompleted'),
+        path('<int:pk>/completed/', sample.samplecompleted, name='samplecompleted'),
 
         # 临时复制功能
-        path('<int:pk>/copy/', views.samplecopy, name='samplecopy'),
+        path('<int:pk>/copy/', sample.samplecopy, name='samplecopy'),
 
 
     ], 'scm'), namespace='sample')),
 
     # 订单地址导航
     path('order/', include(([
-        path('', views.OrderList.as_view(), name='order_list'),
+        path('', order.OrderList.as_view(), name='order_list'),
     ], 'scm'), namespace='order')),
 
     # admin地址导航
     path('admin/', include(([
-        path('', views.FunctionList.as_view(), name='function_list'),
+        path('', order.FunctionList.as_view(), name='function_list'),
     ], 'scm'), namespace='admin')),
 
     # Finance地址导航
     path('finance/', include(([
-        path('', views.InvoiceList.as_view(), name='invoice_list'),
+        path('', order.InvoiceList.as_view(), name='invoice_list'),
     ], 'scm'), namespace='finance')),
 
     # post地址导航
     path('post/', include(([
-        path('', views.PostList.as_view(), name='postlist'),
-        path('add/', views.PostAdd.as_view(), name='postadd'),
-        path('<int:pk>/', views.PostEdit.as_view(), name='postedit'),
-        path('<int:pk>/detail/', views.PostDetail.as_view(), name='postdetail'),
-        path('<int:pk>/attach/add/', views.postattach, name='postattach'),
-        path('<int:pk>/attach/<int:postattach_pk>/delete/', views.PostAttachDelete.as_view(), name='postattachdelete'),
-        path('<int:pk>/delete/', views.PostDelete.as_view(), name='postdelete'),
+        path('', post.PostList.as_view(), name='postlist'),
+        path('add/', post.PostAdd.as_view(), name='postadd'),
+        path('<int:pk>/', post.PostEdit.as_view(), name='postedit'),
+        path('<int:pk>/detail/', post.PostDetail.as_view(), name='postdetail'),
+        path('<int:pk>/attach/add/', post.postattach, name='postattach'),
+        path('<int:pk>/attach/<int:postattach_pk>/delete/', post.PostAttachDelete.as_view(), name='postattachdelete'),
+        path('<int:pk>/delete/', post.PostDelete.as_view(), name='postdelete'),
     ], 'scm'), namespace='post')),
 ]
