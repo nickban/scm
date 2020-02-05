@@ -230,7 +230,7 @@ class SampledetailForm(forms.ModelForm):
                 return instance.parcel_date
             else:
                 return self.cleaned_data['parcel_date']
-        
+
         def clean_alteration_field(self):
             instance = getattr(self, 'instance', None)
             if instance and instance.id:
@@ -248,7 +248,6 @@ class SampledetailForm(forms.ModelForm):
                   }
 
 
-
 class SamplesizespecsForm(forms.ModelForm):
     class Meta:
         model = Sample_size_specs
@@ -258,19 +257,19 @@ class SamplesizespecsForm(forms.ModelForm):
 class SampleswatchForm(forms.ModelForm):
     class Meta:
         model = Sample_swatches
-        fields = ('img',)
+        fields = ('file',)
 
 
 class SamplefpicsForm(forms.ModelForm):
     class Meta:
         model = Sample_pics_factory
-        fields = ('img',)
+        fields = ('file',)
 
 
 class SampleosavatarForm(forms.ModelForm):
     class Meta:
         model = Sample_os_avatar
-        fields = ('img',)
+        fields = ('file',)
 
 
 class SamplequotationForm(forms.ModelForm):
@@ -288,4 +287,4 @@ class SamplesizespecfForm(forms.ModelForm):
 class SampleospicsForm(forms.ModelForm):
     class Meta:
         model = Sample_os_pics
-        fields = ('img',)
+        fields = ('file',)
