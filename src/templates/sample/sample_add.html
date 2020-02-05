@@ -41,7 +41,7 @@
                     {% if sample.pk %}
                     <div class="col-auto">
                         <div class="form-group">
-                            <a href="{% url 'sample:sampleosavataradd' sample.pk %}" role="button">
+                            <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='osavatar'%}" role="button">
                             <i class="fas fa-file-upload fa-2x"></i></a>
                             <span>款式图</span>
                             <div class="form-group">
@@ -60,7 +60,7 @@
                         {% if sample.pk %}
                         <div class="col-auto">
                             <div class="form-group">
-                                <a href="{% url 'sample:samplesizespecadd' sample.pk %}" role="button">
+                                <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='sizespecs'%}" role="button">
                                 <i class="fas fa-file-upload fa-2x"></i></a>
                                 <span>评语附件</span>
                                 <div class="form-group">
@@ -82,7 +82,7 @@
                         {% if sample.pk %}
                         <div class="col-auto">
                             <div class="form-group">
-                                <a href="{% url 'sample:sampleospicadd' sample.pk %}" role="button">
+                                <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='os_pics'%}" role="button">
                                 <i class="fas fa-file-upload fa-2x"></i></a>
                                 <span>更多原板图片</span>
                             </div>

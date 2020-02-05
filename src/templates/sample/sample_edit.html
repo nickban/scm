@@ -53,7 +53,7 @@
     <div class="row">
         <div class="col-12 col-md-3">
             <div class="form-group">
-                <a href="{% url 'sample:sampleosavataradd' sample.pk %}" role="button">
+                <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='osavatar'%}" role="button">
                     <i class="fas fa-file-upload fa-2x"></i></a>
                     <span>款式图</span>
             </div>
@@ -63,7 +63,7 @@
         </div>
         <div class="col-12 col-md-3">
             <div class="form-group">
-                <a href="{% url 'sample:sampleospicadd' sample.pk %}" role="button">
+                <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='os_pics'%}" role="button">
                 <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>更多原版照</span>
                 <div class="form-group">
@@ -78,7 +78,7 @@
         </div>
         <div class="col-12 col-md-6 ">
             <div class="form-group">
-                <a href="{% url 'sample:samplesizespecadd' sample.pk %}" role="button">
+                <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='sizespecs'%}" role="button">
                 <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>评语附件</span>
                 <div class="form-group">
@@ -121,7 +121,7 @@
     <div class="row">
         <div class="col-12 col-md-3 ">
             <div class="form-group">
-                <a href="{% url 'sample:sampleswatchadd' sample.pk %}" role="button">
+                <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='swatch'%}" role="button">
                 <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>色卡</span>
                 <div class="form-group">
@@ -136,7 +136,7 @@
         </div>
         <div class="col-12 col-md-3 ">
             <div class="form-group">
-                <a href="{% url 'sample:samplefpicsadd' sample.pk %}" role="button">
+                <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='fpics'%}" role="button">
                 <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>成样照片</span>
                 <div class="form-group">
@@ -151,7 +151,7 @@
         </div>
         <div class="col-12 col-md-3 ">
             <div class="form-group">
-                <a href="{% url 'sample:samplequotationadd' sample.pk %}" role="button">
+                <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='quotation'%}" role="button">
                 <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>报价单</span>
             </div>
@@ -167,7 +167,7 @@
         </div>
         <div class="col-12 col-md-3 ">
             <div class="form-group">
-                <a href="{% url 'sample:samplesizespecfadd' sample.pk %}" role="button">
+                <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='sizespecf'%}" role="button">
                 <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>成样尺寸表</span>
             </div>
@@ -233,17 +233,7 @@
             </div>
         </div> 
         {% endif %}
-        <!-- <div class=" col-sm">
-            <div class="form-group">
-                <a class="btn btn-block btn-outline-primary" href="{% url 'sample:samplecopy' pk=sample.pk%}" role="button">复制</a>
-            </div>
-        </div>  -->
-        <!-- 无法解决筛选后的下一个操作，所以不启用 -->
-        <!-- <div class=" col-sm">
-            <div class="form-group">
-                <a class="btn btn-block btn-outline-primary" href="" role="button">下一个</a>
-            </div>
-        </div>     -->
+
     </div>
 </form>
 {% endblock %}

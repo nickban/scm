@@ -9,8 +9,8 @@ from scm.models import (User, Post, PostAttachment, Sample, Sample_os_pics,
 from scm.forms import (SignUpForm, NewpostForm, PostAttachmentForm,
                     NewsampleForm, SampleForm, SamplesizespecsForm,
                     SampleosavatarForm, SampleospicsForm,
-                    SampleswatchForm, SamplefpicsForm, SampleoquotationForm,
-                    SampleosizespecfForm, SampledetailForm)
+                    SampleswatchForm, SamplefpicsForm,
+                     SampledetailForm)
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator

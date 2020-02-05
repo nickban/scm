@@ -17,14 +17,20 @@ urlpatterns = [
         path('<int:pk>/', sample.SampleEdit.as_view(), name='sampleedit'),
         path('<int:pk>/detail/', sample.SampleDetail.as_view(), name='sampledetail'),
         path('<int:pk>/delete/', sample.SampleDelete.as_view(), name='sampledelete'),
+        # 样板上传资料通用功能
+        path('<int:pk>/<str:attachtype>/add/', sample.sampleattachadd, name='sampleattachadd'),
+        # path('<int:pk>/<str:type>/collection/<str:preurl>/', sample.SampleattachCollection.as_view(), name='sampleattachcollection'),
+        # path('<int:pk>/<str:type>/<int:attach_pk>/delete/<str:preurl>/', sample.SampleattachDelete.as_view(), name='sampleattachdelete'),
+
+
         # 样板款式图
-        path('<int:pk>/osavatar/add/', sample.sampleosavataradd, name='sampleosavataradd'),
+        # path('<int:pk>/osavatar/add/', sample.sampleosavataradd, name='sampleosavataradd'),
         path('<int:pk>/osavatar/<int:sample_osavatar_pk>/delete/', sample.SampleosavatarDelete.as_view(), name='sampleosavatardelete'),
         # 样板原板照片
         path('<int:pk>/os_pics/add/', sample.sampleospicadd, name='sampleospicadd'),
         path('<int:pk>/os_pics/collection/<str:preurl>/', sample.SampleospicsCollection.as_view(), name='sampleospicscollection'),
         path('<int:pk>/os_pics/<int:sample_ospic_pk>/delete/<str:preurl>/', sample.SampleospicDelete.as_view(), name='sampleospicdelete'),
-        # 样板起板尺寸表
+        # 样板客人尺寸表
         path('<int:pk>/sizespecs/<int:sample_sizespec_pk>/delete/', sample.SamplesizespecDelete.as_view(), name='samplesizespecdelete'),
         path('<int:pk>/sizespecs/add/', sample.samplesizespecadd, name='samplesizespecadd'),
         # 样板色卡
@@ -35,34 +41,16 @@ urlpatterns = [
         path('<int:pk>/fpics/add/', sample.samplefpicsadd, name='samplefpicsadd'),
         path('<int:pk>/fpics/collection/', sample.SamplefpicsCollection.as_view(), name='samplefpicscollection'),
         path('<int:pk>/fpics/<int:sample_fpic_pk>/delete/', sample.SamplefpicDelete.as_view(), name='samplefpicdelete'),
-
         # 样板报价单
         path('<int:pk>/quotation/add/', sample.samplequotationadd, name='samplequotationadd'),
         path('<int:pk>/quotation/<int:sample_quotation_pk>/delete/', sample.SamplequotationDelete.as_view(), name='samplequotationdelete'),
-
         # 样板成样尺寸表
         path('<int:pk>/sizespecf/add/', sample.samplesizespecfadd, name='samplesizespecfadd'),
         path('<int:pk>/sizespecf/<int:sample_sizespecf_pk>/delete/', sample.SamplesizespecfDelete.as_view(), name='samplesizespecfdelete'),
-
-        # 样板打印
-        # path('<int:pk>/pdf/', utils.generate_pdf, name='generatepdf'),
-        path('<int:pk>/print/', sample.sampledetailprint, name='sampledetailprint'),
-
-        # 样板上一个下一个
-        # path('<int:pk>/next/', views.samplenext, name='samplenext'),
-
-        # 样板查找,此功能考虑用DATATABLE替代,所以这个视图不用
-        # path('search/', views.samplesearch.as_view(), name='samplesearch'),
-
-        # 样板通知工厂
+        # 样板送工厂，通知工厂
         path('<int:pk>/sentfactory/', sample.samplesentfactory, name='samplesentfactory'),
         # 样板已完成
         path('<int:pk>/completed/', sample.samplecompleted, name='samplecompleted'),
-
-        # 临时复制功能
-        path('<int:pk>/copy/', sample.samplecopy, name='samplecopy'),
-
-
     ], 'scm'), namespace='sample')),
 
     # 订单地址导航

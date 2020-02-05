@@ -273,13 +273,13 @@ class SampleosavatarForm(forms.ModelForm):
         fields = ('img',)
 
 
-class SampleoquotationForm(forms.ModelForm):
+class SamplequotationForm(forms.ModelForm):
     class Meta:
         model = Sample_quotation_form
         fields = ('file',)
 
 
-class SampleosizespecfForm(forms.ModelForm):
+class SamplesizespecfForm(forms.ModelForm):
     class Meta:
         model = Sample_size_spec_factory
         fields = ('file',)

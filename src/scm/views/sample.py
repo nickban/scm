@@ -9,8 +9,8 @@ from scm.models import (User, Post, PostAttachment, Sample, Sample_os_pics,
 from scm.forms import (SignUpForm, NewpostForm, PostAttachmentForm,
                     NewsampleForm, SampleForm, SamplesizespecsForm,
                     SampleosavatarForm, SampleospicsForm,
-                    SampleswatchForm, SamplefpicsForm, SampleoquotationForm,
-                    SampleosizespecfForm, SampledetailForm)
+                    SampleswatchForm, SamplefpicsForm, SamplequotationForm,
+                    SamplesizespecfForm, SampledetailForm)
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -394,7 +394,7 @@ class SamplefpicDelete(DeleteView):
 def samplequotationadd(request, pk):
     sample = get_object_or_404(Sample, pk=pk)
     if request.method == 'POST':
-        form = SampleoquotationForm(request.POST, request.FILES)
+        form = SamplequotationForm(request.POST, request.FILES)
         if form.is_valid():
             with transaction.atomic():
                 quotation = form.save(commit=False)
@@ -434,7 +434,7 @@ class SamplequotationDelete(DeleteView):
 def samplesizespecfadd(request, pk):
     sample = get_object_or_404(Sample, pk=pk)
     if request.method == 'POST':
-        form = SampleosizespecfForm(request.POST, request.FILES)
+        form = SamplesizespecfForm(request.POST, request.FILES)
         if form.is_valid():
             with transaction.atomic():
                 sizespecf = form.save(commit=False)
@@ -558,3 +558,99 @@ class SampleDelete(DeleteView):
     context_object_name = 'sample'
     template_name = 'sample_delete.html'
     success_url = reverse_lazy('sample:samplelistnew')
+
+
+# 样板附件通用功能视图
+
+
+@login_required
+def sampleattachadd(request, pk, attachtype):
+    sample = get_object_or_404(Sample, pk=pk)
+    previous_url = request.META.get('HTTP_REFERER')
+    print(sample)
+    print(previous_url)
+    print(pk)
+    print(attachtype)
+    print(request.GET)
+    # attachtype = request.GET['attachtype']
+    if attachtype == 'osavatar':
+        form = SampleosavatarForm(request.POST, request.FILES)
+        fieldname = 'img'
+    elif attachtype == 'os_pics':
+        form = SampleospicsForm(request.POST, request.FILES)
+        fieldname = 'img'
+    elif attachtype == 'sizespecs':
+        form = SamplesizespecsForm(request.POST, request.FILES)
+        fieldname = 'file'
+    elif attachtype == 'swatch':
+        form = SampleswatchForm(request.POST, request.FILES)
+        fieldname = 'img'
+    elif attachtype == 'fpics':
+        form = SamplefpicsForm(request.POST, request.FILES)
+        fieldname = 'img'
+    elif attachtype == 'quotation':
+        form = SamplequotationForm(request.POST, request.FILES)
+        fieldname = 'file'
+    else:
+        form = SamplesizespecfForm(request.POST, request.FILES)
+        fieldname = 'file'
+    if request.method == 'POST':
+        if form.is_valid():
+            print(form)
+            with transaction.atomic():
+                attach = form.save(commit=False)
+                attach.sample = sample
+                attach.save()
+                if fieldname == 'file':
+                    data = {"files": [{
+                            "name": attach.file.name,
+                            "url": attach.file.url, },
+                            ]}
+                else:
+                    data = {"files": [{
+                            "name": attach.img.name,
+                            "url": attach.img.url, },
+                            ]}
+        else:
+            data = {'is_valid': False}
+        return JsonResponse(data)
+    else:
+        print(fieldname)
+        return render(request, 'sample_attach_add.html', {'sample': sample, 'fieldname': fieldname, 'previous_url': previous_url, 'attachtype': attachtype})
+
+
+@method_decorator([login_required], name='dispatch')
+class SamplesizespecfDelete(DeleteView):
+    model = Sample_size_spec_factory
+    pk_url_kwarg = 'sample_sizespecf_pk'
+    context_object_name = 'sample_sizespecf'
+    template_name = 'sample_sizespecf_delete.html'
+
+    def get_success_url(self):
+        loginuser = self.request.user
+        sample = self.object.sample
+        if loginuser.is_merchandiser:
+            return reverse_lazy('sample:sampleedit', kwargs={'pk': sample.pk})
+        else:
+            return reverse_lazy('sample:sampledetail', kwargs={'pk': sample.pk})
+
+
+@method_decorator([login_required], name='dispatch')
+class SampleospicsCollection(ListView):
+    model = Sample_os_pics
+    context_object_name = 'os_pics'
+    template_name = 'sample_os_pics_collection.html'
+
+    def get_queryset(self):
+        sample = get_object_or_404(Sample, pk=self.kwargs['pk'])
+        queryset = sample.os_pics.all()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        sample = get_object_or_404(Sample, pk=self.kwargs['pk'])
+        # previous_url = self.request.META.get('HTTP_REFERER')
+        # kwargs['previous_url'] = previous_url
+        preurl = self.kwargs['preurl']
+        kwargs['sample'] = sample
+        kwargs['preurl'] = preurl
+        return super().get_context_data(**kwargs)
