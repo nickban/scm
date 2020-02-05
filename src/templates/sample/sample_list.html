@@ -40,7 +40,7 @@
             {% else %}
             <td><a href="{% url 'sample:sampledetail'  sample.pk %}">{{ sample.sample_no }}</a></td>
             {% endif %}
-            <td><img src="{{ sample.os_avatar.img.url }}" width=100px, height=100px></td>
+            <td><img src="{{ sample.os_avatar.file.url }}" width=100px, height=100px></td>
             <td>{{ sample.brand }}</td>
             <td>{{ sample.designer }}</td>
             <td>{{ sample.merchandiser }}</td>

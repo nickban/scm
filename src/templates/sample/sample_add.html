@@ -44,13 +44,13 @@
                             <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='osavatar'%}" role="button">
                             <i class="fas fa-file-upload fa-2x"></i></a>
                             <span>款式图</span>
+                            {% if os_avatar %}
                             <div class="form-group">
                                 <a href="{{os_avatar.file.url}}"><img class="border border-white" src="{{os_avatar.file.url}}" width=150 height=150></a>
-                                {% if os_avatar %}
-                                    <a href="{% url 'sample:sampleosavatardelete' pk=sample.pk sample_osavatar_pk=os_avatar.pk %}">
+                                    <a href="{% url 'sample:sampleattachdelete' pk=sample.pk attachtype='osavatar'  attach_pk=os_avatar.pk %}">
                                     <i class="mx-2 far fa-trash-alt fa-1x"></i></a>
-                                {% endif %}
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                     {% endif %}
@@ -87,13 +87,11 @@
                                 <span>更多原板图片</span>
                             </div>
                             {% if os_pics %}
-                            <a href="{% url 'sample:sampleospicscollection' pk=sample.pk preurl='step2' %}">
+                            <a href="{% url 'sample:sampleattachcollection' pk=sample.pk attachtype='os_pics' %}">
                             <span class="badge badge-success">查看</span></a>
-                                
                             {% else %}
                             <span class="badge badge-warning">未上传</span>
                             {% endif %}
-
                         </div>
                         {% endif %}
                     </div>

@@ -23,7 +23,7 @@
     {% csrf_token %}
     <div class="row">
         <div class="col-12 col-md-3 text-left">
-            <img  class="rounded" src="{{ sample.os_avatar.img.url }}" width=150px height=150px  >
+            <img  class="rounded" src="{{ sample.os_avatar.file.url }}" width=150px height=150px  >
         </div>
         <div class="col-12 col-md-3">
             <div class="form-group">
@@ -61,7 +61,7 @@
                 <span>更多原版照</span>
                 <div class="form-group">
                     {% if os_pics %}
-                    <a href="{% url 'sample:sampleospicscollection' pk=sample.pk preurl='edit' %}">
+                    <a href="{% url 'sample:sampleattachcollection' pk=sample.pk attachtype='os_pics' %}">
                     <h6><span class="badge badge-success">查看</span></a></h6>
                     {% else %}
                     <h6><span class="badge badge-warning">未上传</span></h6>
@@ -78,8 +78,8 @@
                     {% for size_spec in size_specs %}
                         <li class="">
                             <a href="{{ size_spec.file.url }}">{{ size_spec.file.name |basename }}</a> 
-                            <a href="{% url 'sample:samplesizespecdelete' pk=sample.pk  sample_sizespec_pk=size_spec.pk %}">
-                            <i class="far fa-trash-alt fa-1x"></i></a> 
+                            <!-- <a href="{% url 'sample:samplesizespecdelete' pk=sample.pk  sample_sizespec_pk=size_spec.pk %}">
+                            <i class="far fa-trash-alt fa-1x"></i></a>  -->
                         </li>
                     {% endfor %}
                 {% else %}
@@ -112,12 +112,12 @@
     <div class="row">
         <div class="col-12 col-md-3 ">
             <div class="form-group">
-                <a href="{% url 'sample:sampleswatchadd' sample.pk %}" role="button">
+                <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='swatch'%}" role="button">
                 <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>色卡</span>
                 <div class="form-group">
                     {% if swatches %}
-                    <a href="{% url 'sample:sampleswatchcollection' pk=sample.pk%}">
+                    <a href="{% url 'sample:sampleattachcollection' pk=sample.pk attachtype='swatch'%}">
                     <h6><span class="badge badge-success">查看</span></a></h6>
                     {% else %}
                     <h6><span class="badge badge-warning">未上传</span></h6>
@@ -127,12 +127,12 @@
         </div>
         <div class="col-12 col-md-3 ">
             <div class="form-group">
-                <a href="{% url 'sample:samplefpicsadd' sample.pk %}" role="button">
+                <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='fpics'%}" role="button">
                 <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>成样照片</span>
                 <div class="form-group">
                     {% if fpics %}
-                    <a href="{% url 'sample:samplefpicscollection' pk=sample.pk%}">
+                    <a href="{% url 'sample:sampleattachcollection' pk=sample.pk attachtype='fpics'%}">
                     <h6><span class="badge badge-success">查看</span></a></h6>
                     {% else %}
                     <h6><span class="badge badge-warning">未上传</span></h6>
@@ -142,14 +142,14 @@
         </div>
         <div class="col-12 col-md-3 ">
             <div class="form-group">
-                <a href="{% url 'sample:samplequotationadd' sample.pk %}" role="button">
+                <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='quotation'%}" role="button">
                 <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>报价单</span>
             </div>
             <div class="form-group">
                 {% if quotation %}
                 <a href="{{quotation.file.url}}">{{quotation.file.name | basename}}</a>
-                <a href="{% url 'sample:samplequotationdelete' pk=sample.pk  sample_quotation_pk=quotation.pk %}">
+                <a href="{% url 'sample:sampleattachdelete' pk=sample.pk  attachtype='quotation' attach_pk=quotation.pk %}">
                 <i class="far fa-trash-alt fa-1x"></i></a>
                 {% else %}
                 <h6><span class="badge badge-warning">未上传</span></h6>
@@ -158,14 +158,14 @@
         </div>
         <div class="col-12 col-md-3 ">
             <div class="form-group">
-                <a href="{% url 'sample:samplesizespecfadd' sample.pk %}" role="button">
+                <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='sizespecf'%}" role="button">
                 <i class="fas fa-file-upload fa-2x"></i></a>
                 <span>成样尺寸表</span>
             </div>
             <div class="form-group">
                 {% if sizespecf %}
                 <a href="{{sizespecf.file.url}}">{{sizespecf.file.name | basename}}</a>
-                <a href="{% url 'sample:samplesizespecfdelete' pk=sample.pk  sample_sizespecf_pk=sizespecf.pk %}">
+                <a href="{% url 'sample:sampleattachdelete' pk=sample.pk  attachtype='sizespecf' attach_pk=sizespecf.pk %}">
                 <i class="far fa-trash-alt fa-1x"></i></a>
                 {% else %}
                 <h6><span class="badge badge-warning">未上传</span></h6>

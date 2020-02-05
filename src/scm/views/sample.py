@@ -207,28 +207,52 @@ def sampleattachadd(request, pk, attachtype):
 
 @login_required
 def sampleattachdelete(request, pk, attachtype, attach_pk):
-    print(pk)
-    print(attachtype)
-    print(attach_pk)
     sample = get_object_or_404(Sample, pk=pk)
+    previous_url = request.META.get('HTTP_REFERER')
     attachtype = attachtype
     if attachtype == 'osavatar':
         attach = get_object_or_404(Sample_os_avatar, pk=attach_pk)
+        attach.delete()
+        if 'step2' in previous_url:
+            return redirect('sample:sampleaddstep2', pk=sample.pk)
+        else:
+            return redirect('sample:sampleedit', pk=sample.pk)
     elif attachtype == 'os_pics':
         attach = get_object_or_404(Sample_os_pics, pk=attach_pk)
+        attach.delete()
+        if 'step2' in previous_url:
+            return redirect('sample:sampleaddstep2', pk=sample.pk)
+        else:
+            return redirect('sample:sampleattachcollection', pk=sample.pk, attachtype=attachtype)
     elif attachtype == 'sizespecs':
         attach = get_object_or_404(Sample_size_specs, pk=attach_pk)
+        attach.delete()
+        if 'step2' in previous_url:
+            return redirect('sample:sampleaddstep2', pk=sample.pk)
+        else:
+            return redirect('sample:sampleedit', pk=sample.pk)
     elif attachtype == 'swatch':
         attach = get_object_or_404(Sample_swatches, pk=attach_pk)
+        attach.delete()
+        return redirect('sample:sampleattachcollection', pk=sample.pk, attachtype=attachtype)
     elif attachtype == 'fpics':
         attach = get_object_or_404(Sample_pics_factory, pk=attach_pk)
+        attach.delete()
+        return redirect('sample:sampleattachcollection', pk=sample.pk, attachtype=attachtype)
     elif attachtype == 'quotation':
         attach = get_object_or_404(Sample_quotation_form, pk=attach_pk)
+        attach.delete()
+        if request.user.is_factory:
+            return redirect('sample:sampledetail', pk=sample.pk)
+        else:
+            return redirect('sample:sampleedit', pk=sample.pk)
     else:
         attach = get_object_or_404(Sample_size_spec_factory, pk=attach_pk)
-    attach.delete()
-
-    return redirect('sample:sampleattachcollection', pk=sample.pk, attachtype=attachtype)
+        attach.delete()
+        if request.user.is_factory:
+            return redirect('sample:sampledetail', pk=sample.pk)
+        else:
+            return redirect('sample:sampleedit', pk=sample.pk)
 
 
 @login_required
