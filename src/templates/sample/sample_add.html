@@ -6,6 +6,7 @@
 
 {% block css%}
 <link rel="stylesheet" href="{% static 'css/form.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 {% endblock%}
 
 {% block content %}
@@ -45,11 +46,9 @@
                             <i class="fas fa-file-upload fa-2x"></i></a>
                             <span>款式图</span>
                             {% if os_avatar %}
-                            <div class="form-group">
-                                <a href="{{os_avatar.file.url}}"><img class="border border-white" src="{{os_avatar.file.url}}" width=150 height=150></a>
-                                    <a href="{% url 'sample:sampleattachdelete' pk=sample.pk attachtype='osavatar'  attach_pk=os_avatar.pk %}">
-                                    <i class="mx-2 far fa-trash-alt fa-1x"></i></a>
-                            </div>
+                                <a data-title="提示" class="delete" href="{% url 'sample:sampleattachdelete' pk=sample.pk attachtype='osavatar'  attach_pk=os_avatar.pk %}">
+                                <i class="mx-2 far fa-trash-alt fa-1x"></i></a>
+                                <a href="{{os_avatar.file.url}}"><img  src="{{os_avatar.file.url}}" width=200 height=200 class="img-thumbnail"></a>
                             {% endif %}
                         </div>
                     </div>
@@ -68,7 +67,7 @@
                                         {% for size_spec in size_specs %}
                                             <li class="mx-3">
                                                 <a href="{{ size_spec.file.url }}">{{ size_spec.file.name |basename }}</a> 
-                                                <a href="{% url 'sample:sampleattachdelete'  pk=sample.pk  attachtype='sizespecs' attach_pk=size_spec.pk %}">
+                                                <a data-title="提示" class="delete" href="{% url 'sample:sampleattachdelete'  pk=sample.pk  attachtype='sizespecs' attach_pk=size_spec.pk %}">
                                                 <i class="mx-2 far fa-trash-alt fa-1x"></i></a> 
                                             </li>
                                         {% endfor %}
@@ -126,4 +125,25 @@
 </form>
 {% endblock %}
 {% block script %}
+<!-- 删除项目确认js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+<script>
+    $('a.delete').confirm({
+        content: "确定要删除此附件吗？",
+        type: 'red',
+        typeAnimated: true,
+        buttons: {
+        确认: {
+            btnClass: 'btn-red',
+            action:function(){
+            location.href = this.$target.attr('href');
+            },},
+        取消: {
+            action:function () {
+            //close
+            },
+        }}
+    });
+</script>
+
 {% endblock %}

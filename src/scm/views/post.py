@@ -21,8 +21,6 @@ from django.http import JsonResponse
 from django.views import View
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
-from scm.filters import SampleFilter
-from django_filters.views import FilterView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.contrib import messages

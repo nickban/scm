@@ -9,9 +9,9 @@ from scm.forms import (NewsampleForm, SampleForm, SamplesizespecsForm,
                        SampleswatchForm, SamplefpicsForm, SamplequotationForm,
                        SamplesizespecfForm, SampledetailForm)
 from django.contrib.auth.decorators import login_required
+from scm.decorators import office_merchandiser_merchadisermanager_or_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.views import reverse_lazy
-from scm.decorators import office_required, merchandiser_required
 from django.http import JsonResponse
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
@@ -56,7 +56,7 @@ class SampleListCompleted(ListView):
             return Sample.objects.filter(status='COMPLETED')
 
 # 样板新建第一步
-@method_decorator([login_required], name='dispatch')
+@method_decorator([login_required, office_merchandiser_merchadisermanager_or_required], name='dispatch')
 class SampleAddStep1(CreateView):
     model = Sample
     form_class = NewsampleForm
@@ -68,7 +68,7 @@ class SampleAddStep1(CreateView):
         return redirect('sample:sampleaddstep2', pk=sample.pk)
 
 # 样板新建第二步
-@method_decorator([login_required], name='dispatch')
+@method_decorator([login_required, office_merchandiser_merchadisermanager_or_required], name='dispatch')
 class SampleAddStep2(UpdateView):
     model = Sample
     form_class = NewsampleForm
@@ -88,7 +88,7 @@ class SampleAddStep2(UpdateView):
         return super().get_context_data(**kwargs)
 
 # 样板更新
-@method_decorator([login_required], name='dispatch')
+@method_decorator([login_required, office_merchandiser_merchadisermanager_or_required], name='dispatch')
 class SampleEdit(UpdateView):
     model = Sample
     form_class = SampleForm
@@ -100,6 +100,10 @@ class SampleEdit(UpdateView):
         kwargs['size_specs'] = self.get_object().size_specs.all()
         kwargs['swatches'] = self.get_object().swatches.all()
         kwargs['fpics'] = self.get_object().factory_pics.all()
+        try:
+            kwargs['os_avatar'] = self.get_object().os_avatar
+        except ObjectDoesNotExist:
+            kwargs['os_avatar'] = ''
         try:
             kwargs['quotation'] = self.get_object().quotation
         except ObjectDoesNotExist:
@@ -116,6 +120,7 @@ class SampleEdit(UpdateView):
 
 
 # 改变样板状态到送工厂状态
+@office_merchandiser_merchadisermanager_or_required
 def samplesentfactory(request, pk):
     sample = get_object_or_404(Sample, pk=pk)
     if sample.factory is None:
@@ -128,6 +133,7 @@ def samplesentfactory(request, pk):
 
 
 # 改变样板状态到已完成状态
+@office_merchandiser_merchadisermanager_or_required
 def samplecompleted(request, pk):
     sample = get_object_or_404(Sample, pk=pk)
     sample.status = "COMPLETED"
@@ -148,6 +154,8 @@ class SampleDetail(UpdateView):
         return redirect('sample:sampledetail', pk=sample.pk)
 
     def get_context_data(self, **kwargs):
+        kwargs['os_pics'] = self.get_object().os_pics.all()
+        kwargs['size_specs'] = self.get_object().size_specs.all()
         kwargs['swatches'] = self.get_object().swatches.all()
         kwargs['fpics'] = self.get_object().factory_pics.all()
         try:
@@ -161,7 +169,16 @@ class SampleDetail(UpdateView):
         return super().get_context_data(**kwargs)
 
 
+# 拷贝样板，测试数据用
+def samplecopy(request, pk):
+    sample = get_object_or_404(Sample, pk=pk)
+    sample.pk = None
+    sample.save()
+    return redirect('sample:sampleedit', pk=sample.pk)
+
+
 # 删除样板
+@method_decorator([login_required, office_merchandiser_merchadisermanager_or_required], name='dispatch')
 class SampleDelete(DeleteView):
     model = Sample
     context_object_name = 'sample'
@@ -175,7 +192,12 @@ def sampleattachadd(request, pk, attachtype):
     sample = get_object_or_404(Sample, pk=pk)
     previous_url = request.META.get('HTTP_REFERER')
     if attachtype == 'osavatar':
-        form = SampleosavatarForm(request.POST, request.FILES)
+        if request.FILES:
+            try:
+                sample.os_avatar.delete()
+            except ObjectDoesNotExist:
+                pass
+            form = SampleosavatarForm(request.POST, request.FILES)
     elif attachtype == 'os_pics':
         form = SampleospicsForm(request.POST, request.FILES)
     elif attachtype == 'sizespecs':
@@ -185,9 +207,19 @@ def sampleattachadd(request, pk, attachtype):
     elif attachtype == 'fpics':
         form = SamplefpicsForm(request.POST, request.FILES)
     elif attachtype == 'quotation':
-        form = SamplequotationForm(request.POST, request.FILES)
+        if request.FILES:
+            try:
+                sample.quotation.delete()
+            except ObjectDoesNotExist:
+                pass
+            form = SamplequotationForm(request.POST, request.FILES)
     else:
-        form = SamplesizespecfForm(request.POST, request.FILES)
+        if request.FILES:
+            try:
+                sample.sizespecf.delete()
+            except ObjectDoesNotExist:
+                pass
+            form = SamplesizespecfForm(request.POST, request.FILES)
     if request.method == 'POST':
         if form.is_valid():
             with transaction.atomic():
@@ -220,10 +252,7 @@ def sampleattachdelete(request, pk, attachtype, attach_pk):
     elif attachtype == 'os_pics':
         attach = get_object_or_404(Sample_os_pics, pk=attach_pk)
         attach.delete()
-        if 'step2' in previous_url:
-            return redirect('sample:sampleaddstep2', pk=sample.pk)
-        else:
-            return redirect('sample:sampleattachcollection', pk=sample.pk, attachtype=attachtype)
+        return redirect('sample:sampleattachcollection', pk=sample.pk, attachtype=attachtype)
     elif attachtype == 'sizespecs':
         attach = get_object_or_404(Sample_size_specs, pk=attach_pk)
         attach.delete()
@@ -235,10 +264,13 @@ def sampleattachdelete(request, pk, attachtype, attach_pk):
         attach = get_object_or_404(Sample_swatches, pk=attach_pk)
         attach.delete()
         return redirect('sample:sampleattachcollection', pk=sample.pk, attachtype=attachtype)
+
+        return redirect('sample:sampleattachcollection', pk=sample.pk, attachtype=attachtype)
     elif attachtype == 'fpics':
         attach = get_object_or_404(Sample_pics_factory, pk=attach_pk)
         attach.delete()
         return redirect('sample:sampleattachcollection', pk=sample.pk, attachtype=attachtype)
+
     elif attachtype == 'quotation':
         attach = get_object_or_404(Sample_quotation_form, pk=attach_pk)
         attach.delete()
@@ -258,6 +290,7 @@ def sampleattachdelete(request, pk, attachtype, attach_pk):
 @login_required
 def sampleattachcollection(request, pk, attachtype):
     sample = get_object_or_404(Sample, pk=pk)
+    previous_url = request.META.get('HTTP_REFERER')
     attachtype = attachtype
     if attachtype == 'os_pics':
         attaches = sample.os_pics.all()
@@ -267,4 +300,5 @@ def sampleattachcollection(request, pk, attachtype):
         attaches = sample.factory_pics.all()
     else:
         attaches = sample.size_specs.all()
-    return render(request, 'sample_attach_collection.html', {'sample': sample, 'attachtype': attachtype, 'attaches': attaches})
+    return render(request, 'sample_attach_collection.html', {'sample': sample,
+                  'attachtype': attachtype, 'attaches': attaches, 'previous_url': previous_url})

@@ -3,7 +3,6 @@ from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
 import os
-from django.utils.safestring import mark_safe
 # Create your models here.
 
 
@@ -187,7 +186,7 @@ def auto_delete_file_sample_swatches(sender, instance, **kwargs):
 
 class Sample_os_avatar(models.Model):
     file = models.ImageField(upload_to='sample/sample_os_avatar/', blank=True)
-    sample = models.OneToOneField(Sample, on_delete=models.CASCADE, primary_key=True,
+    sample = models.OneToOneField(Sample, on_delete=models.CASCADE,
                                   related_name='os_avatar')
 
 

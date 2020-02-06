@@ -42,9 +42,6 @@ INSTALLED_APPS = [
     'widget_tweaks',
     # 日期选择器
     'tempus_dominus',
-    # 没有用这空间
-    'tinymce',
-    # 'pagination'
 ]
 
 TEMPUS_DOMINUS_LOCALIZE = True

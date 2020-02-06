@@ -6,16 +6,7 @@
 
 {% block css%}
 <link rel="stylesheet" href="{% static 'css/form.css' %}">
-
-{# Include FontAwesome; required for icon display #}
-<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
-
-{# Include Bootstrap 4 and jQuery #}
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-
-{# Django Tempus Dominus assets are included in `{{ form.media }}` #}
-{{ form.media }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 {% endblock%}
 
 {% block content %}
@@ -78,8 +69,6 @@
                     {% for size_spec in size_specs %}
                         <li class="">
                             <a href="{{ size_spec.file.url }}">{{ size_spec.file.name |basename }}</a> 
-                            <!-- <a href="{% url 'sample:samplesizespecdelete' pk=sample.pk  sample_sizespec_pk=size_spec.pk %}">
-                            <i class="far fa-trash-alt fa-1x"></i></a>  -->
                         </li>
                     {% endfor %}
                 {% else %}
@@ -92,8 +81,9 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <div class="form-group">
-                {{ form.alteration |as_crispy_field }}
+            <label for="ateration">做板评语:</label>
+            <div class="form-group border border-1 pl-2 pt-2">
+                {{sample.alteration | linebreaks}}
             </div>
         </div>
     </div>
@@ -149,7 +139,7 @@
             <div class="form-group">
                 {% if quotation %}
                 <a href="{{quotation.file.url}}">{{quotation.file.name | basename}}</a>
-                <a href="{% url 'sample:sampleattachdelete' pk=sample.pk  attachtype='quotation' attach_pk=quotation.pk %}">
+                <a data-title="提示" class="delete" href="{% url 'sample:sampleattachdelete' pk=sample.pk  attachtype='quotation' attach_pk=quotation.pk %}">
                 <i class="far fa-trash-alt fa-1x"></i></a>
                 {% else %}
                 <h6><span class="badge badge-warning">未上传</span></h6>
@@ -165,7 +155,7 @@
             <div class="form-group">
                 {% if sizespecf %}
                 <a href="{{sizespecf.file.url}}">{{sizespecf.file.name | basename}}</a>
-                <a href="{% url 'sample:sampleattachdelete' pk=sample.pk  attachtype='sizespecf' attach_pk=sizespecf.pk %}">
+                <a data-title="提示" class="delete" href="{% url 'sample:sampleattachdelete' pk=sample.pk  attachtype='sizespecf' attach_pk=sizespecf.pk %}">
                 <i class="far fa-trash-alt fa-1x"></i></a>
                 {% else %}
                 <h6><span class="badge badge-warning">未上传</span></h6>
@@ -174,11 +164,6 @@
         </div>
     </div>
      <div class="row">
-        <!-- <div class="col-sm ">
-            <div class="form-group">
-                <a class="btn btn-block btn-outline-primary" href="" role="button">上一个</a>
-            </div>
-        </div> -->
         <div class="col-12 col-md-2 ">
             <div class="form-group">
                 <input type="submit" value="保存" class="btn btn-block btn-outline-primary">
@@ -205,20 +190,30 @@
                 {% endif %}
             </div>
         </div>
-        <!-- 无法解决筛选后的下一个操作，所以不启用 -->
-        <!-- <div class=" col-sm">
-            <div class="form-group">
-                <a class="btn btn-block btn-outline-primary" href="" role="button">下一个</a>
-            </div>
-        </div>     -->
     </div>
 </form>
 {% endblock %}
 
 {% block script %}
+<!-- 删除项目确认js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 <script>
-    $("img").on("error", function() {
-        $(this).hide();
+    $('a.delete').confirm({
+        content: "确定要删除此附件吗？",
+        type: 'red',
+        typeAnimated: true,
+        buttons: {
+        确认: {
+            btnClass: 'btn-red',
+            action:function(){
+            location.href = this.$target.attr('href');
+            },},
+        取消: {
+            action:function () {
+            //close
+            },
+        }}
     });
 </script>
+
 {% endblock %}

@@ -25,6 +25,8 @@ urlpatterns = [
         path('<int:pk>/sentfactory/', sample.samplesentfactory, name='samplesentfactory'),
         # 样板已完成
         path('<int:pk>/completed/', sample.samplecompleted, name='samplecompleted'),
+        # 测试用
+        path('<int:pk>/copy/', sample.samplecopy, name='samplecopy'),
     ], 'scm'), namespace='sample')),
 
     # 订单地址导航

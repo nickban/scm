@@ -30,7 +30,7 @@
             </div>
             <div class="col-6 text-right">
               {% if user.is_authenticated %}
-                <p class="pt-3">用户名 <strong>{{ user.username }}</strong>. <a href="{% url 'logout' %}">登出</a>.</p>
+                <p class="pt-3">欢迎你！<strong>{{ user.username }}</strong> <a href="{% url 'logout' %}">登出</a></p>
               {% else %}
                 <a href="{% url 'login' %}" class="btn btn-light" role="button">登录</a>
                 <a href="{% url 'signup' %}" class="btn btn-primary" role="button">注册</a>
