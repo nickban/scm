@@ -9,7 +9,7 @@ from scm.forms import (NewsampleForm, SampleForm, SamplesizespecsForm,
                        SampleswatchForm, SamplefpicsForm, SamplequotationForm,
                        SamplesizespecfForm, SampledetailForm)
 from django.contrib.auth.decorators import login_required
-from scm.decorators import office_merchandiser_merchadisermanager_or_required
+from scm.decorators import o_m_mg_or_required, o_m_mg_f_or_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.views import reverse_lazy
 from django.http import JsonResponse
@@ -19,7 +19,7 @@ from django.db.models import Q
 from django.contrib import messages
 
 # 样板列表-未完成(新建，已送工厂状态)
-@method_decorator([login_required], name='dispatch')
+@method_decorator([login_required, o_m_mg_f_or_required], name='dispatch')
 class SampleListNew(ListView):
     model = Sample
     ordering = ('-created_date', )
@@ -37,7 +37,7 @@ class SampleListNew(ListView):
             return Sample.objects.filter(Q(status='NEW') | Q(status='SENT_F')).order_by('-created_date')
 
 # 样板列表-已完成(已完成状态)
-@method_decorator([login_required], name='dispatch')
+@method_decorator([login_required, o_m_mg_f_or_required], name='dispatch')
 class SampleListCompleted(ListView):
     model = Sample
     ordering = ('-created_date', )
@@ -56,7 +56,7 @@ class SampleListCompleted(ListView):
             return Sample.objects.filter(status='COMPLETED')
 
 # 样板新建第一步
-@method_decorator([login_required, office_merchandiser_merchadisermanager_or_required], name='dispatch')
+@method_decorator([login_required, o_m_mg_or_required], name='dispatch')
 class SampleAddStep1(CreateView):
     model = Sample
     form_class = NewsampleForm
@@ -68,7 +68,7 @@ class SampleAddStep1(CreateView):
         return redirect('sample:sampleaddstep2', pk=sample.pk)
 
 # 样板新建第二步
-@method_decorator([login_required, office_merchandiser_merchadisermanager_or_required], name='dispatch')
+@method_decorator([login_required, o_m_mg_or_required], name='dispatch')
 class SampleAddStep2(UpdateView):
     model = Sample
     form_class = NewsampleForm
@@ -88,7 +88,7 @@ class SampleAddStep2(UpdateView):
         return super().get_context_data(**kwargs)
 
 # 样板更新
-@method_decorator([login_required, office_merchandiser_merchadisermanager_or_required], name='dispatch')
+@method_decorator([login_required, o_m_mg_or_required], name='dispatch')
 class SampleEdit(UpdateView):
     model = Sample
     form_class = SampleForm
@@ -120,7 +120,7 @@ class SampleEdit(UpdateView):
 
 
 # 改变样板状态到送工厂状态
-@office_merchandiser_merchadisermanager_or_required
+@o_m_mg_or_required
 def samplesentfactory(request, pk):
     sample = get_object_or_404(Sample, pk=pk)
     if sample.factory is None:
@@ -133,7 +133,7 @@ def samplesentfactory(request, pk):
 
 
 # 改变样板状态到已完成状态
-@office_merchandiser_merchadisermanager_or_required
+@o_m_mg_or_required
 def samplecompleted(request, pk):
     sample = get_object_or_404(Sample, pk=pk)
     sample.status = "COMPLETED"
@@ -143,6 +143,7 @@ def samplecompleted(request, pk):
 
 
 # 工厂查看样板详情页，部分信息，报价单，色卡，成样照片，成样尺寸表
+@method_decorator([login_required, o_m_mg_f_or_required], name='dispatch')
 class SampleDetail(UpdateView):
     template_name = 'sample_detail.html'
     model = Sample
@@ -178,7 +179,7 @@ def samplecopy(request, pk):
 
 
 # 删除样板
-@method_decorator([login_required, office_merchandiser_merchadisermanager_or_required], name='dispatch')
+@method_decorator([login_required, o_m_mg_or_required], name='dispatch')
 class SampleDelete(DeleteView):
     model = Sample
     context_object_name = 'sample'

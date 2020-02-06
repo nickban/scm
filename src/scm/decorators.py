@@ -137,13 +137,30 @@ def merchandiser_manager_required(function=None, redirect_field_name=REDIRECT_FI
     return actual_decorator
 
 
-def office_merchandiser_merchadisermanager_or_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url='login'):
+# 公司内部人员许可(或关系): 行政，跟单，跟单主管
+def o_m_mg_or_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url='login'):
     '''
     Decorator for views that checks that the logged in user is a office or merchandiser or merchandiser_manager,
     redirects to the log-in page if necessary.
     '''
     actual_decorator = user_passes_test(
         lambda u: u.is_merchandiser_manager or u.is_merchandiser or u.is_office,
+        login_url=login_url,
+        redirect_field_name=redirect_field_name
+    )
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
+
+
+# 业务操作人员许可(或关系):行政，跟单，跟单主管，工厂
+def o_m_mg_f_or_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url='login'):
+    '''
+    Decorator for views that checks that the logged in user is a office or merchandiser or merchandiser_manager,
+    redirects to the log-in page if necessary.
+    '''
+    actual_decorator = user_passes_test(
+        lambda u: u.is_merchandiser_manager or u.is_merchandiser or u.is_office or u.is_factory,
         login_url=login_url,
         redirect_field_name=redirect_field_name
     )
