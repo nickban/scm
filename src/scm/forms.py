@@ -158,7 +158,6 @@ class SampleForm(forms.ModelForm):
 
 
 class SampledetailForm(forms.ModelForm):
-    parcel_date = forms.DateField(widget=DatePicker(), label="寄件日期", required=False)
     qutation = forms.DecimalField(label="工厂报价(元)", required=False)
 
     def __init__(self, *args, **kwargs):
@@ -166,14 +165,6 @@ class SampledetailForm(forms.ModelForm):
         instance = getattr(self, 'instance', None)
         if instance and instance.id:
             self.fields['has_os_sample'].disabled = True
-            self.fields['sample_no'].disabled = True
-            self.fields['brand'].disabled = True
-            self.fields['merchandiser'].disabled = True
-            self.fields['designer'].disabled = True
-            self.fields['factory'].disabled = True
-            self.fields['style'].disabled = True
-            self.fields['parcel_date'].disabled = True
-            self.fields['alteration'].disabled = True
 
         def clean_has_os_sample_field(self):
             instance = getattr(self, 'instance', None)
@@ -182,67 +173,9 @@ class SampledetailForm(forms.ModelForm):
             else:
                 return self.cleaned_data['has_os_sample']
 
-        def clean_sample_no_field(self):
-            instance = getattr(self, 'instance', None)
-            if instance and instance.id:
-                return instance.sample_no
-            else:
-                return self.cleaned_data['sample_no']
-
-        def clean_brand_field(self):
-            instance = getattr(self, 'instance', None)
-            if instance and instance.id:
-                return instance.brand
-            else:
-                return self.cleaned_data['brand']
-
-        def clean_merchandiser_field(self):
-            instance = getattr(self, 'instance', None)
-            if instance and instance.id:
-                return instance.merchandiser
-            else:
-                return self.cleaned_data['merchandiser']
-
-        def clean_designer_field(self):
-            instance = getattr(self, 'instance', None)
-            if instance and instance.id:
-                return instance.designer
-            else:
-                return self.cleaned_data['designer']
-
-        def clean_factory_field(self):
-            instance = getattr(self, 'instance', None)
-            if instance and instance.id:
-                return instance.factory
-            else:
-                return self.cleaned_data['factory']
-
-        def clean_style_field(self):
-            instance = getattr(self, 'instance', None)
-            if instance and instance.id:
-                return instance.style
-            else:
-                return self.cleaned_data['style']
-
-        def clean_parcel_date_field(self):
-            instance = getattr(self, 'instance', None)
-            if instance and instance.id:
-                return instance.parcel_date
-            else:
-                return self.cleaned_data['parcel_date']
-
-        def clean_alteration_field(self):
-            instance = getattr(self, 'instance', None)
-            if instance and instance.id:
-                return instance.alteration
-            else:
-                return self.cleaned_data['alteration']
-
     class Meta:
         model = Sample
-        fields = ('has_os_sample', 'sample_no', 'brand',
-                  'merchandiser', 'designer', 'factory', 'style', 'qutation',
-                  'parcel_date', 'alteration')
+        fields = ('has_os_sample', 'qutation')
         widgets = {
                   'alteration': forms.Textarea(attrs={'rows': 6}),
                   }

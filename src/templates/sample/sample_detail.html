@@ -16,28 +16,62 @@
         <div class="col-12 col-md-3 text-left">
             <img  class="rounded" src="{{ sample.os_avatar.file.url }}" width=150px height=150px  >
         </div>
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 text-left">
             <div class="form-group">
-                {{ form.sample_no |as_crispy_field }}
+                <div class="col-12 text-left pl-0">
+                    <label for="sample_no">样板号:</label>
+                </div>
+                <div class="col-12 py-2 border border-1 rounded text-left">
+                    {{ sample.sample_no}}
+                </div>
             </div>
-            <div class="form-group ">
-                {{ form.merchandiser |as_crispy_field }}
+            <div class="form-group">
+                <div class="col-12 text-left pl-0">
+                    <label for="sample_no">跟单:</label>
+                </div>
+                <div class="col-12 py-2 border border-1 rounded text-left">
+                    {{ sample.merchandiser}}
+                </div>
             </div>
         </div>
         <div class="col-12 col-md-3">
             <div class="form-group">
-                {{ form.brand |as_crispy_field }}
+                <div class="col-12 text-left pl-0">
+                    <label for="sample_no">品牌:</label>
+                </div>
+                <div class="col-12 py-2 border border-1 rounded text-left">
+                    {{ sample.brand}}
+                </div>
             </div>
-            <div class="form-group ">
-                {{ form.style|as_crispy_field }}
+            <div class="form-group">
+                <div class="col-12 text-left pl-0">
+                    <label for="sample_no">款式:</label>
+                </div>
+                <div style="min-height: 40px"; class="col-12 py-2 border border-1 rounded text-left">
+                   {% if not sample.style %}
+                    
+                   {% else %}
+                    {{ sample.style}}
+                   {% endif %}
+                </div>
             </div>
         </div>
         <div class="col-12 col-md-3">
             <div class="form-group">
-                {{ form.designer |as_crispy_field }}
+                <div class="col-12 text-left pl-0">
+                    <label for="sample_no">买手:</label>
+                </div>
+                <div class="col-12 py-2 border border-1 rounded text-left">
+                    {{ sample.designer}}
+                </div>
             </div>
-            <div class="form-group ">
-                {{ form.parcel_date |as_crispy_field  }}
+            <div class="form-group">
+                <div  class="col-12 text-left pl-0">
+                    <label for="sample_no">寄件日期:</label>
+                </div>
+                <div style="min-height: 40px"; class="col-12 py-2 border border-1 rounded text-left">
+                    {{ sample.parcel_date |date:"SHORT_DATE_FORMAT"}}
+                </div>
             </div>
         </div>
     </div>
@@ -82,15 +116,20 @@
     <div class="row">
         <div class="col-12">
             <label for="ateration">做板评语:</label>
-            <div class="form-group border border-1 pl-2 pt-2">
+            <div style="min-height: 120px"; class="form-group border border-1 pl-2 pt-2" >
                 {{sample.alteration | linebreaks}}
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-12 col-md-3 ">
-            <div class="form-group ">
-                {{ form.factory |as_crispy_field }}
+            <div class="form-group">
+                <div class="col-12 text-left pl-0">
+                    <label for="sample_no">工厂:</label>
+                </div>
+                <div class="col-12 mt-0.5 pt-2 pb-1 border border-1 rounded text-left">
+                    {{ sample.factory}}
+                </div>
             </div>
         </div>
         <div class="col-12 col-md-3 ">
@@ -200,11 +239,11 @@
 <script>
     $('a.delete').confirm({
         content: "确定要删除此附件吗？",
-        type: 'red',
+        type: 'blue',
         typeAnimated: true,
         buttons: {
         确认: {
-            btnClass: 'btn-red',
+            btnClass: 'btn-blue',
             action:function(){
             location.href = this.$target.attr('href');
             },},
