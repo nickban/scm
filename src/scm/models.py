@@ -416,8 +416,8 @@ class Order(models.Model):
                               choices=ORDER_STATUS,
                               blank=True,
                               default=NEW)
-    order_po = models.CharField('订单号', max_length=100)
-    order_style_no = models.CharField('款号', max_length=100)
+    po = models.CharField('订单号', max_length=100)
+    style_no = models.CharField('款号', max_length=100)
     order_type = models.CharField('订单类型', max_length=50, choices=ORDER_TYPE)
     tran_type = models.CharField('订单类型', max_length=50, choices=TRAN_TYPE)
     brand = models.ForeignKey(Brand,

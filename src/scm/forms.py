@@ -6,7 +6,8 @@ from .models import (User, Factory,
                      Sample, Sample_size_specs, Sample_os_avatar,
                      Sample_os_pics, Sample_swatches,
                      Sample_pics_factory, Sample_quotation_form,
-                     Sample_size_spec_factory)
+                     Sample_size_spec_factory,
+                     Order,)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
@@ -221,3 +222,107 @@ class SampleospicsForm(forms.ModelForm):
     class Meta:
         model = Sample_os_pics
         fields = ('file',)
+
+# 订单表
+
+
+class NeworderForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(NeworderForm, self).__init__(*args, **kwargs)
+        self.fields['brand'].empty_label = '请选择'
+        self.fields['merchandiser'].empty_label = '请选择'
+        self.fields['designer'].empty_label = '请选择'
+
+    class Meta:
+        model = Order
+        fields = ('status', 'po', 'style_no', 'order_type', 'tran_type',
+                  'brand', 'merchandiser', 'designer', 'style',
+                  'factory', 'sample', 'factory_price', 'disigner_price',
+                  'handover_date_f', 'handover_date_d', 'comments',
+                  'parent', 'discount', 'discount_reason',
+                  'invoice', 'main_label', 'main_tag', 'addition_tag',
+                  'packing_type')
+        error_messages = {
+            'po': {
+                'required': "必填字段！",
+            },
+            'brand': {
+                'required': "必填字段！",
+            },
+            'merchandiser': {
+                'required': "必填字段！",
+            },
+            'designer': {
+                'required': "必填字段！",
+            },
+        }
+
+
+# class OrderForm(forms.ModelForm):
+#     parcel_date = forms.DateField(widget=DatePicker(), label="寄件日期", required=False)
+#     qutation = forms.DecimalField(label="工厂报价(元)", required=False)
+
+#     def __init__(self, *args, **kwargs):
+#         super(SampleForm, self).__init__(*args, **kwargs)
+#         self.fields['brand'].empty_label = '请选择'
+#         self.fields['merchandiser'].empty_label = '请选择'
+#         self.fields['designer'].empty_label = '请选择'
+#         self.fields['factory'].empty_label = '请选择'
+#         self.fields['style'].empty_label = '请选择'
+
+#     class Meta:
+#         model = Sample
+#         fields = ('has_os_sample', 'sample_no', 'brand',
+#                   'merchandiser', 'designer', 'factory', 'style', 'qutation',
+#                   'parcel_date', 'alteration')
+#         widgets = {
+#                   'alteration': forms.Textarea(attrs={'rows': 6}),
+#                   }
+
+
+# class OrderdetailForm(forms.ModelForm):
+#     qutation = forms.DecimalField(label="工厂报价(元)", required=False)
+
+#     def __init__(self, *args, **kwargs):
+#         super(SampledetailForm, self).__init__(*args, **kwargs)
+#         instance = getattr(self, 'instance', None)
+#         if instance and instance.id:
+#             self.fields['has_os_sample'].disabled = True
+
+#         def clean_has_os_sample_field(self):
+#             instance = getattr(self, 'instance', None)
+#             if instance and instance.id:
+#                 return instance.has_os_sample
+#             else:
+#                 return self.cleaned_data['has_os_sample']
+
+#     class Meta:
+#         model = Sample
+#         fields = ('has_os_sample', 'qutation')
+#         widgets = {
+#                   'alteration': forms.Textarea(attrs={'rows': 6}),
+#                   }
+
+
+# class OrdersizespecsForm(forms.ModelForm):
+#     class Meta:
+#         model = Sample_size_specs
+#         fields = ('file',)
+
+
+# class OrderswatchForm(forms.ModelForm):
+#     class Meta:
+#         model = Sample_swatches
+#         fields = ('file',)
+
+
+# class OrderfpicsForm(forms.ModelForm):
+#     class Meta:
+#         model = Sample_pics_factory
+#         fields = ('file',)
+
+
+# class OrderavatarForm(forms.ModelForm):
+#     class Meta:
+#         model = Sample_os_avatar
+#         fields = ('file',)

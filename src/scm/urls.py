@@ -31,7 +31,28 @@ urlpatterns = [
 
     # 订单地址导航
     path('order/', include(([
-        path('', order.OrderList.as_view(), name='order_list'),
+        # 未确认,已确认,已出货订单列表
+        path('', order.OrderListNew.as_view(), name='orderlistnew'),
+        path('confirmed/', order.OrderListConfrimed.as_view(), name='orderlistconfirmed'),
+        path('shipped/', order.OrderListShipped.as_view(), name='orderlistshipped'),
+        # 订单新增
+        path('add/', order.OrderAdd.as_view(), name='orderadd'),
+        # # 订单编辑，详情，删除
+        # path('<int:pk>/', order.OrderEdit.as_view(), name='orderedit'),
+        # path('<int:pk>/detail/', order.OrderDetail.as_view(), name='orderdetail'),
+        # path('<int:pk>/delete/', order.OrderDelete.as_view(), name='orderdelete'),
+        # # 订单上传资料通用功能
+        # path('<int:pk>/<str:attachtype>/add/', order.orderattachadd, name='orderattachadd'),
+        # path('<int:pk>/<str:attachtype>/collection/', order.orderattachcollection, name='orderattachcollection'),
+        # path('<int:pk>/<str:attachtype>/<int:attach_pk>/delete/', order.orderattachdelete, name='orderattachdelete'),
+        # # 订单送工厂，通知工厂
+        # path('<int:pk>/sentfactory/', order.ordersentfactory, name='ordersentfactory'),
+        # # 订单确认
+        # path('<int:pk>/confirm/', order.orderconfirm, name='orderconfirm'),
+        # # 订单出货
+        # path('<int:pk>/shipped/', order.ordershipped, name='ordershipped'),
+        # # 测试用
+        # path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
     ], 'scm'), namespace='order')),
 
     # admin地址导航
