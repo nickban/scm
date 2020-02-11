@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, TemplateView
-from scm.models import (Order,)
+from scm.models import (Order, Order_color_ratio_qty)
 from scm.forms import (
-                       NeworderForm,)
+                       OrderForm, Order_color_ratio_qty_Form)
 from django.contrib.auth.decorators import login_required
 from scm.decorators import o_m_mg_or_required, o_m_mg_f_or_required
 from django.utils.decorators import method_decorator
@@ -12,6 +12,8 @@ from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.contrib import messages
+from django.template.loader import render_to_string
+from django.views.generic.edit import FormView
 
 # 订单列表-未确认(新建，已送工厂状态)
 @method_decorator([login_required, o_m_mg_f_or_required], name='dispatch')
@@ -74,7 +76,7 @@ class OrderListShipped(ListView):
 @method_decorator([login_required, o_m_mg_or_required], name='dispatch')
 class OrderAdd(CreateView):
     model = Order
-    form_class = NeworderForm
+    form_class = OrderForm
     template_name = 'order_edit.html'
 
     def form_valid(self, form):
@@ -82,36 +84,43 @@ class OrderAdd(CreateView):
         messages.success(self.request, '订单创建成功!')
         return redirect('order:orderedit', pk=order.pk)
 
-# # 样板更新
-# @method_decorator([login_required, o_m_mg_or_required], name='dispatch')
-# class SampleEdit(UpdateView):
-#     model = Sample
-#     form_class = SampleForm
-#     template_name = 'sample_edit.html'
-#     context_object_name = 'sample'
+# 订单编辑
+@method_decorator([login_required, o_m_mg_or_required], name='dispatch')
+class OrderEdit(UpdateView):
+    model = Order
+    form_class = OrderForm
+    template_name = 'order_edit.html'
+    context_object_name = 'order'
 
-#     def get_context_data(self, **kwargs):
-#         kwargs['os_pics'] = self.get_object().os_pics.all()
-#         kwargs['size_specs'] = self.get_object().size_specs.all()
-#         kwargs['swatches'] = self.get_object().swatches.all()
-#         kwargs['fpics'] = self.get_object().factory_pics.all()
-#         try:
-#             kwargs['os_avatar'] = self.get_object().os_avatar
-#         except ObjectDoesNotExist:
-#             kwargs['os_avatar'] = ''
-#         try:
-#             kwargs['quotation'] = self.get_object().quotation
-#         except ObjectDoesNotExist:
-#             kwargs['quotation'] = ''
-#         try:
-#             kwargs['sizespecf'] = self.get_object().sizespecf
-#         except ObjectDoesNotExist:
-#             kwargs['sizespecf'] = ''
-#         return super().get_context_data(**kwargs)
+    def form_valid(self, form):
+        order = form.save()
+        return redirect('order:orderedit', pk=order.pk)
 
-#     def form_valid(self, form):
-#         sample = form.save()
-#         return redirect('sample:sampleedit', pk=sample.pk)
+    def get_context_data(self, **kwargs):
+        try:
+            kwargs['colorqtys'] = self.get_object().colorqtys.all()
+        except ObjectDoesNotExist:
+            kwargs['colorqtys'] = ''
+        return super().get_context_data(**kwargs)
+
+
+# 订单颜色数量新增
+def colorqtyadd(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    form = Order_color_ratio_qty_Form(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            colorqty = form.save(commit=False)
+            colorqty.order = order
+            colorqty.save()
+            return redirect('order:orderedit', pk=order.pk)
+    else:
+        form = Order_color_ratio_qty_Form()
+    return render(request, 'colorqty_add.html', {'form': form})
+
+
+
+
 
 
 # # 改变样板状态到送工厂状态

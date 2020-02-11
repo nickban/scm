@@ -5,64 +5,64 @@
 
 
 {% block css%}
-<!-- <link rel="stylesheet" href="{% static 'css/paginator.css' %}"> -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
 
 {% endblock %}
 
 {% block content %}
-  <!-- {% if request.user.is_office or request.user.is_merchandiser %}
-    <a class="btn btn-outline-primary my-3" href="{% url 'sample:sampleaddstep1'%}" role="button">新建样板</a>
-  {% endif %} -->
+
   <div class="table-responsive">
-    <table id="samplelist" class="table table-hover">
+    <table id="orderlistnew" class="table table-hover">
       <thead>
         <tr>
           <th>创建日期</th>
-          <th>样板号</th>
           <th>款式图</th>
+          <th>订单号</th>
+          <th>款号</th>
           <th>品牌</th>
           <th>买手</th>
           <th>跟单</th>
           <th>工厂</th>
-          <th>工厂报价</th>
-          <th>寄板日期</th>
+          <th>运输</th>
+          <th>工厂交期</th>
+          <th>客人交期</th>
           <th>状态</th>
         </tr>
       </thead>
       <tbody>
-        {% for sample in samples %}
+        {% for order in orders %}
           <tr>
-            <td>{{ sample.created_date |date:"SHORT_DATE_FORMAT"  }}</td>
-            <!-- <td>{{ sample.created_date }}</td> -->
+            <td>{{ order.created_date |date:"SHORT_DATE_FORMAT"  }}</td>
+            <td><img src="{{ order.avatar.file.url }}" width=100px, height=100px></td>
+
             {% if request.user.is_merchandiser or request.user.is_office  or request.user.is_merchandiser_manager%}
-            <td><a href="{% url 'sample:sampleedit'  sample.pk %}">{{ sample.sample_no }}</a></td>
+            <td><a href="{% url 'order:orderedit'  order.pk %}">{{ order.po }}</a></td>
             {% else %}
-            <td><a href="{% url 'sample:sampledetail'  sample.pk %}">{{ sample.sample_no }}</a></td>
+            <td><a href="{% url 'order:orderdetail'  order.pk %}">{{ order.po }}</a></td>
             {% endif %}
-            <td><img src="{{ sample.os_avatar.file.url }}" width=100px, height=100px></td>
-            <td>{{ sample.brand }}</td>
-            <td>{{ sample.designer }}</td>
-            <td>{{ sample.merchandiser }}</td>
-            {% if sample.factory == None %}
-              <td></td>
-            {% else %}
-              <td>{{ sample.factory }}</td>
-            {% endif %}
-            {% if sample.qutation == None %}
+            <td>{{ order.style_no }}</td>
+            <td>{{ order.brand }}</td>
+            <td>{{ order.designer }}</td>
+            <td>{{ order.merchandiser }}</td>
+            <td>{{ order.factory }}</td>
+            <td>{{ order.tran_type }}</td>
+            {% if order.handover_date_f == None %}
             <td></td>
             {% else %}
-              <td>{{ sample.qutation }}</td>
+            <td>{{ order.handover_date_f }}</td>
             {% endif %}
-            <td>{{ sample.parcel_date |date:"SHORT_DATE_FORMAT" }}</td>
-            <td>{{ sample.get_status_display }}</td>
+            {% if order.handover_date_f == None %}
+            <td></td>
+            {% else %}
+            <td>{{ order.handover_date_d }}</td>
+            {% endif %}
+            <td>{{ order.get_status_display }}</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 
-<!-- {% include 'paginator.html'%} -->
 
 {% endblock %}
 
@@ -72,7 +72,7 @@
 
 <script>
 $(document).ready( function () {
-  var table =$('#samplelist').DataTable({
+  var table =$('#orderlistnew').DataTable({
         "language": {
           "processing": "处理中...",
           "loadingRecords": "载入中...",

@@ -37,8 +37,10 @@ urlpatterns = [
         path('shipped/', order.OrderListShipped.as_view(), name='orderlistshipped'),
         # 订单新增
         path('add/', order.OrderAdd.as_view(), name='orderadd'),
-        # # 订单编辑，详情，删除
-        # path('<int:pk>/', order.OrderEdit.as_view(), name='orderedit'),
+
+        # 订单编辑，详情，删除
+        path('<int:pk>/', order.OrderEdit.as_view(), name='orderedit'),
+        path('<int:pk>/colorqtyadd/', order.colorqtyadd, name='colorqtyadd'),
         # path('<int:pk>/detail/', order.OrderDetail.as_view(), name='orderdetail'),
         # path('<int:pk>/delete/', order.OrderDelete.as_view(), name='orderdelete'),
         # # 订单上传资料通用功能

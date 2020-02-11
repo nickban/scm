@@ -19,10 +19,13 @@
 <form method="post" novalidate>
     {% csrf_token %}
     <div class="row">
-        <div class="col-12 col-md-3 text-left">
-            <img  class="rounded" src="" width=120px height=120px  >
+        <div class="col-sm  text-left d-flex align-items-end">
+            <img  class="rounded mr-2" src="" width=120px height=120px  >
+            <a href="" role="button">
+            <i class="fas fa-file-upload fa-2x"></i></a>
+            <label class="mr-4" for="">款式图</label>
         </div>
-        <div class="col-12 col-md-3">
+        <div class="col-sm ">
             <div class="form-group">
                 {{ form.po | as_crispy_field }}
             </div>
@@ -30,7 +33,7 @@
                 {{ form.style_no | as_crispy_field   }}
             </div>
         </div>
-        <div class="col-12 col-md-3">
+        <div class="col-sm ">
             <div class="form-group">
                 {{ form.brand | as_crispy_field   }}
             </div>
@@ -38,7 +41,7 @@
                 {{ form.designer | as_crispy_field  }}
             </div>
         </div>
-        <div class="col-12 col-md-3">
+        <div class="col-sm ">
             <div class="form-group">
                 {{ form.merchandiser | as_crispy_field   }}
             </div>
@@ -46,74 +49,146 @@
                 {{ form.factory | as_crispy_field    }}
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-12 col-md-3">
+        <div class="col-sm ">
             <div class="form-group">
-                {{ form.style | as_crispy_field    }}
+                {{ form.style | as_crispy_field   }}
             </div>
-            <div class="form-group">
-                {{ form.factory_price | as_crispy_field    }}
-            </div>
-            <div class="form-group">
-                {{ form.main_label | as_crispy_field    }}
-            </div>
-        </div>
-        <div class="col-12 col-md-3">
-            <div class="form-group">
+            <div class="form-group ">
                 {{ form.order_type | as_crispy_field    }}
             </div>
-            <div class="form-group">
-                {{ form.disigner_price | as_crispy_field    }}
-            </div>
-            <div class="form-group">
-                {{ form.main_tag | as_crispy_field    }}
-            </div>
         </div>
-        <div class="col-12 col-md-3 ">
-            <div class="form-group">
-                {{ form.tran_type | as_crispy_field    }}
-            </div>
-            <div class="form-group">
-                {{ form.handover_date_f | as_crispy_field    }}
-            </div>
-            <div class="form-group">
-                {{ form.addition_tag | as_crispy_field    }}
-            </div>
-        </div>
-        <div class="col-12 col-md-3">
+    </div>
+    <div class="row">
+        <div class="col-sm">
             <div class="form-group">
                 {{ form.sample | as_crispy_field    }}
             </div>
             <div class="form-group">
-                {{ form.handover_date_d | as_crispy_field    }}
+                {{ form.factory_price | as_crispy_field    }}
+            </div>
+
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                {{ form.tran_type | as_crispy_field    }}
             </div>
             <div class="form-group">
-                {{ form.parent | as_crispy_field    }}
+                {{ form.disigner_price | as_crispy_field    }}
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-12 col-md-3">
+        <div class="col-sm">
+            <div class="form-group">
+                {{ form.main_label | as_crispy_field    }}
+            </div>
+            <div class="form-group">
+                {{ form.handover_date_f | as_crispy_field    }}
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                {{ form.main_tag | as_crispy_field    }}
+            </div>
+            <div class="form-group">
+                {{ form.handover_date_d | as_crispy_field    }}
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                {{ form.addition_tag| as_crispy_field    }}
+            </div>
             <div class="form-group">
                 {{ form.packing_type | as_crispy_field    }}
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row  mt-2">
         <div class="col-12 col-md-12">
+            <div class="form-group">
+                <a href="" role="button">
+                <i class="fas fa-file-upload fa-2x"></i></a>
+                <label class="mr-5" for="">色卡</label>
+                <a href="" role="button">
+                <i class="fas fa-file-upload fa-2x"></i></a>
+                 <label class="mr-5"  for="">船样照片</label>
+                <a class="ml-3" href="" role="button">
+                <i class="fas fa-file-upload fa-2x"></i></a>
+                <label  for="">批改意见</label>
+            </div>
+        </div>
+    </div>
+    <div class="row my-2">
+        <div class="col-12">
             <div class="form-group">
                 {{ form.comments | as_crispy_field    }}
             </div>
         </div>
     </div>
-     <div class="row">
+    <div class="row my-2" style="min-height: 150px;">
+        <div class="col-12">
+            <div class="form-group">
+                <label for="">订单数量</label>
+                <a class="mx-2" href="{% url 'order:colorqtyadd' pk=order.pk %}"><i class="fas fa-plus-circle fa-1x"></i></a>
+                <table class="table table-sm table-bordered">
+                       <thead>
+                            <tr class="text-center">
+                                <th colspan="3" scope="col">颜色</th>
+                                <th class="align-middle" rowspan="2" scope="col">比列</th>
+                                <th colspan="5" scope="col">尺码</th>
+                                <th colspan="2" scope="col">数量</th>
+                                <th class="align-middle" rowspan="2" scope="col">操作</th>
+                            </tr>
+                            <tr class="text-center">
+                                <th scope="col">中文</th>
+                                <th scope="col">英文</th>
+                                <th scope="col">色号</th>
+                                <th scope="col">6</th>
+                                <th scope="col">8</th>
+                                <th scope="col">10</th>
+                                <th scope="col">12</th>
+                                <th scope="col">14</th>
+                                <th scope="col">中包</th>
+                                <th scope="col">数量</th>
+                            </tr>
+                    </thead>
+                        {% if colorqtys %}
+                            {%for colorqty in colorqtys%}
+                            <tr  class="text-center">
+                                <td>{{colorqty.color}}</td>
+                                <td>{{colorqty.color_cn}}</td>
+                                <td>{{colorqty.color_no}}</td>
+                                <td>{{colorqty.ratio}}</td>
+                                <td>{{colorqty.size1}}</td>
+                                <td>{{colorqty.size2}}</td>
+                                <td>{{colorqty.size3}}</td>
+                                <td>{{colorqty.size4}}</td>
+                                <td>{{colorqty.size5}}</td>
+                                <td>{{colorqty.bags}}</td>
+                                <td>{{colorqty.qty}}</td>
+                                <td style="width: 8%">
+                                    <a  class="mr-2" href="http://"><i class="fas fa-edit fa-1x"></i></a>
+                                    <a  href="http://"><i class="far fa-trash-alt fa-1x"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td class="text-center" colspan="12" scope="col">未添加</td>
+                        </tr>
+                        {% endif %}
+                    </form>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-sm ">
             <div class="form-group">
                 <input type="submit" value="保存" class="btn btn-block btn-outline-primary">
             </div>
         </div>
-        
         <div class="col-sm">
             <div class="form-group">
                 {% if sample.status == 'NEW' or sample.status == 'SENT_F'%}
@@ -124,7 +199,6 @@
                 {% endif %}
             </div>
         </div>
-
         <div class=" col-sm">
             <div class="form-group">
                 <a class="btn btn-block btn-outline-primary" href="" role="button">删除</a>
@@ -155,7 +229,7 @@
         {% endif %}
         <div class=" col-sm">
             <div class="form-group">
-                <a class="btn btn-block btn-outline-primary" href="" role="button">样板复制</a>
+                <a class="btn btn-block btn-outline-primary" href="" role="button">订单复制</a>
             </div>
         </div> 
     </div>
@@ -163,6 +237,7 @@
 {% endblock %}
 
 {% block script %}
+
 <!-- 删除项目确认js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 <script>
@@ -183,5 +258,4 @@
         }}
     });
 </script>
-
 {% endblock %}

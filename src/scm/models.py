@@ -399,6 +399,7 @@ class Order(models.Model):
     NEWORDER = 'NEWORDER'
     REPEATORDER = 'REPEATORDER'
     ORDER_TYPE = [
+        (None, '请选择'),
         (NEWORDER, '新单'),
         (REPEATORDER, '翻单'),
     ]
@@ -406,6 +407,7 @@ class Order(models.Model):
     SEA = 'SEA'
     AIR = 'AIR'
     TRAN_TYPE = [
+        (None, '请选择'),
         (SEA, '海运'),
         (AIR, '空运'),
     ]
@@ -418,8 +420,10 @@ class Order(models.Model):
                               default=NEW)
     po = models.CharField('订单号', max_length=100)
     style_no = models.CharField('款号', max_length=100)
-    order_type = models.CharField('订单类型', max_length=50, choices=ORDER_TYPE)
-    tran_type = models.CharField('订单类型', max_length=50, choices=TRAN_TYPE)
+    order_type = models.CharField('订单类型', max_length=50,
+                                  choices=ORDER_TYPE,
+                                  blank=True)
+    tran_type = models.CharField('运输类型', max_length=50, choices=TRAN_TYPE, blank=True)
     brand = models.ForeignKey(Brand,
                               verbose_name='品牌',
                               related_name='orders',
@@ -461,9 +465,9 @@ class Order(models.Model):
                                          max_digits=5,
                                          decimal_places=2,
                                          null=True, blank=True)
-    handover_date_f = models.DateTimeField('工厂交期', null=True, blank=True)
-    handover_date_d = models.DateTimeField('客人交期', null=True, blank=True)
-    comments = models.TextField('注意事项', blank=True)
+    handover_date_f = models.DateField('工厂交期', null=True, blank=True)
+    handover_date_d = models.DateField('客人交期', null=True, blank=True)
+    comments = models.TextField('大货要求', blank=True)
     parent = models.ForeignKey('self',
                                verbose_name='父订单',
                                related_name='suborders',
@@ -572,36 +576,30 @@ def auto_delete_file_order_discountattach(sender, instance, **kwargs):
             os.remove(instance.file.path)
 
 
-class Order_color_ratio(models.Model):
+class Order_color_ratio_qty(models.Model):
+    order = models.ForeignKey(Order,
+                              on_delete=models.CASCADE,
+                              related_name='colorqtys')
     created_date = models.DateTimeField(auto_now_add=True)
     color = models.CharField('颜色(英文)', max_length=100)
     color_cn = models.CharField('颜色(中文)', max_length=100)
     color_no = models.CharField('色号', max_length=100)
     ratio = models.CharField('比列', max_length=100)
-    order = models.ForeignKey(Order,
-                              on_delete=models.CASCADE,
-                              related_name='color_ratios')
-
-
-class Order_color_ratio_qty(models.Model):
-    color_ratio = models.OneToOneField(Order_color_ratio, on_delete=models.CASCADE,
-                                       related_name='order_qty')
-    created_date = models.DateTimeField(auto_now_add=True)
     size1 = models.IntegerField()
     size2 = models.IntegerField()
     size3 = models.IntegerField()
     size4 = models.IntegerField()
     size5 = models.IntegerField()
-    size6 = models.IntegerField()
-    size7 = models.IntegerField()
-    size8 = models.IntegerField()
+    bags = models.IntegerField()
+    qty = models.IntegerField()
 
 
 class Order_packing_ctn(models.Model):
-    color_ratio = models.ForeignKey(Order_color_ratio,
-                                    on_delete=models.CASCADE,
-                                    related_name='packing_ctns')
+    order = models.ForeignKey(Order,
+                              on_delete=models.CASCADE,
+                              related_name='packing_ctns')
     created_date = models.DateTimeField(auto_now_add=True)
+    color = models.CharField('颜色(英文)', max_length=100)
     ctn_no = models.IntegerField()
     bags = models.IntegerField()
     size1 = models.IntegerField()
@@ -610,8 +608,6 @@ class Order_packing_ctn(models.Model):
     size4 = models.IntegerField()
     size5 = models.IntegerField()
     size6 = models.IntegerField()
-    size7 = models.IntegerField()
-    size8 = models.IntegerField()
     length = models.DecimalField('长',
                                  max_digits=5,
                                  decimal_places=2,
@@ -632,3 +628,7 @@ class Order_packing_ctn(models.Model):
                                decimal_places=2,
                                null=True, blank=True,
                                default=0.8)
+    gross_weight = models.DecimalField('毛重',
+                                       max_digits=5,
+                                       decimal_places=2,
+                                       null=True, blank=True)

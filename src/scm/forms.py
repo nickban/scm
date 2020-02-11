@@ -7,7 +7,7 @@ from .models import (User, Factory,
                      Sample_os_pics, Sample_swatches,
                      Sample_pics_factory, Sample_quotation_form,
                      Sample_size_spec_factory,
-                     Order,)
+                     Order, Order_color_ratio_qty)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
@@ -223,15 +223,28 @@ class SampleospicsForm(forms.ModelForm):
         model = Sample_os_pics
         fields = ('file',)
 
+
 # 订单表
 
 
-class NeworderForm(forms.ModelForm):
+class OrderForm(forms.ModelForm):
+    handover_date_f = forms.DateField(widget=DatePicker(), label="工厂交期", required=False)
+    handover_date_d = forms.DateField(widget=DatePicker(), label="客人交期", required=False)
+
     def __init__(self, *args, **kwargs):
-        super(NeworderForm, self).__init__(*args, **kwargs)
+        super(OrderForm, self).__init__(*args, **kwargs)
         self.fields['brand'].empty_label = '请选择'
         self.fields['merchandiser'].empty_label = '请选择'
         self.fields['designer'].empty_label = '请选择'
+        self.fields['factory'].empty_label = '请选择'
+        self.fields['style'].empty_label = '请选择'
+        self.fields['order_type'].empty_label = '请选择'
+        self.fields['sample'].empty_label = '请选择'
+        self.fields['tran_type'].empty_label = '请选择'
+        self.fields['main_label'].empty_label = '请选择'
+        self.fields['main_tag'].empty_label = '请选择'
+        self.fields['addition_tag'].empty_label = '请选择'
+        self.fields['packing_type'].empty_label = '请选择'
 
     class Meta:
         model = Order
@@ -255,29 +268,17 @@ class NeworderForm(forms.ModelForm):
             'designer': {
                 'required': "必填字段！",
             },
-        }
+        },
+        widgets = {
+                  'comments': forms.Textarea(attrs={'rows': 5}),
+                  }
 
 
-# class OrderForm(forms.ModelForm):
-#     parcel_date = forms.DateField(widget=DatePicker(), label="寄件日期", required=False)
-#     qutation = forms.DecimalField(label="工厂报价(元)", required=False)
+class Order_color_ratio_qty_Form(forms.ModelForm):
+    class Meta:
+        model = Order_color_ratio_qty
+        fields = ('color', 'color_cn', 'color_no', 'ratio', 'size1', 'size2', 'size3', 'size4', 'size5', 'bags', 'qty')
 
-#     def __init__(self, *args, **kwargs):
-#         super(SampleForm, self).__init__(*args, **kwargs)
-#         self.fields['brand'].empty_label = '请选择'
-#         self.fields['merchandiser'].empty_label = '请选择'
-#         self.fields['designer'].empty_label = '请选择'
-#         self.fields['factory'].empty_label = '请选择'
-#         self.fields['style'].empty_label = '请选择'
-
-#     class Meta:
-#         model = Sample
-#         fields = ('has_os_sample', 'sample_no', 'brand',
-#                   'merchandiser', 'designer', 'factory', 'style', 'qutation',
-#                   'parcel_date', 'alteration')
-#         widgets = {
-#                   'alteration': forms.Textarea(attrs={'rows': 6}),
-#                   }
 
 
 # class OrderdetailForm(forms.ModelForm):
