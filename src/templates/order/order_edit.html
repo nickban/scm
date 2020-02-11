@@ -127,7 +127,9 @@
         <div class="col-12">
             <div class="form-group">
                 <label for="">订单数量</label>
+                {% if order.pk %}
                 <a class="mx-2" href="{% url 'order:colorqtyadd' pk=order.pk %}"><i class="fas fa-plus-circle fa-1x"></i></a>
+                {% endif %}
                 <table class="table table-sm table-bordered">
                        <thead>
                             <tr class="text-center">
@@ -147,7 +149,7 @@
                                 <th scope="col">12</th>
                                 <th scope="col">14</th>
                                 <th scope="col">中包</th>
-                                <th scope="col">数量</th>
+                                <th scope="col">件数</th>
                             </tr>
                     </thead>
                         {% if colorqtys %}
@@ -157,16 +159,37 @@
                                 <td>{{colorqty.color_cn}}</td>
                                 <td>{{colorqty.color_no}}</td>
                                 <td>{{colorqty.ratio}}</td>
+                                {% if colorqty.size1 == 0 %}
+                                <td></td>
+                                {% else %}
                                 <td>{{colorqty.size1}}</td>
+                                {% endif %}
+                                {% if colorqty.size2 == 0 %}
+                                <td></td>
+                                {% else %}
                                 <td>{{colorqty.size2}}</td>
+                                {% endif %}
+                                {% if colorqty.size3 == 0 %}
+                                <td></td>
+                                {% else %}
                                 <td>{{colorqty.size3}}</td>
+                                {% endif %}
+                                {% if colorqty.size4 == 0 %}
+                                <td></td>
+                                {% else %}
                                 <td>{{colorqty.size4}}</td>
+                                {% endif %}
+                                {% if colorqty.size5 == 0 %}
+                                <td></td>
+                                {% else %}
                                 <td>{{colorqty.size5}}</td>
+                                {% endif %}
+
                                 <td>{{colorqty.bags}}</td>
                                 <td>{{colorqty.qty}}</td>
                                 <td style="width: 8%">
-                                    <a  class="mr-2" href="http://"><i class="fas fa-edit fa-1x"></i></a>
-                                    <a  href="http://"><i class="far fa-trash-alt fa-1x"></i></a>
+                                    <a  class="mr-2" href="{% url 'order:colorqtyedit' pk=order.pk colorqtypk=colorqty.pk%}"><i class="fas fa-edit fa-1x"></i></a>
+                                    <a  data-title="提示" class="delete" href="{% url 'order:colorqtydelete' pk=order.pk colorqtypk=colorqty.pk%}"><i class="far fa-trash-alt fa-1x"></i></a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -191,47 +214,48 @@
         </div>
         <div class="col-sm">
             <div class="form-group">
-                {% if sample.status == 'NEW' or sample.status == 'SENT_F'%}
-                <a class="btn btn-block btn-outline-primary" href="" role="button">返回列表</a>
+                {% if order.status == 'NEW' or order.status == 'SENT_FACTORY'%}
+                <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderlistnew' %}" role="button">返回列表</a>
+                {% elif order.status == 'COMFIRMED'%}
+                <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderlistconfirmed' %}" role="button">返回列表</a>
                 {% else %}
-                <a class="btn btn-block btn-outline-primary" href="" role="button">返回列表</a>
-                <!-- <input class="btn btn-block btn-outline-primary" type=button value="返回" onClick="javascript:history.go(-1);"> -->
+                <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderlistshipped' %}" role="button">返回列表</a>
                 {% endif %}
             </div>
         </div>
+        {% if order.pk %}
         <div class=" col-sm">
             <div class="form-group">
-                <a class="btn btn-block btn-outline-primary" href="" role="button">删除</a>
+                <a data-title="提示" class=" delete btn btn-block btn-outline-primary" href="{% url 'order:orderdelete' pk=order.pk %}" role="button">删除</a>
             </div>
         </div>
-        <div class=" col-sm">
-            <div class="form-group">
-                {% if request.user.is_merchandiser or  request.user.is_office %}
-                <a href="" class="btn btn-block btn-outline-primary" onclick="window.print()" role="button">打印</a>
-                {% else%}
-                <a href="" class="btn btn-block btn-outline-primary" onclick="window.print()" role="button">打印</a>
-                {% endif %}
-            </div>
-        </div>
-        {% if sample.status == 'NEW' %}
-        <div class=" col-sm">
-            <div class="form-group">
-                <a class="btn btn-block btn-outline-primary" href="" role="button">通知工厂</a>
-            </div>
-        </div> 
-        {% endif %}
-        {% if sample.status == 'SENT_F' %}
-        <div class=" col-sm">
-            <div class="form-group">
-                <a class="btn btn-block btn-outline-primary" href="" role="button">样板完成</a>
-            </div>
-        </div> 
         {% endif %}
         <div class=" col-sm">
             <div class="form-group">
-                <a class="btn btn-block btn-outline-primary" href="" role="button">订单复制</a>
+                <a href="" class="btn btn-block btn-outline-primary" onclick="window.print()" role="button">打印</a>
+            </div>
+        </div>
+        {% if order.status == 'NEW' %}
+        <div class=" col-sm">
+            <div class="form-group">
+                <a class="btn btn-block btn-outline-primary" href="{% url 'order:ordersentfactory' pk=order.pk%}" role="button">通知工厂</a>
             </div>
         </div> 
+        {% endif %}
+        {% if request.user.is_factory and sample.status == 'SENT_F' %}
+        <div class=" col-sm">
+            <div class="form-group">
+                <a class="btn btn-block btn-outline-primary" href="" role="button">确认订单</a>
+            </div>
+        </div> 
+        {% endif %}
+        {% if order.pk%}
+        <div class=" col-sm">
+            <div class="form-group">
+                <a class="btn btn-block btn-outline-primary" href="{% url 'order:ordercopy' pk=order.pk %}" role="button">订单复制</a>
+            </div>
+        </div> 
+        {% endif %}
     </div>
 </form>
 {% endblock %}
@@ -242,7 +266,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 <script>
     $('a.delete').confirm({
-        content: "确定要删除此附件吗？",
+        content: "确定要删除吗？",
         type: 'blue',
         typeAnimated: true,
         buttons: {

@@ -45,7 +45,7 @@
             <td>{{ order.designer }}</td>
             <td>{{ order.merchandiser }}</td>
             <td>{{ order.factory }}</td>
-            <td>{{ order.tran_type }}</td>
+            <td>{{ order.get_tran_type_display }}</td>
             {% if order.handover_date_f == None %}
             <td></td>
             {% else %}

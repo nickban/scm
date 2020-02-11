@@ -31,7 +31,7 @@
                         <th scope="col">数量</th>
                     </tr>
                 <thead>
-                <form method="post">
+                <form method="post" novalidate>
                 {% csrf_token %}
                 <tr class="text-center">
                     <th scope="col">{% render_field form.color class="form-control"%}</th>
@@ -45,8 +45,10 @@
                     <th scope="col">{% render_field form.size5 class="form-control"%}</th>
                     <th scope="col">{% render_field form.bags class="form-control"%}</th>
                     <th scope="col">{% render_field form.qty class="form-control"%}</th>
-                    <th scope="col">
-                    <input  type="submit" value="增加" class="btn btn-block btn-outline-primary">
+                    <th style="width: 12%" scope="col">
+                    <input  type="submit" value="保存" class="btn  btn-outline-primary">
+                    <a class="btn  btn-outline-primary" href="{% url 'order:orderedit' pk=order.pk%}">返回</a>
+                    </th>
                 </tr>
                 {% if colorqtys %}
                     {%for colorqty in colorqtys%}

@@ -386,7 +386,7 @@ class Packingtype(models.Model):
 
 class Order(models.Model):
     NEW = 'NEW'
-    SENT_FACTORY = 'SENT_F'
+    SENT_FACTORY = 'SENT_FACTORY'
     COMFIRMED = 'COMFIRMED'
     SHIPPED = 'SHIPPED'
     ORDER_STATUS = [

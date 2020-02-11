@@ -27,11 +27,11 @@ class OrderListNew(ListView):
         loginuser = self.request.user
         if loginuser.is_merchandiser:
             return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
-                                        Q(status='NEW') | Q(status='SENT_F')).order_by('-created_date')
+                                        Q(status='NEW') | Q(status='SENT_FACTORY')).order_by('-created_date')
         elif loginuser.is_factory:
-            return Order.objects.filter(factory=loginuser.factory, status='SENT_F').order_by('-created_date')
+            return Order.objects.filter(factory=loginuser.factory, status='SENT_FACTORY').order_by('-created_date')
         else:
-            return Order.objects.filter(Q(status='NEW') | Q(status='SENT_F')).order_by('-created_date')
+            return Order.objects.filter(Q(status='NEW') | Q(status='SENT_FACTORY')).order_by('-created_date')
 
 # 订单列表-已确认(已确认状态)
 @method_decorator([login_required, o_m_mg_f_or_required], name='dispatch')
@@ -98,7 +98,7 @@ class OrderEdit(UpdateView):
 
     def get_context_data(self, **kwargs):
         try:
-            kwargs['colorqtys'] = self.get_object().colorqtys.all()
+            kwargs['colorqtys'] = self.get_object().colorqtys.all().order_by('-created_date')
         except ObjectDoesNotExist:
             kwargs['colorqtys'] = ''
         return super().get_context_data(**kwargs)
@@ -116,24 +116,64 @@ def colorqtyadd(request, pk):
             return redirect('order:orderedit', pk=order.pk)
     else:
         form = Order_color_ratio_qty_Form()
-    return render(request, 'colorqty_add.html', {'form': form})
+    return render(request, 'colorqty_add.html', {'form': form, 'order': order})
 
 
+# 订单颜色数量更改
+def colorqtyedit(request, pk, colorqtypk):
+    order = get_object_or_404(Order, pk=pk)
+    colorqty = get_object_or_404(Order_color_ratio_qty, pk=colorqtypk)
+    form = Order_color_ratio_qty_Form(request.POST, instance=colorqty)
+    if request.method == 'POST':
+        if form.is_valid():
+            colorqty = form.save(commit=False)
+            colorqty.order = order
+            colorqty.save()
+            return redirect('order:orderedit', pk=order.pk)
+    else:
+        form = Order_color_ratio_qty_Form(instance=colorqty)
+    return render(request, 'colorqty_add.html', {'form': form, 'order': order})
 
 
+# 订单颜色数量删除
+def colorqtydelete(request, pk, colorqtypk):
+    order = get_object_or_404(Order, pk=pk)
+    colorqty = get_object_or_404(Order_color_ratio_qty, pk=colorqtypk)
+    colorqty.delete()
+    return redirect('order:orderedit', pk=order.pk)
 
 
-# # 改变样板状态到送工厂状态
-# @o_m_mg_or_required
-# def samplesentfactory(request, pk):
-#     sample = get_object_or_404(Sample, pk=pk)
-#     if sample.factory is None:
-#         messages.warning(request, '请选择工厂并保存后，才能通知工厂!')
-#     else:
-#         sample.status = "SENT_F"
-#         sample.save()
-#         messages.success(request, '样板已经安排给工厂，并已邮件通知!')
-#     return redirect('sample:sampleedit', pk=sample.pk)
+# 删除订单
+def orderdelete(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    status = order.status
+    order.delete()
+    if status == 'NEW' or status == 'SENT_FACTORY':
+        return redirect('order:orderlistnew')
+    elif status == 'COMFIRMED':
+        return redirect('order:orderlistconfirmed')
+    else:
+        return redirect('order:orderlistshipped')
+
+
+# 拷贝订单，测试数据用
+def ordercopy(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    order.pk = None
+    order.save()
+    return redirect('order:orderedit', pk=order.pk)
+
+# 改变订单状态到送工厂状态
+@o_m_mg_or_required
+def ordersentfactory(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    if order.factory is None:
+        messages.warning(request, '请选择工厂并保存后，才能通知工厂!')
+    else:
+        order.status = "SENT_FACTORY"
+        order.save()
+        messages.success(request, '样板已经安排给工厂，并已邮件通知!')
+    return redirect('order:orderedit', pk=order.pk)
 
 
 # # 改变样板状态到已完成状态
@@ -174,21 +214,9 @@ def colorqtyadd(request, pk):
 #         return super().get_context_data(**kwargs)
 
 
-# # 拷贝样板，测试数据用
-# def samplecopy(request, pk):
-#     sample = get_object_or_404(Sample, pk=pk)
-#     sample.pk = None
-#     sample.save()
-#     return redirect('sample:sampleedit', pk=sample.pk)
 
 
-# # 删除样板
-# @method_decorator([login_required, o_m_mg_or_required], name='dispatch')
-# class SampleDelete(DeleteView):
-#     model = Sample
-#     context_object_name = 'sample'
-#     template_name = 'sample_delete.html'
-#     success_url = reverse_lazy('sample:samplelistnew')
+
 
 
 # # 样板附件通用功能视图
