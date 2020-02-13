@@ -9,7 +9,7 @@ from scm.forms import (NewsampleForm, SampleForm, SamplesizespecsForm,
                        SampleswatchForm, SamplefpicsForm, SamplequotationForm,
                        SamplesizespecfForm, SampledetailForm)
 from django.contrib.auth.decorators import login_required
-from scm.decorators import o_m_mg_or_required, o_m_mg_f_or_required
+from scm.decorators import o_m_mg_or_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.views import reverse_lazy
 from django.http import JsonResponse
@@ -19,7 +19,7 @@ from django.db.models import Q
 from django.contrib import messages
 
 # 样板列表-未完成(新建，已送工厂状态)
-@method_decorator([login_required, o_m_mg_f_or_required], name='dispatch')
+@method_decorator([login_required], name='dispatch')
 class SampleListNew(ListView):
     model = Sample
     ordering = ('-created_date', )
@@ -37,7 +37,7 @@ class SampleListNew(ListView):
             return Sample.objects.filter(Q(status='NEW') | Q(status='SENT_F')).order_by('-created_date')
 
 # 样板列表-已完成(已完成状态)
-@method_decorator([login_required, o_m_mg_f_or_required], name='dispatch')
+@method_decorator([login_required], name='dispatch')
 class SampleListCompleted(ListView):
     model = Sample
     ordering = ('-created_date', )
@@ -143,7 +143,7 @@ def samplecompleted(request, pk):
 
 
 # 工厂查看样板详情页，部分信息，报价单，色卡，成样照片，成样尺寸表
-@method_decorator([login_required, o_m_mg_f_or_required], name='dispatch')
+@method_decorator([login_required], name='dispatch')
 class SampleDetail(UpdateView):
     template_name = 'sample_detail.html'
     model = Sample
@@ -171,6 +171,7 @@ class SampleDetail(UpdateView):
 
 
 # 拷贝样板，测试数据用
+@o_m_mg_or_required
 def samplecopy(request, pk):
     sample = get_object_or_404(Sample, pk=pk)
     sample.pk = None

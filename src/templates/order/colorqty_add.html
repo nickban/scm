@@ -33,52 +33,26 @@
                 <thead>
                 <form method="post" novalidate>
                 {% csrf_token %}
-                <tr class="text-center">
-                    <th scope="col">{% render_field form.color class="form-control"%}</th>
-                    <th scope="col">{% render_field form.color_cn class="form-control"%}</th>
-                    <th scope="col">{% render_field form.color_no class="form-control"%}</th>
-                    <th scope="col">{% render_field form.ratio class="form-control"%}</th>
-                    <th scope="col">{% render_field form.size1 class="form-control"%}</th>
-                    <th scope="col">{% render_field form.size2 class="form-control"%}</th>
-                    <th scope="col">{% render_field form.size3 class="form-control"%}</th>
-                    <th scope="col">{% render_field form.size4 class="form-control"%}</th>
-                    <th scope="col">{% render_field form.size5 class="form-control"%}</th>
-                    <th scope="col">{% render_field form.bags class="form-control"%}</th>
-                    <th scope="col">{% render_field form.qty class="form-control"%}</th>
-                    <th style="width: 12%" scope="col">
-                    <input  type="submit" value="保存" class="btn  btn-outline-primary">
-                    <a class="btn  btn-outline-primary" href="{% url 'order:orderedit' pk=order.pk%}">返回</a>
-                    </th>
-                </tr>
-                {% if colorqtys %}
-                    {%for colorqty in colorqtys%}
-                        <tr>
-                            <td>{{colorqty.color}}</td>
-                            <td>{{colorqty.color_cn}}</td>
-                            <td>{{colorqty.color_no}}</td>
-                            <td>{{colorqty.ratio}}</td>
-                            <td>{{colorqty.size1}}</td>
-                            <td>{{colorqty.size2}}</td>
-                            <td>{{colorqty.size3}}</td>
-                            <td>{{colorqty.size4}}</td>
-                            <td>{{colorqty.size5}}</td>
-                            <td>{{colorqty.bags}}</td>
-                            <td>{{colorqty.qty}}</td>
-                            <td><a class="btn btn-block btn-outline-primary" href="http://"></a></td>
-                        </tr>
-                    {% endfor %}
-                {% else %}
-                {% endif %}
-                  </tr>
+                    <tr class="text-center">
+                        <th scope="col">{% render_field form.color class="form-control"%}</th>
+                        <th scope="col">{% render_field form.color_cn class="form-control"%}</th>
+                        <th scope="col">{% render_field form.color_no class="form-control"%}</th>
+                        <th scope="col">{% render_field form.ratio class="form-control"%}</th>
+                        <th scope="col">{% render_field form.size1 class="form-control"%}</th>
+                        <th scope="col">{% render_field form.size2 class="form-control"%}</th>
+                        <th scope="col">{% render_field form.size3 class="form-control"%}</th>
+                        <th scope="col">{% render_field form.size4 class="form-control"%}</th>
+                        <th scope="col">{% render_field form.size5 class="form-control"%}</th>
+                        <th scope="col">{% render_field form.bags class="form-control"%}</th>
+                        <th scope="col">{% render_field form.qty class="form-control"%}</th>
+                        <th style="width: 12%" scope="col">
+                        <input  type="submit" value="保存" class="btn  btn-outline-primary">
+                        <a class="btn  btn-outline-primary" href="{% url 'order:orderedit' pk=order.pk%}">返回</a>
+                        </th>
+                    </tr>
                 </form>
-                </thead>
-                <tbody>
-                </tbody>
-              </table>
-
+            </table>
         </div>
     </div>
-
 </div>
-
 {% endblock %}

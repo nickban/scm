@@ -7,7 +7,8 @@ from .models import (User, Factory,
                      Sample_os_pics, Sample_swatches,
                      Sample_pics_factory, Sample_quotation_form,
                      Sample_size_spec_factory,
-                     Order, Order_color_ratio_qty)
+                     Order, Order_color_ratio_qty, Order_size_specs,
+                     Order_swatches, Order_shipping_pics, Order_avatar)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
@@ -254,7 +255,7 @@ class OrderForm(forms.ModelForm):
                   'handover_date_f', 'handover_date_d', 'comments',
                   'parent', 'discount', 'discount_reason',
                   'invoice', 'main_label', 'main_tag', 'addition_tag',
-                  'packing_type')
+                  'packing_type', 'destination')
         error_messages = {
             'po': {
                 'required': "必填字段！",
@@ -278,7 +279,6 @@ class Order_color_ratio_qty_Form(forms.ModelForm):
     class Meta:
         model = Order_color_ratio_qty
         fields = ('color', 'color_cn', 'color_no', 'ratio', 'size1', 'size2', 'size3', 'size4', 'size5', 'bags', 'qty')
-
 
 
 # class OrderdetailForm(forms.ModelForm):
@@ -305,25 +305,25 @@ class Order_color_ratio_qty_Form(forms.ModelForm):
 #                   }
 
 
-# class OrdersizespecsForm(forms.ModelForm):
-#     class Meta:
-#         model = Sample_size_specs
-#         fields = ('file',)
+class OrdersizespecsForm(forms.ModelForm):
+    class Meta:
+        model = Order_size_specs
+        fields = ('file',)
 
 
-# class OrderswatchForm(forms.ModelForm):
-#     class Meta:
-#         model = Sample_swatches
-#         fields = ('file',)
+class OrderswatchForm(forms.ModelForm):
+    class Meta:
+        model = Order_swatches
+        fields = ('file',)
 
 
-# class OrderfpicsForm(forms.ModelForm):
-#     class Meta:
-#         model = Sample_pics_factory
-#         fields = ('file',)
+class OrdershippingpicsForm(forms.ModelForm):
+    class Meta:
+        model = Order_shipping_pics
+        fields = ('file',)
 
 
-# class OrderavatarForm(forms.ModelForm):
-#     class Meta:
-#         model = Sample_os_avatar
-#         fields = ('file',)
+class OrderavatarForm(forms.ModelForm):
+    class Meta:
+        model = Order_avatar
+        fields = ('file',)

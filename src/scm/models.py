@@ -411,6 +411,15 @@ class Order(models.Model):
         (SEA, '海运'),
         (AIR, '空运'),
     ]
+    AU = 'AU'
+    NZ = 'NZ'
+    SG = 'SG'
+    DESTINATION = [
+        (None, '请选择'),
+        (AU, '澳洲'),
+        (NZ, '新西兰'),
+        (SG, '新加坡'),
+    ]
 
     created_date = models.DateTimeField('创建日期', auto_now_add=True)
     status = models.CharField('订单状态',
@@ -423,6 +432,9 @@ class Order(models.Model):
     order_type = models.CharField('订单类型', max_length=50,
                                   choices=ORDER_TYPE,
                                   blank=True)
+    destination = models.CharField('目的地', max_length=50,
+                                   choices=DESTINATION,
+                                   blank=True)
     tran_type = models.CharField('运输类型', max_length=50, choices=TRAN_TYPE, blank=True)
     brand = models.ForeignKey(Brand,
                               verbose_name='品牌',

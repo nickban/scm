@@ -2,7 +2,8 @@ from django.contrib import admin
 from .models import (Sample, User, Style, Brand, Merchandiser, Designer,
                      Factory, Shipping, Qc, Finance, Office, Admin,
                      Merchandiser_Manager, Post, PostAttachment,
-                     Sample_os_avatar, Order, Order_color_ratio_qty)
+                     Sample_os_avatar, Order, Order_color_ratio_qty,
+                     Order_size_specs)
 
 admin.site.register(User)
 admin.site.register(Sample)
@@ -22,3 +23,4 @@ admin.site.register(PostAttachment)
 admin.site.register(Sample_os_avatar)
 admin.site.register(Order)
 admin.site.register(Order_color_ratio_qty)
+admin.site.register(Order_size_specs)

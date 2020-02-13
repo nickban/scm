@@ -2,6 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
+<!-- fileupload 参考这个网站做法 https://jsfiddle.net/kxom8jr0/ -->
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/fileupload.css' %}">
     <link rel="stylesheet" href="{% static 'css/fileinput.css' %}">
@@ -11,21 +12,17 @@
     <form  method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div id="div_id_attachment" class="form-group attachment ">
-            {% if  'osavatar' in attachtype %}
-            <input id="fileupload" type="file" name="file" class="inputfile" data-url="{% url 'sample:sampleattachadd' pk=sample.pk attachtype=attachtype%}" >
+            {% if  'avatar' in attachtype %}
+            <input id="fileupload" type="file" name="file" class="inputfile" data-url="{% url 'order:orderattachadd' pk=order.pk attachtype=attachtype%}" >
             {% else %}
-            <input id="fileupload" type="file" name="file" class="inputfile" data-url="{% url 'sample:sampleattachadd' pk=sample.pk attachtype=attachtype%}"  multiple>
+            <input id="fileupload" type="file" name="file" class="inputfile" data-url="{% url 'order:orderattachadd' pk=order.pk attachtype=attachtype%}"  multiple>
             {% endif %}
             <label for="fileupload">请点击选择文件...</label>
         </div>
-        {% if request.user.is_merchandiser or request.user.is_office or request.user.is_merchandiser_manager%}
-            {% if  'step2' in previous_url %}
-                <a class="btn btn-outline-primary" href="{% url 'sample:sampleaddstep2' pk=sample.pk %}" role="button">返回</a>
-            {% else %}
-                <a class="btn btn-outline-primary" href="{% url 'sample:sampleedit' sample.pk %}" role="button">返回</a>
-            {% endif %}
+        {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
+            <a class="btn btn-outline-primary" href="{% url 'order:orderedit' order.pk %}" role="button">返回</a>
         {% else %}
-            <a class="btn btn-outline-primary" href="{% url 'sample:sampledetail' sample.pk %}" role="button">返回</a>
+            <a class="btn btn-outline-primary" href="{% url 'order:orderedit' order.pk %}" role="button">返回</a>
         {% endif %}
     </form>
 {% endblock %}

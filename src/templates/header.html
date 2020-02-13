@@ -17,13 +17,15 @@
   <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">订单</a>
     <div class="dropdown-menu">
+      {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
       <a class="dropdown-item" href="{% url 'order:orderadd' %}">新建</a>
+      {% endif %}
       <a class="dropdown-item" href="{% url 'order:orderlistnew' %}">未确认</a>
       <a class="dropdown-item" href="{% url 'order:orderlistconfirmed' %}">已确认</a>
       <a class="dropdown-item" href="{% url 'order:orderlistshipped' %}">已出货</a>
       <a class="dropdown-item" href="{% url 'home' %}">装箱单</a>
       <a class="dropdown-item" href="{% url 'home' %}">对账单</a>
-      <a class="dropdown-item" href="{% url 'home' %}">查询</a>
+      <a class="dropdown-item" href="">进度管理</a>
     </div>
   </li>
   <li class="nav-item">

@@ -4,45 +4,38 @@
 
 {% block css%}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-
 {% endblock %}
 
 {% block content %}
 <div>
   <div class="form-group d-flex flex-wrap align-items-end">
     {% for attach in attaches %}
-    <div class="col-3">
-      <a href="{{attach.file.url}}">
-      <img src="{{ attach.file.url}}" width=300 height=300 class="img-thumbnail"></a>    
-    </div>
-    <div >
-      {% if 'os_pics' in attachtype %}
-        {% if request.user.is_merchandiser or  request.user.is_office or request.user.is_merchandiser_manager%}
-          <a data-title="提示" class="delete" href="{% url 'sample:sampleattachdelete' pk=sample.pk attachtype=attachtype attach_pk=attach.pk %}">
-          <i class="mx-2 far fa-trash-alt fa-1x"></i></a> 
-        {% endif%}
-      {% else %}
-        <a data-title="提示" class="delete" href="{% url 'sample:sampleattachdelete' pk=sample.pk attachtype=attachtype attach_pk=attach.pk %}">
-        <i class="mx-2 far fa-trash-alt fa-1x"></i></a> 
+      <div class="col-3">
+        <a href="{{attach.file.url}}">
+        <img src="{{ attach.file.url}}" width=300 height=300 class="img-thumbnail"></a>    
+      </div>
+      {% if order.status == 'NEW' or order.status == 'SENT_FACTORY' or order.status == 'COMFIRMED' %}
+        <div >
+            <a data-title="提示" class="delete" href="{% url 'order:orderattachdelete' pk=order.pk attachtype=attachtype attach_pk=attach.pk %}">
+            <i class="mx-2 far fa-trash-alt fa-1x"></i></a> 
+        </div>
       {% endif %}
-    </div>
     {% endfor %}
   </div>
-
   <div class="form-group">
-    {% if request.user.is_merchandiser or  request.user.is_office or request.user.is_merchandiser_manager%}
-        {% if 'step2' in previous_url%}
-        <a class="btn btn-block btn-outline-primary" href="{% url 'sample:sampleaddstep2' pk=sample.pk%}" role="button">返回</a>
-        {% else %}
-        <a class="btn btn-block btn-outline-primary" href="{% url 'sample:sampleedit' pk=sample.pk%}" role="button">返回</a>
+    {% if order.status == 'SHIPPED'%}
+       <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderdetail' pk=order.pk%}" role="button">返回</a>
+    {% else %}
+        {% if request.user.is_merchandiser or  request.user.is_merchandiser_manager%}
+          <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderedit' pk=order.pk%}" role="button">返回</a>
+        {% else%}
+          <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderdetail' pk=order.pk%}" role="button">返回</a>
         {% endif %}
-      {% else%}
-      <a class="btn btn-block btn-outline-primary" href="{% url 'sample:sampledetail' pk=sample.pk%}" role="button">返回</a>
     {% endif %}
   </div>
 </div>
-
 {% endblock %}
+
 {% block script %}
 <!-- 删除项目确认js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
@@ -64,5 +57,4 @@
         }}
     });
 </script>
-
 {% endblock %}
