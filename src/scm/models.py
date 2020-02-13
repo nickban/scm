@@ -518,6 +518,10 @@ class Order(models.Model):
                                      on_delete=models.SET_NULL,
                                      null=True)
 
+    def __str__(self):
+        ordername = '订单号' + self.po + '/' + '款号' + self.style_no
+        return ordername
+
 
 class Order_avatar(models.Model):
     file = models.ImageField(upload_to='order/avatar/', blank=True)

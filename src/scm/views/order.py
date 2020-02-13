@@ -117,7 +117,10 @@ def orderdetail(request, pk):
     swatches = order.swatches.all()
     sizespecs = order.sizespecs.all()
     shippingpics = order.shippingpics.all()
-    return render(request, 'order_detail.html', {'order': order, 'swatches': swatches, 'sizespecs': sizespecs, 'shippingpics': shippingpics})
+    colorqtys = order.colorqtys.all()
+    return render(request, 'order_detail.html', {'order': order, 'swatches': swatches,
+                                                 'sizespecs': sizespecs, 'shippingpics': shippingpics,
+                                                 'colorqtys': colorqtys})
 
 
 # 订单颜色数量新增
@@ -165,9 +168,7 @@ def colorqtydelete(request, pk, colorqtypk):
     return redirect('order:orderedit', pk=order.pk)
 
 
-
-
-# 删除样板
+# 删除订单
 @method_decorator([login_required, m_mg_or_required], name='dispatch')
 class OrderDelete(DeleteView):
     model = Order
@@ -185,21 +186,6 @@ class OrderDelete(DeleteView):
         else:
             success_url = reverse_lazy('order:orderlistshipped')
             return success_url
-
-
-# # 删除订单
-# @login_required
-# @m_mg_or_required
-# def orderdelete(request, pk):
-#     order = get_object_or_404(Order, pk=pk)
-#     status = order.status
-#     order.delete()
-#     if status == 'NEW' or status == 'SENT_FACTORY':
-#         return redirect('order:orderlistnew')
-#     elif status == 'COMFIRMED':
-#         return redirect('order:orderlistconfirmed')
-#     else:
-#         return redirect('order:orderlistshipped')
 
 
 # 拷贝订单，测试数据用

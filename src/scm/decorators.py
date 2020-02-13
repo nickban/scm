@@ -178,9 +178,8 @@ def order_is_shipped(function):
         order = Order.objects.get(pk=kwargs['pk'])
         if order.status == 'SHIPPED':
             return redirect('order:orderdetail', pk=order.pk)
-            return function(request, *args, **kwargs)
         else:
-            messages.success(request, '确认的订单不能更改相关内容!')
+            return function(request, *args, **kwargs)
     wrap.__doc__ = function.__doc__
     wrap.__name__ = function.__name__
     return wrap

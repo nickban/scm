@@ -24,7 +24,6 @@
             <a class="mb-1" href="{% url 'order:orderattachadd' pk=order.pk attachtype='avatar'%}" role="button">
             <i class="fas fa-file-upload fa-2x"></i></a>
             {% endif %}
-            <span>款式图</span>
         </div>
         <div class="col-sm ">
             <div class="form-group">
@@ -255,8 +254,10 @@
                     <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderlistnew' %}" role="button">返回列表</a>
                 {% elif order.status == 'COMFIRMED'%}
                     <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderlistconfirmed' %}" role="button">返回列表</a>
-                {% else %}
+                {% elif order.status == 'SHIPPED'%}
                     <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderlistshipped' %}" role="button">返回列表</a>
+                {% else %}
+                    <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderlistnew' %}" role="button">返回列表</a>
                 {% endif %}
             </div>
         </div>

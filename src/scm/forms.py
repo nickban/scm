@@ -256,8 +256,14 @@ class OrderForm(forms.ModelForm):
                   'parent', 'discount', 'discount_reason',
                   'invoice', 'main_label', 'main_tag', 'addition_tag',
                   'packing_type', 'destination')
+        widgets = {
+                  'comments': forms.Textarea(attrs={'rows': 5}),
+                  }
         error_messages = {
             'po': {
+                'required': "必填字段！",
+            },
+            'style_no': {
                 'required': "必填字段！",
             },
             'brand': {
@@ -269,10 +275,8 @@ class OrderForm(forms.ModelForm):
             'designer': {
                 'required': "必填字段！",
             },
-        },
-        widgets = {
-                  'comments': forms.Textarea(attrs={'rows': 5}),
-                  }
+        }
+
 
 
 class Order_color_ratio_qty_Form(forms.ModelForm):
