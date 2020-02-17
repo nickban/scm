@@ -4,6 +4,11 @@
 {% load crispy_forms_tags %}
 {% load widget_tweaks %}
 
+{% block css%}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+{% endblock%}
+
+
 
 {% block content %}
 <div class="row text-center">
@@ -178,8 +183,6 @@
         </table>
     </div>
 </div>
-<form method="post" novalidate>
-{% csrf_token %}
 <div class="row">
     <div class="col-12 col-md-12">
         <div class="form-group">
@@ -204,20 +207,6 @@
                         <th scope="col">L</th>
                         <th scope="col">XL</th>
                     {% endif %}
-                    <th style="width: 5%" cope="col">操作</th>
-                </tr>
-                <tr>
-                    <td style="width: 10%" scope="col">{% render_field form.color class="form-control"%}</td>
-                    <td scope="col">{% render_field form.ctn_start_no class="form-control"%}</td>
-                    <td scope="col">{% render_field form.ctn_end_no class="form-control"%}</td>
-                    <td scope="col">{% render_field form.totalboxes class="form-control"%}</td>
-                    <td scope="col">{% render_field form.bags class="form-control"%}</td>
-                    <td scope="col">{% render_field form.size1 class="form-control"%}</td>
-                    <td scope="col">{% render_field form.size2 class="form-control"%}</td>
-                    <td scope="col">{% render_field form.size3 class="form-control"%}</td>
-                    <td scope="col">{% render_field form.size4 class="form-control"%}</td>
-                    <td scope="col">{% render_field form.size5 class="form-control"%}</td>
-                    <td><input  type="submit" value="添加" class="btn  btn-outline-primary"></td>
                 </tr>
                 {% if packing_ctns %}
                 {% for packing_ctn in packing_ctns %}
@@ -232,14 +221,12 @@
                     <td>{{packing_ctn.size3}}</td>
                     <td>{{packing_ctn.size4}}</td>
                     <td>{{packing_ctn.size5}}</td>
-                    <td><a data-title="提示" class="delete" href="{% url 'order:packinglistdelete' pk=order.pk  plpk=packing_ctn.pk %}">删除</a></td>
                 {% endfor %}
                 </tr>
                 {% endif %}
             </table>
         </div>
     </div>
-</form> 
 </div>
 <div class="row">
     <div class="col-sm">
@@ -255,14 +242,51 @@
             {% endif %}
         </div>
     </div>
-    {% if request.user.is_factory%}
     <div class=" col-sm">
         <div class="form-group">
-            <a  class="btn btn-block btn-outline-primary" href="{% url 'order:packinglistsubmit' pk=order.pk %}" role="button">提交</a>
+            <a href="" class="btn btn-block btn-outline-primary" onclick="window.print()" role="button">打印</a>
+        </div>
+    </div>
+    {% if request.user.is_office or request.user.is_merchandiser%}
+        {% if order.packing_status.status == 'SUBMIT'%}
+        <div class=" col-sm">
+            <div class="form-group">
+                <a data-title="提示" class="delete btn btn-block btn-outline-primary" href="{% url 'order:packinglistclose' pk=order.pk %}" role="button">确认装箱单</a>
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+    {% if request.user.is_office or request.user.is_merchandiser%}
+    <div class=" col-sm">
+        <div class="form-group">
+            <a class=" btn btn-block btn-outline-primary" href="{% url 'order:packinglistreset' pk=order.pk %}" role="button">重置</a>
         </div>
     </div>
     {% endif %}
-
 </div>
 
+{% endblock %}
+
+
+{% block script %}
+<!-- 删除项目确认js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+<script>
+    $('a.delete').confirm({
+        content: "确认后将不能更改，是否确认？",
+        type: 'blue',
+        typeAnimated: true,
+        buttons: {
+        确认: {
+            btnClass: 'btn-blue',
+            action:function(){
+            location.href = this.$target.attr('href');
+            },},
+        取消: {
+            action:function () {
+            //close
+            },
+        }}
+    });
+</script>
 {% endblock %}

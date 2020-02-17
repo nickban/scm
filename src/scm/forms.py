@@ -336,13 +336,10 @@ class OrderavatarForm(forms.ModelForm):
 
 class OrderpackingctnForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.order = kwargs.pop('order', None)
         super(OrderpackingctnForm, self).__init__(*args, **kwargs)
-        # initial = kwargs.get('initial')
-        # print(type(initial))
-        # print(initial)
-        # qs = kwargs.get('color')
-        # # self.fields['color'].empty_label = '请选择'
-        self.fields['color'].queryset = self.instance.order.colorqtys
+        self.fields['color'].queryset = Order_color_ratio_qty.objects.filter(order=self.order)
+        self.fields['color'].empty_label = '请选择'
 
     class Meta:
         model = Order_packing_ctn

@@ -270,7 +270,7 @@
             <div class="form-group">
                 {% if order.status == 'NEW' or order.status == 'SENT_FACTORY'%}
                     <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderlistnew' %}" role="button">返回列表</a>
-                {% elif order.status == 'COMFIRMED'%}
+                {% elif order.status == 'CONFIRMED'%}
                     <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderlistconfirmed' %}" role="button">返回列表</a>
                 {% elif order.status == 'SHIPPED'%}
                     <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderlistshipped' %}" role="button">返回列表</a>
@@ -279,7 +279,7 @@
                 {% endif %}
             </div>
         </div>
-        {% if order.pk and order.status == 'NEW' or order.status == 'SENT_FACTORY' or  order.status == 'COMFIRMED'%}
+        {% if order.pk and order.status == 'NEW' or order.status == 'SENT_FACTORY' or  order.status == 'CONFIRMED'%}
         <div class=" col-sm">
             <div class="form-group">
                 <a  class="btn btn-block btn-outline-primary" href="{% url 'order:orderdelete' pk=order.pk %}" role="button">删除</a>

@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import CreateView, ListView, UpdateView, TemplateView, DeleteView
 from scm.models import (Order, Order_color_ratio_qty, Order_avatar,
                         Order_swatches, Order_size_specs,
-                        Order_shipping_pics)
+                        Order_shipping_pics, Order_packing_ctn)
 from scm.forms import (
                        OrderForm, Order_color_ratio_qty_Form,
                        OrderavatarForm, OrdersizespecsForm,
@@ -34,9 +34,13 @@ class OrderListNew(ListView):
             return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
                                         Q(status='NEW') | Q(status='SENT_FACTORY')).order_by('-created_date')
         elif loginuser.is_factory:
-            return Order.objects.filter(factory=loginuser.factory, status='SENT_FACTORY').order_by('-created_date')
+            return Order.objects.filter(Q(factory=loginuser.factory), Q(status='SENT_FACTORY')).order_by('-created_date')
         else:
             return Order.objects.filter(Q(status='NEW') | Q(status='SENT_FACTORY')).order_by('-created_date')
+
+    def get_context_data(self, **kwargs):
+        kwargs['listtype'] = 'new'
+        return super().get_context_data(**kwargs)
 
 # 订单列表-已确认(已确认状态)
 @method_decorator([login_required], name='dispatch')
@@ -50,12 +54,16 @@ class OrderListConfrimed(ListView):
         loginuser = self.request.user
         if loginuser.is_merchandiser:
             return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
-                                        Q(status='COMFIRMED'))
+                                        Q(status='CONFIRMED'))
         elif loginuser.is_factory:
             return Order.objects.filter(Q(factory=loginuser.factory),
-                                        Q(status='COMFIRMED'))
+                                        Q(status='CONFIRMED'))
         else:
-            return Order.objects.filter(status='COMFIRMED')
+            return Order.objects.filter(status='CONFIRMED')
+
+    def get_context_data(self, **kwargs):
+        kwargs['listtype'] = 'confirmed'
+        return super().get_context_data(**kwargs)
 
 
 # 订单列表-已出货(已出货状态)
@@ -76,6 +84,10 @@ class OrderListShipped(ListView):
                                         Q(status='SHIPPED'))
         else:
             return Order.objects.filter(status='SHIPPED')
+
+    def get_context_data(self, **kwargs):
+        kwargs['listtype'] = 'shipped'
+        return super().get_context_data(**kwargs)
 
 # 订单新建
 @method_decorator([login_required, m_mg_or_required], name='dispatch')
@@ -182,7 +194,7 @@ class OrderDelete(DeleteView):
         if order.status == 'NEW' or order.status == 'SENT_FACTORY':
             success_url = reverse_lazy('order:orderlistnew')
             return success_url
-        elif order.status == 'COMFIRMED':
+        elif order.status == 'CONFIRMED':
             success_url = reverse_lazy('order:orderlistconfirmed')
             return success_url
         else:
@@ -219,7 +231,7 @@ def ordersentfactory(request, pk):
 @factory_required
 def orderconfirm(request, pk):
     order = get_object_or_404(Order, pk=pk)
-    order.status = "COMFIRMED"
+    order.status = "CONFIRMED"
     order.save()
     messages.success(request, '已确认订单, 请在确认订单列表查找!')
     return redirect('order:orderdetail', pk=order.pk)
@@ -313,9 +325,9 @@ def plsearch(request):
     loginuser = request.user
     if loginuser.is_factory:
         factory = loginuser.factory
-        order_list = Order.objects.filter(factory=factory, status='COMFIRMED')
+        order_list = Order.objects.filter(Q(factory=factory), Q(status='CONFIRMED') | Q(status='SHIPPED'))
     else:
-        order_list = Order.objects.all()
+        order_list = Order.objects.filter(Q(status='CONFIRMED') | Q(status='SHIPPED'))
     order_filter = OrderFilter(request.GET, queryset=order_list)
     return render(request, 'plsearch_list.html', {'filter': order_filter})
 
@@ -323,27 +335,64 @@ def plsearch(request):
 # 创建装箱单
 def packinglistadd(request, pk):
     order = get_object_or_404(Order, pk=pk)
-    form = OrderpackingctnForm(request.POST)
+    form = OrderpackingctnForm(request.POST, order=order)
     colorqtys = order.colorqtys.all()
     packing_ctns = order.packing_ctns.all()
     if request.method == 'POST':
-        print('ok1')
-        print(form.is_valid())
         if form.is_valid():
-            print('ok2')
             packinglist = form.save(commit=False)
-            print('ok3')
             packinglist.order = order
-            print('ok4')
             packinglist.save()
-            print(packinglist)
         return redirect('order:packinglistadd', pk=order.pk)
     else:
-        form = OrderpackingctnForm()
+        form = OrderpackingctnForm(order=order)
     return render(request, 'packinglist_add.html', {'form': form,
                                                     'colorqtys': colorqtys,
                                                     'order': order,
                                                     'packing_ctns': packing_ctns})
+
+
+# 删除装箱单
+def packinglistdelete(request, pk, plpk):
+    order = get_object_or_404(Order, pk=pk)
+    plctn = get_object_or_404(Order_packing_ctn, pk=plpk)
+    plctn.delete()
+    return redirect('order:packinglistadd', pk=order.pk)
+
+
+# 装箱单详情
+def packinglistdetail(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    colorqtys = order.colorqtys.all()
+    packing_ctns = order.packing_ctns.all()
+    return render(request, 'packinglist_detail.html', {'order': order,
+                                                       'colorqtys': colorqtys,
+                                                       'packing_ctns': packing_ctns})
+
+
+def packinglistsubmit(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    packing_status = order.packing_status
+    packing_status.status = 'SUBMIT'
+    packing_status.save()
+    return redirect('order:packinglistdetail', pk=order.pk)
+
+
+def packinglistclose(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    packing_status = order.packing_status
+    packing_status.status = 'CLOSED'
+    packing_status.save()
+    return redirect('order:packinglistdetail', pk=order.pk)
+
+
+def packinglistreset(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    packing_status = order.packing_status
+    packing_status.status = 'NEW'
+    packing_status.save()
+    return redirect('order:packinglistadd', pk=order.pk)
+
 
 
 class FunctionList(TemplateView):

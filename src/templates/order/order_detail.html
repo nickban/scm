@@ -372,7 +372,7 @@
         <div class="form-group">
             {% if order.status == 'NEW' or order.status == 'SENT_FACTORY'%}
             <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderlistnew' %}" role="button">返回列表</a>
-            {% elif order.status == 'COMFIRMED'%}
+            {% elif order.status == 'CONFIRMED'%}
             <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderlistconfirmed' %}" role="button">返回列表</a>
             {% else %}
             <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderlistshipped' %}" role="button">返回列表</a>
@@ -391,7 +391,7 @@
         </div>
     </div> 
     {% endif %}
-    {% if order.status == 'COMFIRMED' and request.user.is_office %}
+    {% if order.status == 'CONFIRMED' and request.user.is_office %}
     <div class=" col-sm">
         <div class="form-group">
             <a class="btn btn-block btn-outline-primary" href="{% url 'order:ordershipped' pk=order.pk %}" role="button">订单出货</a>

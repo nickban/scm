@@ -34,7 +34,6 @@
       <th>工厂</th>
       <th>工厂入仓期</th>
       <th>状态</th>
-      <th>装箱单</th>
       <th>创建</th>
     </tr>
   </thead>
@@ -50,8 +49,7 @@
         <td>{{ order.handover_date_f }}</td>
         {% endif %}
         <td>{{ order.get_status_display }}</td>
-        <td>装箱单</td>
-        <td>添加</td>
+        <td><a class="btn  btn-outline-primary" href="{% url 'order:packinglistadd' pk=order.pk %}">添加</a></td>
       </tr>
     {% empty %}
       <tr>

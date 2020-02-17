@@ -55,6 +55,18 @@ urlpatterns = [
         path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
         # 创建装箱单
         path('<int:pk>/packinglist/add/', order.packinglistadd, name='packinglistadd'),
+        # 删除装箱单
+        path('<int:pk>/packinglist/<int:plpk>/delete/', order.packinglistdelete, name='packinglistdelete'),
+        # 装箱单详情
+        path('<int:pk>/packinglist/detail/', order.packinglistdetail, name='packinglistdetail'),
+        # 装箱单提交
+        path('<int:pk>/packinglist/submit/', order.packinglistsubmit, name='packinglistsubmit'),
+        # 装箱单关闭，不能更改
+        path('<int:pk>/packinglist/close/', order.packinglistclose, name='packinglistclose'),
+        # 装箱单重置
+        path('<int:pk>/packinglist/reset/', order.packinglistreset, name='packinglistreset'),
+        
+        
         # 装箱单查找
         path('search/', order.plsearch, name='plsearch'),
         # 订单上传资料通用功能

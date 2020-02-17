@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
 import os
+from django.db.models.signals import post_save
 
 
 # 系统登录用户模块，用于分配用户角色
@@ -387,12 +388,12 @@ class Packingtype(models.Model):
 class Order(models.Model):
     NEW = 'NEW'
     SENT_FACTORY = 'SENT_FACTORY'
-    COMFIRMED = 'COMFIRMED'
+    CONFIRMED = 'CONFIRMED'
     SHIPPED = 'SHIPPED'
     ORDER_STATUS = [
         (NEW, '新建'),
         (SENT_FACTORY, '送工厂'),
-        (COMFIRMED, '已确认'),
+        (CONFIRMED, '已确认'),
         (SHIPPED, '已出货'),
     ]
 
@@ -536,6 +537,12 @@ class Order(models.Model):
         return ordername
 
 
+@receiver(models.signals.post_save, sender=Order)
+def create_order_packing_status(sender, instance, created, **kwargs):
+    if created:
+        Order_packing_status.objects.create(order=instance)
+
+
 class Order_avatar(models.Model):
     file = models.ImageField(upload_to='order/avatar/', blank=True)
     order = models.OneToOneField(Order, on_delete=models.CASCADE,
@@ -643,6 +650,25 @@ class Order_packing_ctn(models.Model):
     size3 = models.IntegerField()
     size4 = models.IntegerField()
     size5 = models.IntegerField()
+
+
+class Order_packing_status(models.Model):
+    NEW = 'NEW'
+    SUBMIT = 'SUBMIT'
+    CLOSED = 'CLOSED'
+    PACKINGSTATUS = [
+        (NEW, '新建'),
+        (SUBMIT, '工厂已提交'),
+        (CLOSED, '已确认'),
+    ]
+
+    order = models.OneToOneField(Order, verbose_name='订单',
+                                 on_delete=models.CASCADE,
+                                 related_name='packing_status')
+    status = models.CharField('状态',
+                              max_length=100,
+                              choices=PACKINGSTATUS,
+                              default=NEW)
 
     length = models.DecimalField('长',
                                  max_digits=5,

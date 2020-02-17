@@ -24,6 +24,9 @@
         <th>运输</th>
         <th>工厂交期</th>
         <th>客人交期</th>
+        {% if listtype == 'confirmed' or listtype == 'shipped' %}
+          <th>装箱单</th>
+       {% endif %}
         <th>目的地</th>
         <th>状态</th>
       </tr>
@@ -57,10 +60,25 @@
           {% else %}
           <td>{{ order.handover_date_f |date:"SHORT_DATE_FORMAT" }}</td>
           {% endif %}
-          {% if order.handover_date_f == None %}
+          {% if order.handover_date_d == None %}
           <td></td>
           {% else %}
           <td>{{ order.handover_date_d |date:"SHORT_DATE_FORMAT" }}</td>
+          {% endif %}
+          {% if listtype == 'confirmed' or listtype == 'shipped' %}
+            {% if order.packing_ctns.all.count > 0 %}
+              {% if order.packing_status.status == 'NEW'%}
+                <td><a href="{% url 'order:packinglistadd' pk=order.pk%}">查看</a></td>
+              {% else %}
+                <td><a href="{% url 'order:packinglistdetail' pk=order.pk%}">查看</a></td>
+              {% endif %}
+            {% else %}
+              <td>
+                {% if request.user.is_factory %}
+                <a href="{% url 'order:packinglistadd' pk=order.pk%}">创建</a>
+                {% endif%}
+              </td>
+            {% endif %}
           {% endif %}
           <td>{{ order.get_destination_display }}</td>
           <td>{{ order.get_status_display }}</td>
