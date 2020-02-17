@@ -6,7 +6,8 @@ from scm.models import (Order, Order_color_ratio_qty, Order_avatar,
 from scm.forms import (
                        OrderForm, Order_color_ratio_qty_Form,
                        OrderavatarForm, OrdersizespecsForm,
-                       OrderswatchForm, OrdershippingpicsForm)
+                       OrderswatchForm, OrdershippingpicsForm,
+                       OrderpackingctnForm)
 from django.contrib.auth.decorators import login_required
 from scm.decorators import m_mg_or_required, factory_required, office_required, order_is_shipped
 from django.utils.decorators import method_decorator
@@ -16,6 +17,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.views import reverse_lazy
+from scm.filters import OrderFilter
 
 
 # 订单列表-未确认(新建，已送工厂状态)
@@ -304,6 +306,44 @@ def orderattachcollection(request, pk, attachtype):
         attaches = order.shippingpics.all()
     return render(request, 'order_attach_collection.html', {'order': order,
                   'attachtype': attachtype, 'attaches': attaches})
+
+
+# 装箱单查找
+def plsearch(request):
+    loginuser = request.user
+    if loginuser.is_factory:
+        factory = loginuser.factory
+        order_list = Order.objects.filter(factory=factory, status='COMFIRMED')
+    else:
+        order_list = Order.objects.all()
+    order_filter = OrderFilter(request.GET, queryset=order_list)
+    return render(request, 'plsearch_list.html', {'filter': order_filter})
+
+
+# 创建装箱单
+def packinglistadd(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    form = OrderpackingctnForm(request.POST)
+    colorqtys = order.colorqtys.all()
+    packing_ctns = order.packing_ctns.all()
+    if request.method == 'POST':
+        print('ok1')
+        print(form.is_valid())
+        if form.is_valid():
+            print('ok2')
+            packinglist = form.save(commit=False)
+            print('ok3')
+            packinglist.order = order
+            print('ok4')
+            packinglist.save()
+            print(packinglist)
+        return redirect('order:packinglistadd', pk=order.pk)
+    else:
+        form = OrderpackingctnForm()
+    return render(request, 'packinglist_add.html', {'form': form,
+                                                    'colorqtys': colorqtys,
+                                                    'order': order,
+                                                    'packing_ctns': packing_ctns})
 
 
 class FunctionList(TemplateView):

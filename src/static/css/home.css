@@ -1,3 +1,6 @@
+body, html, .container-fluid {
+  height: 100%;
+}
 
 .card, body {
   background-color: #F5F5F5;
@@ -16,3 +19,4 @@
   margin-top: 0;
   min-width: 18em;
 }
+

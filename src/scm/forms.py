@@ -8,10 +8,12 @@ from .models import (User, Factory,
                      Sample_pics_factory, Sample_quotation_form,
                      Sample_size_spec_factory,
                      Order, Order_color_ratio_qty, Order_size_specs,
-                     Order_swatches, Order_shipping_pics, Order_avatar)
+                     Order_swatches, Order_shipping_pics, Order_avatar,
+                     Order_packing_ctn)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
+from django.shortcuts import get_object_or_404
 
 
 class MyAuthenticationForm(AuthenticationForm):
@@ -255,7 +257,7 @@ class OrderForm(forms.ModelForm):
                   'handover_date_f', 'handover_date_d', 'comments',
                   'parent', 'discount', 'discount_reason',
                   'invoice', 'main_label', 'main_tag', 'addition_tag',
-                  'packing_type', 'destination')
+                  'packing_type', 'destination', 'labeltype')
         widgets = {
                   'comments': forms.Textarea(attrs={'rows': 5}),
                   }
@@ -276,7 +278,6 @@ class OrderForm(forms.ModelForm):
                 'required': "必填字段！",
             },
         }
-
 
 
 class Order_color_ratio_qty_Form(forms.ModelForm):
@@ -331,3 +332,20 @@ class OrderavatarForm(forms.ModelForm):
     class Meta:
         model = Order_avatar
         fields = ('file',)
+
+
+class OrderpackingctnForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(OrderpackingctnForm, self).__init__(*args, **kwargs)
+        # initial = kwargs.get('initial')
+        # print(type(initial))
+        # print(initial)
+        # qs = kwargs.get('color')
+        # # self.fields['color'].empty_label = '请选择'
+        self.fields['color'].queryset = self.instance.order.colorqtys
+
+    class Meta:
+        model = Order_packing_ctn
+        fields = ('color', 'ctn_start_no',
+                  'ctn_end_no', 'totalboxes', 'bags', 'size1',
+                  'size2', 'size3', 'size4', 'size5')

@@ -421,6 +421,14 @@ class Order(models.Model):
         (SG, '新加坡'),
     ]
 
+    NUMBER = 'NUMBER'
+    ALPHABET = 'ALPHABET'
+    LABELTYPE = [
+        (None, '请选择'),
+        (NUMBER, '数字码'),
+        (ALPHABET, '字母码'),
+    ]
+
     created_date = models.DateTimeField('创建日期', auto_now_add=True)
     status = models.CharField('订单状态',
                               max_length=50,
@@ -517,6 +525,11 @@ class Order(models.Model):
                                      blank=True,
                                      on_delete=models.SET_NULL,
                                      null=True)
+    labeltype = models.CharField('码标类型',
+                                 max_length=50,
+                                 choices=LABELTYPE,
+                                 blank=True,
+                                 default=NUMBER)
 
     def __str__(self):
         ordername = '订单号' + self.po + '/' + '款号' + self.style_no
@@ -609,21 +622,28 @@ class Order_color_ratio_qty(models.Model):
     bags = models.IntegerField()
     qty = models.IntegerField()
 
+    def __str__(self):
+        return self.color_cn
+
 
 class Order_packing_ctn(models.Model):
     order = models.ForeignKey(Order,
                               on_delete=models.CASCADE,
                               related_name='packing_ctns')
+    color = models.ForeignKey(Order_color_ratio_qty,
+                              on_delete=models.CASCADE,
+                              related_name='packing_ctns')
     created_date = models.DateTimeField(auto_now_add=True)
-    color = models.CharField('颜色(英文)', max_length=100)
-    ctn_no = models.IntegerField()
+    ctn_start_no = models.IntegerField()
+    ctn_end_no = models.IntegerField()
+    totalboxes = models.IntegerField()
     bags = models.IntegerField()
     size1 = models.IntegerField()
     size2 = models.IntegerField()
     size3 = models.IntegerField()
     size4 = models.IntegerField()
     size5 = models.IntegerField()
-    size6 = models.IntegerField()
+
     length = models.DecimalField('长',
                                  max_digits=5,
                                  decimal_places=2,
@@ -647,4 +667,6 @@ class Order_packing_ctn(models.Model):
     gross_weight = models.DecimalField('毛重',
                                        max_digits=5,
                                        decimal_places=2,
-                                       null=True, blank=True)
+                                       null=True,
+                                       blank=True,
+                                       default=14)

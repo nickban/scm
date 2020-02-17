@@ -45,10 +45,6 @@ urlpatterns = [
         path('<int:pk>/colorqty/add/', order.colorqtyadd, name='colorqtyadd'),
         path('<int:pk>/colorqty/<int:colorqtypk>/', order.colorqtyedit, name='colorqtyedit'),
         path('<int:pk>/colorqty/<int:colorqtypk>/delete/', order.colorqtydelete, name='colorqtydelete'),
-        # 订单上传资料通用功能
-        path('<int:pk>/<str:attachtype>/add/', order.orderattachadd, name='orderattachadd'),
-        path('<int:pk>/<str:attachtype>/collection/', order.orderattachcollection, name='orderattachcollection'),
-        path('<int:pk>/<str:attachtype>/<int:attach_pk>/delete/', order.orderattachdelete, name='orderattachdelete'),
         # 订单送工厂，通知工厂
         path('<int:pk>/sentfactory/', order.ordersentfactory, name='ordersentfactory'),
         # 订单确认
@@ -57,6 +53,16 @@ urlpatterns = [
         path('<int:pk>/shipped/', order.ordershipped, name='ordershipped'),
         # 测试用
         path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
+        # 创建装箱单
+        path('<int:pk>/packinglist/add/', order.packinglistadd, name='packinglistadd'),
+        # 装箱单查找
+        path('search/', order.plsearch, name='plsearch'),
+        # 订单上传资料通用功能
+        path('<int:pk>/<str:attachtype>/add/', order.orderattachadd, name='orderattachadd'),
+        path('<int:pk>/<str:attachtype>/collection/', order.orderattachcollection, name='orderattachcollection'),
+        path('<int:pk>/<str:attachtype>/<int:attach_pk>/delete/', order.orderattachdelete, name='orderattachdelete'),
+
+
     ], 'scm'), namespace='order')),
 
     # admin地址导航

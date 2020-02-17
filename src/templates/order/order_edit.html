@@ -78,6 +78,17 @@
             <div class="form-group">
                 {{ form.disigner_price |as_crispy_field }}
             </div>
+            <div class="form-group">
+                {{ form.labeltype |as_crispy_field }}
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                {{ form.main_label |as_crispy_field }}
+            </div>
+            <div class="form-group">
+                {{ form.handover_date_f |as_crispy_field }}
+            </div>
             <div class="mt-3 form-group">
                 {% if order.pk%}
                 <a href="{% url 'order:orderattachadd' pk=order.pk attachtype='swatch'%}" role="button">
@@ -96,10 +107,10 @@
         </div>
         <div class="col-sm">
             <div class="form-group">
-                {{ form.main_label |as_crispy_field }}
+                {{ form.main_tag |as_crispy_field }}
             </div>
             <div class="form-group">
-                {{ form.handover_date_f |as_crispy_field }}
+                {{ form.handover_date_d |as_crispy_field }}
             </div>
             <div class="mt-3 form-group">
                 {% if order.pk %}
@@ -115,14 +126,6 @@
                     <h6><span class="badge badge-warning">未上传</span></h6>
                     {% endif %}
                 </div>
-            </div>
-        </div>
-        <div class="col-sm">
-            <div class="form-group">
-                {{ form.main_tag |as_crispy_field }}
-            </div>
-            <div class="form-group">
-                {{ form.handover_date_d |as_crispy_field }}
             </div>
         </div>
         <div class="col-sm">
@@ -180,6 +183,7 @@
                                 <th colspan="2" scope="col">数量</th>
                                 <th class="align-middle" rowspan="2" scope="col">操作</th>
                             </tr>
+                            {% if order.labeltype == 'NUMBER'%}
                             <tr class="text-center">
                                 <th scope="col">中文</th>
                                 <th scope="col">英文</th>
@@ -192,12 +196,26 @@
                                 <th scope="col">中包</th>
                                 <th scope="col">件数</th>
                             </tr>
+                            {% else %}
+                            <tr class="text-center">
+                                <th scope="col">中文</th>
+                                <th scope="col">英文</th>
+                                <th scope="col">色号</th>
+                                <th scope="col">XS</th>
+                                <th scope="col">S</th>
+                                <th scope="col">M</th>
+                                <th scope="col">L</th>
+                                <th scope="col">XL</th>
+                                <th scope="col">中包</th>
+                                <th scope="col">件数</th>
+                            </tr>
+                            {% endif %}
                         </thead>
                         {% if colorqtys %}
                             {%for colorqty in colorqtys%}
                             <tr  class="text-center">
-                                <td>{{colorqty.color}}</td>
                                 <td>{{colorqty.color_cn}}</td>
+                                <td>{{colorqty.color}}</td>
                                 <td>{{colorqty.color_no}}</td>
                                 <td>{{colorqty.ratio}}</td>
                                 {% if colorqty.size1 == 0 %}
