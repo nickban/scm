@@ -345,4 +345,4 @@ class OrderpackingctnForm(forms.ModelForm):
         model = Order_packing_ctn
         fields = ('color', 'ctn_start_no',
                   'ctn_end_no', 'totalboxes', 'bags', 'size1',
-                  'size2', 'size3', 'size4', 'size5')
+                  'size2', 'size3', 'size4', 'size5', 'totalqty')

@@ -65,6 +65,8 @@ urlpatterns = [
         path('<int:pk>/packinglist/close/', order.packinglistclose, name='packinglistclose'),
         # 装箱单重置
         path('<int:pk>/packinglist/reset/', order.packinglistreset, name='packinglistreset'),
+        # 查订单颜色的比列
+        path('getratio/', order.getratio, name='getratio'),
         
         
         # 装箱单查找

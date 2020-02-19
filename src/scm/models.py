@@ -641,15 +641,16 @@ class Order_packing_ctn(models.Model):
                               on_delete=models.CASCADE,
                               related_name='packing_ctns')
     created_date = models.DateTimeField(auto_now_add=True)
-    ctn_start_no = models.IntegerField()
-    ctn_end_no = models.IntegerField()
-    totalboxes = models.IntegerField()
-    bags = models.IntegerField()
-    size1 = models.IntegerField()
-    size2 = models.IntegerField()
-    size3 = models.IntegerField()
-    size4 = models.IntegerField()
-    size5 = models.IntegerField()
+    ctn_start_no = models.PositiveSmallIntegerField()
+    ctn_end_no = models.PositiveSmallIntegerField()
+    totalboxes = models.PositiveSmallIntegerField()
+    bags = models.PositiveSmallIntegerField()
+    size1 = models.PositiveSmallIntegerField()
+    size2 = models.PositiveSmallIntegerField()
+    size3 = models.PositiveSmallIntegerField()
+    size4 = models.PositiveSmallIntegerField()
+    size5 = models.PositiveSmallIntegerField()
+    totalqty = models.PositiveSmallIntegerField()
 
 
 class Order_packing_status(models.Model):

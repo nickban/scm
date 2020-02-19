@@ -207,6 +207,7 @@
                         <th scope="col">L</th>
                         <th scope="col">XL</th>
                     {% endif %}
+                    <th style="width: 10%" cope="col">件数</th>
                 </tr>
                 {% if packing_ctns %}
                 {% for packing_ctn in packing_ctns %}
@@ -221,6 +222,7 @@
                     <td>{{packing_ctn.size3}}</td>
                     <td>{{packing_ctn.size4}}</td>
                     <td>{{packing_ctn.size5}}</td>
+                    <td>{{packing_ctn.totalqty}}</td>
                 {% endfor %}
                 </tr>
                 {% endif %}

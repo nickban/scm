@@ -5,6 +5,10 @@
 {% load widget_tweaks %}
 
 
+{% block css%}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+{% endblock%}
+
 {% block content %}
 <div class="row text-center">
     <div class="col-12 col-md-12">
@@ -178,45 +182,50 @@
         </table>
     </div>
 </div>
-<form method="post" novalidate>
+<form  method="post" data-getratio-url="{% url 'order:getratio' %}" novalidate>
 {% csrf_token %}
 <div class="row">
     <div class="col-12 col-md-12">
         <div class="form-group">
             <span>装箱单</span>
             <table class="table table-sm table-bordered">
+                <thead>
+                    <tr class="text-center">
+                        <th style="width: 10%" scope="col">颜色</th>
+                        <th style="width: 10%" scope="col">开始箱号</th>
+                        <th style="width: 10%" scope="col">结束箱号</th>
+                        <th style="width: 10%" scope="col">总箱数</th>
+                        <th style="width: 10%" cope="col">每箱中包</th>
+                        {% if order.labeltype == 'NUMBER'%}
+                            <th scope="col">6</th>
+                            <th scope="col">8</th>
+                            <th scope="col">10</th>
+                            <th scope="col">12</th>
+                            <th scope="col">14</th>
+                        {% else %}
+                            <th scope="col">XS</th>
+                            <th scope="col">S</th>
+                            <th scope="col">M</th>
+                            <th scope="col">L</th>
+                            <th scope="col">XL</th>
+                        {% endif %}
+                        <th style="width: 8%" cope="col">件数</th>
+                        <th style="width: 5%" cope="col">操作</th>
+                    </tr>
+                </thead>
+                
                 <tr class="text-center">
-                    <th scope="col">颜色</th>
-                    <th style="width: 10%" scope="col">开始箱号</th>
-                    <th style="width: 10%" scope="col">结束箱号</th>
-                    <th style="width: 10%" scope="col">总箱数</th>
-                    <th style="width: 10%" cope="col">每箱中包</th>
-                    {% if order.labeltype == 'NUMBER'%}
-                        <th scope="col">6</th>
-                        <th scope="col">8</th>
-                        <th scope="col">10</th>
-                        <th scope="col">12</th>
-                        <th scope="col">14</th>
-                    {% else %}
-                        <th scope="col">XS</th>
-                        <th scope="col">S</th>
-                        <th scope="col">M</th>
-                        <th scope="col">L</th>
-                        <th scope="col">XL</th>
-                    {% endif %}
-                    <th style="width: 5%" cope="col">操作</th>
-                </tr>
-                <tr>
-                    <td style="width: 10%" scope="col">{% render_field form.color class="form-control"%}</td>
-                    <td scope="col">{% render_field form.ctn_start_no class="form-control"%}</td>
-                    <td scope="col">{% render_field form.ctn_end_no class="form-control"%}</td>
+                    <td scope="col">{% render_field form.color class="form-control"%}</td>
+                    <td scope="col">{% render_field form.ctn_start_no class="form-control boxnumber"%}</td>
+                    <td scope="col">{% render_field form.ctn_end_no class="form-control boxnumber"%}</td>
                     <td scope="col">{% render_field form.totalboxes class="form-control"%}</td>
-                    <td scope="col">{% render_field form.bags class="form-control"%}</td>
+                    <td scope="col">{% render_field form.bags class="form-control boxnumber"%}</td>
                     <td scope="col">{% render_field form.size1 class="form-control"%}</td>
                     <td scope="col">{% render_field form.size2 class="form-control"%}</td>
                     <td scope="col">{% render_field form.size3 class="form-control"%}</td>
                     <td scope="col">{% render_field form.size4 class="form-control"%}</td>
                     <td scope="col">{% render_field form.size5 class="form-control"%}</td>
+                    <td scope="col">{% render_field form.totalqty class="form-control"%}</td>
                     <td><input  type="submit" value="添加" class="btn  btn-outline-primary"></td>
                 </tr>
                 {% if packing_ctns %}
@@ -232,10 +241,25 @@
                     <td>{{packing_ctn.size3}}</td>
                     <td>{{packing_ctn.size4}}</td>
                     <td>{{packing_ctn.size5}}</td>
+                    <td>{{packing_ctn.totalqty}}</td>
                     <td><a data-title="提示" class="delete" href="{% url 'order:packinglistdelete' pk=order.pk  plpk=packing_ctn.pk %}">删除</a></td>
                 {% endfor %}
                 </tr>
                 {% endif %}
+                <tr class="text-center">
+                    <td scope="col">总计</td>
+                    <td scope="col"></td>
+                    <td scope="col"></td>
+                    <td scope="col">{{orderctnsum.totalboxes}}</td>
+                    <td cope="col">{{orderctnsum.bags}}</td>
+                    <td scope="col">{{orderctnsum.size1}}</td>
+                    <td scope="col">{{orderctnsum.size2}}</td>
+                    <td scope="col">{{orderctnsum.size3}}</td>
+                    <td scope="col">{{orderctnsum.size4}}</td>
+                    <td scope="col">{{orderctnsum.size5}}</td>
+                    <td scope="col">{{orderctnsum.totalqty}}</td>
+                    <td scope="col"></td>
+                </tr>
             </table>
         </div>
     </div>
@@ -265,4 +289,68 @@
 
 </div>
 
+{% endblock %}
+
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+
+<script>
+    var colorratio=[];
+    var eachbagpcses = 0;
+
+    $(document).ready(function(){
+
+        $(".boxnumber").change(function(){
+            var ctn_start_no = parseInt($("#id_ctn_start_no").val(), 10) || 0;
+            var ctn_end_no = parseInt($("#id_ctn_end_no").val(), 10) || 0;
+            var totalboxes = (ctn_end_no - ctn_start_no) + 1;
+            var id_bags = parseInt($("#id_bags").val(), 10) || 0;
+            var total_bags = id_bags*totalboxes;
+            if (ctn_start_no != '' && ctn_end_no != ''){
+                if( ctn_start_no > ctn_end_no){
+                    $.alert({
+                        title: '提示!',
+                        content: '开始箱号应小于结束箱号!',
+                            });
+                    $("#id_ctn_start_no").val("");
+                    $("#id_ctn_end_no").val("");
+                    $("#id_totalboxes").val("");
+                    $("#id_bags").val("");
+                    $("#id_size1").val("");
+                    $("#id_size2").val("");
+                    $("#id_size3").val("");
+                    $("#id_size4").val("");
+                    $("#id_size5").val("");
+                    $("#id_totalqty").val("");
+                }
+                else{
+                    $("#id_totalboxes").val(totalboxes);
+                    $("#id_size1").val(colorratio[0]*total_bags);
+                    $("#id_size2").val(colorratio[1]*total_bags);
+                    $("#id_size3").val(colorratio[2]*total_bags);
+                    $("#id_size4").val(colorratio[3]*total_bags);
+                    $("#id_size5").val(colorratio[4]*total_bags);
+                    console.log(eachbagpcses)
+                    $("#id_totalqty").val(eachbagpcses*id_bags*totalboxes);
+                }
+            };
+        });
+
+        $("#id_color").change(function () {
+        var form = $(this).closest("form");
+        $.ajax({
+            url: form.attr("data-getratio-url"),
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                colorratio = data['ratio'];
+                colorratio.forEach(function(num){eachbagpcses+=parseInt(num) || 0;});
+
+            }
+            });
+            });
+
+    });
+  </script>
 {% endblock %}

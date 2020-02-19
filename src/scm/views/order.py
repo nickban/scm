@@ -18,6 +18,7 @@ from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.views import reverse_lazy
 from scm.filters import OrderFilter
+from django.db.models import F, Sum, IntegerField
 
 
 # 订单列表-未确认(新建，已送工厂状态)
@@ -334,11 +335,18 @@ def plsearch(request):
 
 # 创建装箱单
 def packinglistadd(request, pk):
+    print(1)
     order = get_object_or_404(Order, pk=pk)
     form = OrderpackingctnForm(request.POST, order=order)
     colorqtys = order.colorqtys.all()
     packing_ctns = order.packing_ctns.all()
+    print(2)
+    orderctnsum = order.packing_ctns.aggregate(totalboxes=Sum('totalboxes'), bags=Sum('bags'), size1=Sum('size1'),
+                                               size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
+                                               totalqty=Sum('totalqty'))
+    print(3)
     if request.method == 'POST':
+        print(4)
         if form.is_valid():
             packinglist = form.save(commit=False)
             packinglist.order = order
@@ -349,7 +357,57 @@ def packinglistadd(request, pk):
     return render(request, 'packinglist_add.html', {'form': form,
                                                     'colorqtys': colorqtys,
                                                     'order': order,
-                                                    'packing_ctns': packing_ctns})
+                                                    'packing_ctns': packing_ctns,
+                                                    'orderctnsum': orderctnsum})
+
+
+def packinglistsubmit(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    packing_status = order.packing_status
+    # 获取颜色
+    colors = order.colorqtys.all()
+    print(colors)
+    for color in colors:
+        # 红色数量
+        colorqty = color.qty
+        print(colorqty)
+        # 红色所有箱对象
+        colorboxqs = Order_packing_ctn.objects.filter(color=color)
+        print(colorboxqs)
+        if colorboxqs.exists():
+            # 每个对象加汇总字段
+            colorboxqs = colorboxqs.annotate(totalpcs=F('size1') + F('size2') + F('size3') + F('size4') + F('size5'))
+            print(colorboxqs)
+            print(colorboxqs[0].totalpcs)
+            # 汇总所有对象总件数等于实际颜色的件数
+            actualqty = colorboxqs.aggregate(colortotalpcs=Sum('totalpcs', output_field=IntegerField()))
+            print(actualqty)
+            # 取值
+            actualqty = actualqty['colortotalpcs']
+            print(actualqty)
+            if colorqty in range(401):
+                print(1)
+                if actualqty in range(int(colorqty*0.9), int(colorqty*1.1) + 1):
+                    packing_status.status = 'SUBMIT'
+                    packing_status.save()
+                else:
+                    messages.warning(request, '每个颜色的订单数小于400件，只能接受正负10%!')
+                    return redirect('order:packinglistadd', pk=order.pk)
+            else:
+                print(2)
+                if actualqty in range(int(colorqty*0.95), int(colorqty*1.05) + 1):
+                    if actualqty <= colorqty + 50:
+                        packing_status.status = 'SUBMIT'
+                        packing_status.save()
+                    else:
+                        messages.warning(request, '每个颜色的订单数大于400件，只能接受正负5%，最多接受50件!')
+                        return redirect('order:packinglistadd', pk=order.pk)
+                else:
+                    messages.warning(request, '每个颜色的订单数大于400件，只能接受正负5%，最多接受50件!')
+                    return redirect('order:packinglistadd', pk=order.pk)
+        else:
+            messages.warning(request, "{}没有添加装箱单.".format(color.color_cn))
+    return redirect('order:packinglistdetail', pk=order.pk)
 
 
 # 删除装箱单
@@ -370,14 +428,6 @@ def packinglistdetail(request, pk):
                                                        'packing_ctns': packing_ctns})
 
 
-def packinglistsubmit(request, pk):
-    order = get_object_or_404(Order, pk=pk)
-    packing_status = order.packing_status
-    packing_status.status = 'SUBMIT'
-    packing_status.save()
-    return redirect('order:packinglistdetail', pk=order.pk)
-
-
 def packinglistclose(request, pk):
     order = get_object_or_404(Order, pk=pk)
     packing_status = order.packing_status
@@ -393,6 +443,18 @@ def packinglistreset(request, pk):
     packing_status.save()
     return redirect('order:packinglistadd', pk=order.pk)
 
+
+# 查订单比列
+def getratio(request):
+    colorratio_pk = request.GET.get('color', None)
+    colorratio = get_object_or_404(Order_color_ratio_qty, pk=colorratio_pk)
+    ratio = colorratio.ratio
+    ratiolist = ratio.split(":")
+    ratiolist = list(map(int, ratiolist))
+    data = {
+        'ratio': ratiolist
+    }
+    return JsonResponse(data)
 
 
 class FunctionList(TemplateView):
