@@ -340,9 +340,10 @@ def getacutalcolorqty(pk):
     order = get_object_or_404(Order, pk=pk)
     colors = order.colorqtys.all()
     for color in colors:
-        qty = color.packing_ctns.aggregate(bags=Sum('bags'), size1=Sum('size1'),
-                                           size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
-                                           totalqty=Sum('totalqty'))
+        qty = color.packing_ctns.annotate(eachitemtotalbags=F('bags')*F('totalboxes'))
+        qty = qty.aggregate(totalbags=Sum('eachitemtotalbags'), size1=Sum('size1'),
+                            size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
+                            totalqty=Sum('totalqty'))
         # print(qty)
         colorobject = {'color': color, 'qty': qty}
         # print(colorobject)
@@ -357,9 +358,10 @@ def packinglistadd(request, pk):
     form = OrderpackingctnForm(request.POST, order=order)
     colorqtys = order.colorqtys.all()
     packing_ctns = order.packing_ctns.all()
-    orderctnsum = order.packing_ctns.aggregate(totalboxes=Sum('totalboxes'), bags=Sum('bags'), size1=Sum('size1'),
-                                               size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
-                                               totalqty=Sum('totalqty'))
+    orderctnsum = order.packing_ctns.annotate(eachitemtotalbags=F('bags')*F('totalboxes'))
+    orderctnsum = orderctnsum.aggregate(totalboxes=Sum('totalboxes'), totalbags=Sum('eachitemtotalbags'), size1=Sum('size1'),
+                                        size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
+                                        totalqty=Sum('totalqty'))
     actualqty = getacutalcolorqty(order.pk)
     # print(actualqty)
     if request.method == 'POST':
@@ -434,9 +436,11 @@ def packinglistdetail(request, pk):
     colorqtys = order.colorqtys.all()
     packing_ctns = order.packing_ctns.all()
     actualqty = getacutalcolorqty(order.pk)
-    orderctnsum = order.packing_ctns.aggregate(totalboxes=Sum('totalboxes'), bags=Sum('bags'), size1=Sum('size1'),
-                                               size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
-                                               totalqty=Sum('totalqty'))
+    orderctnsum = order.packing_ctns.annotate(eachitemtotalbags=F('bags')*F('totalboxes'))
+    orderctnsum = orderctnsum.aggregate(totalboxes=Sum('totalboxes'), totalbags=Sum('eachitemtotalbags'), size1=Sum('size1'),
+                                        size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
+                                        totalqty=Sum('totalqty'))
+
     return render(request, 'packinglist_detail.html', {'order': order,
                                                        'colorqtys': colorqtys,
                                                        'packing_ctns': packing_ctns,

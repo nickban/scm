@@ -13,7 +13,9 @@
 <div class="row text-center">
     <div class="col-12 col-md-12">
         <h5>装箱单信息</h5>
-        <strong>状态({{order.packing_status.get_status_display}})订单号({{order.po}}) 款号({{order.style_no}}) 工厂({{order.factory}}) 工厂交期({{order.handover_date_f}})</strong>
+        <h6>状态:{{order.packing_status.get_status_display}} &nbsp 订单号:{{order.po}} &nbsp 款号:{{order.style_no}}
+            &nbsp 品牌:{{ order.brand}} &nbsp 工厂:{{order.factory}} &nbsp工厂交期: {{order.handover_date_f}}
+        </h6>
     </div>
 </div>
 <div class="row">
@@ -144,13 +146,41 @@
                     <td>{{colorobject.color.color}}</td>
                     <td>{{colorobject.color.color_no}}</td>
                     <td>{{colorobject.color.ratio}}</td>
+                    {% if colorobject.qty.size1 == None %}
+                    <td></td>
+                    {% else %}
                     <td>{{colorobject.qty.size1}}</td>
+                    {% endif %}
+                    {% if colorobject.qty.size2 == None %}
+                    <td></td>
+                    {% else %}
                     <td>{{colorobject.qty.size2}}</td>
+                    {% endif %}
+                    {% if colorobject.qty.size3 == None %}
+                    <td></td>
+                    {% else %}
                     <td>{{colorobject.qty.size3}}</td>
+                    {% endif %}
+                    {% if colorobject.qty.size4 == None %}
+                    <td></td>
+                    {% else %}
                     <td>{{colorobject.qty.size4}}</td>
+                    {% endif %}
+                    {% if colorobject.qty.size5 == None %}
+                    <td></td>
+                    {% else %}
                     <td>{{colorobject.qty.size5}}</td>
-                    <td>{{colorobject.qty.bags}}</td>
+                    {% endif %}
+                    {% if colorobject.qty.totalbags == None %}
+                    <td></td>
+                    {% else %}
+                    <td>{{colorobject.qty.totalbags}}</td>
+                    {% endif %}
+                    {% if colorobject.qty.totalqty == None %}
+                    <td></td>
+                    {% else %}
                     <td>{{colorobject.qty.totalqty}}</td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
         </table>
@@ -169,7 +199,7 @@
                         <th style="width: 10%" scope="col">开始箱号</th>
                         <th style="width: 10%" scope="col">结束箱号</th>
                         <th style="width: 10%" scope="col">箱数</th>
-                        <th style="width: 10%" cope="col">中包数</th>
+                        <th style="width: 10%" cope="col">每箱中包数</th>
                         {% if order.labeltype == 'NUMBER'%}
                             <th scope="col">6</th>
                             <th scope="col">8</th>
@@ -221,17 +251,49 @@
                 </tr>
                 {% endif %}
                 <tr class="text-center">
-                    <th scope="col">总计</th>
+                    <th scope="col">合计</th>
                     <th scope="col"></th>
                     <th scope="col"></th>
-                    <th scope="col">{{orderctnsum.totalboxes}}</th>
-                    <th cope="col">{{orderctnsum.bags}}</th>
-                    <th scope="col">{{orderctnsum.size1}}</th>
-                    <th scope="col">{{orderctnsum.size2}}</th>
-                    <th scope="col">{{orderctnsum.size3}}</th>
-                    <th scope="col">{{orderctnsum.size4}}</th>
-                    <th scope="col">{{orderctnsum.size5}}</th>
-                    <th scope="col">{{orderctnsum.totalqty}}</th>
+                    {% if orderctnsum.totalboxes == None %}
+                    <th></th>
+                    {% else %}
+                    <th>{{orderctnsum.totalboxes}}</th>
+                    {% endif %}
+                    {% if orderctnsum.totalbags == None %}
+                    <th>(总中包)</th>
+                    {% else %}
+                    <th>(总中包){{orderctnsum.totalbags}}</th>
+                    {% endif %}
+                    {% if orderctnsum.size1 == None %}
+                    <th></th>
+                    {% else %}
+                    <th>{{orderctnsum.size1}}</th>
+                    {% endif %}
+                    {% if orderctnsum.size2 == None %}
+                    <th></th>
+                    {% else %}
+                    <th>{{orderctnsum.size2}}</th>
+                    {% endif %}
+                    {% if orderctnsum.size3 == None %}
+                    <th></th>
+                    {% else %}
+                    <th>{{orderctnsum.size3}}</th>
+                    {% endif %}
+                    {% if orderctnsum.size4 == None %}
+                    <th></th>
+                    {% else %}
+                    <th>{{orderctnsum.size4}}</th>
+                    {% endif %}
+                    {% if orderctnsum.size5 == None %}
+                    <th></th>
+                    {% else %}
+                    <th>{{orderctnsum.size5}}</th>
+                    {% endif %}
+                    {% if orderctnsum.totalqty == None %}
+                    <th></th>
+                    {% else %}
+                    <th>{{orderctnsum.totalqty}}</th>
+                    {% endif %}
                     <th scope="col"></th>
                 </tr>
             </table>
