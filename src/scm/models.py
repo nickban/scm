@@ -24,6 +24,14 @@ class Factory(models.Model):
     user = models.OneToOneField(User, verbose_name='工厂',
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
+    name = models.CharField('工厂名称', max_length=100)
+    contactperson = models.CharField('联系人', max_length=100)
+    address = models.CharField('地址', max_length=200)
+    email = models.EmailField('邮箱')
+    phone = models.CharField('手机', max_length=100)
+    bank = models.CharField('开户银行', max_length=100, null=True, blank=True)
+    bankaccount = models.CharField('银行账户', max_length=100, null=True, blank=True)
+    bankaccountnumber = models.CharField('银行账号', max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.user.username
@@ -317,9 +325,26 @@ def auto_delete_file_postattachment(sender, instance, **kwargs):
 
 # 订单部分
 class Invoice(models.Model):
+    NEW = 'NEW'
+    CONFIRMED = 'CONFIRMED'
+    PAID = 'PAID'
+    INVOICESTATUS = [
+        (NEW, '新建'),
+        (CONFIRMED, '财务已确认'),
+        (PAID, '已付款')
+    ]
+    created_date = models.DateTimeField('创建日期', auto_now_add=True)
     invoice_no = models.CharField('发票号', max_length=100)
-    status = models.BooleanField(default=False)
+    status = models.CharField('状态', max_length=50, choices=INVOICESTATUS, default="NEW")
     file = models.FileField(upload_to='order/invoice/', blank=True)
+    handoverdate = models.DateTimeField('出货日期', null=True)
+    start_of_week = models.DateTimeField( null=True)
+    end_of_week = models.DateTimeField(null=True)
+    factory = models.ForeignKey(Factory,
+                                verbose_name='工厂',
+                                related_name='invoices',
+                                on_delete=models.SET_NULL,
+                                null=True)
 
 
 @receiver(models.signals.post_delete, sender=Invoice)
@@ -495,11 +520,6 @@ class Order(models.Model):
                                blank=True,
                                on_delete=models.SET_NULL,
                                null=True)
-    discount = models.DecimalField('折扣',
-                                   max_digits=5,
-                                   decimal_places=2,
-                                   null=True, blank=True)
-    discount_reason = models.TextField('折扣原因', blank=True)
     invoice = models.ForeignKey(Invoice,
                                 verbose_name='发票号',
                                 related_name='orders',
@@ -593,20 +613,6 @@ class Order_swatches(models.Model):
 
 @receiver(models.signals.post_delete, sender=Order_swatches)
 def auto_delete_file_order_swatches(sender, instance, **kwargs):
-    if instance.file:
-        if os.path.isfile(instance.file.path):
-            os.remove(instance.file.path)
-
-
-class Order_discountattach(models.Model):
-    file = models.FileField(upload_to='order/discountattach/', blank=True)
-    order = models.ForeignKey(Order,
-                              on_delete=models.CASCADE,
-                              related_name='discountattaches')
-
-
-@receiver(models.signals.post_delete, sender=Order_discountattach)
-def auto_delete_file_order_discountattach(sender, instance, **kwargs):
     if instance.file:
         if os.path.isfile(instance.file.path):
             os.remove(instance.file.path)

@@ -12,18 +12,10 @@
     <form  method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div id="div_id_attachment" class="form-group attachment ">
-            {% if  'avatar' in attachtype or 'invoice' in  attachtype %}
-            <input id="fileupload" type="file" name="file" class="inputfile" data-url="{% url 'order:orderattachadd' pk=order.pk attachtype=attachtype%}" >
-            {% else %}
-            <input id="fileupload" type="file" name="file" class="inputfile" data-url="{% url 'order:orderattachadd' pk=order.pk attachtype=attachtype%}"  multiple>
-            {% endif %}
+            <input id="fileupload" type="file" name="file" class="inputfile" data-url="{% url 'order:invoiceattachadd' pk=invoice.pk%}" >
             <label for="fileupload">请点击选择文件...</label>
         </div>
-        {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
-            <a class="btn btn-outline-primary" href="{% url 'order:orderedit' order.pk %}" role="button">返回</a>
-        {% else %}
-            <a class="btn btn-outline-primary" href="{% url 'order:orderedit' order.pk %}" role="button">返回</a>
-        {% endif %}
+            <a class="btn btn-outline-primary" href="{% url 'order:invoicedetail' invoice.pk %}" role="button">返回</a>
     </form>
 {% endblock %}
 

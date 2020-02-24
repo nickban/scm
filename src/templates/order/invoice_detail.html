@@ -1,0 +1,126 @@
+{% extends 'base_home.html' %}
+{% load static %}
+{% load basename %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+
+
+{% block css%}
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<!-- 需要重新加载一次，否则页面颜色显示有点问题 -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- 日期选择器，必须在本页面加装js和bootstrap，否则无效 -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+{{ form.media }}
+{% endblock%}
+
+{% block content %}
+
+<div class="row text-center">
+  <div class="my-0 col-sm-12">
+    <h5>对账单明细(Commercial Invoice)</h5>
+    <h6>{{invoice.start_of_week|date:"SHORT_DATE_FORMAT"}} 到 {{invoice.end_of_week|date:"SHORT_DATE_FORMAT"}}</h6>
+    <hr>
+  </div>
+</div>
+<div class="row d-flex justify-content-end">
+  <div class=" my-0 py-0 col-sm-2">
+    <p class="my-0 py-0">创建日期:{{invoice.created_date |date:"SHORT_DATE_FORMAT"}}</p>
+  </div>
+  <div class="my-0 py-0 col-sm-2">
+    <p class="my-0 py-0">发票号:{{invoice.invoice_no}}</p>
+  </div>
+  <div class="my-0 py-0 col-sm-2">
+    <p class="my-0 py-0">状态:{{invoice.get_status_display}}</p>
+  </div>
+  <div class="my-0 py-0 col-sm-2">
+    <a href="{% url 'order:invoiceattachadd' pk=invoice.pk%}" role="button">
+    <i class="fas fa-file-upload fa-2x"></i></a>
+    <span>上传盖章的发票附件</span>
+    {% if invoice.file %}
+    <a href="{{ invoice.file.url }}">{{ invoice.file.name |basename }}</a>
+    {% else %}
+    <h6><span class="badge badge-warning">未上传</span></h6>
+    {% endif %}
+  </div>
+
+
+</div>
+<hr>
+<div class="row my-3">
+  <div class="col-sm-4">
+    <h6 class="">采购方</h6>
+    <p class="my-0">公司名称: YUANSE FASHION CO,LTD</p>
+    <p class="my-0">地址:广州市海珠区新港东路48号雅君花园G4栋801</p>
+    <p class="my-0">电话:13570975684</p>
+  </div>
+  <div class="col-sm-4">
+    <h6 class="">供货方</h6>
+    <p class="my-0">工厂名称: {{factory.name}}</p>
+    <p class="my-0">地址:{{factory.address}}</p>
+    <p class="my-0">电话:{{factory.phone}}</p>
+  </div>
+  <div class="col-sm-4">
+    <h6 class="">收款银行信息</h6>
+    <p class="my-0">银行账号: {{factory.bankaccountnumber}}</p>
+    <p class="my-0">银行账户: {{factory.bankaccount}}</p>
+    <p class="my-0">开户银行: {{factory.bank}}</p>
+  </div>
+</div>
+
+  <table  class="my-0 table">
+      <thead>
+        <tr class="text-center">
+          <th scope="col">序号</th>
+          <th scope="col">订单号</th>
+          <th scope="col">款号</th>
+          <th scope="col">品牌</th>
+          <th scope="col">工厂交期</th>
+          <th scope="col">单价</th>
+          <th scope="col">折扣金额</th>
+          <th scope="col">实际出货数</th>
+          <th scope="col">应付金额</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for each in qs %}
+        <tr class="text-center">
+          <td>{{ forloop.counter }}</td>
+          <td ><a href="{% url 'order:orderdetail' pk=each.order.pk %}">{{ each.order.po }}</a></td>
+          <td >{{ each.order.style_no }}</td>
+          <td>{{each.order.brand}}</td>
+          <td >{{ each.order.handover_date_f |date:"SHORT_DATE_FORMAT"}}</td>
+          <td >{{ each.order.factory_price}}</td>
+          <td >{{ each.order.discount}}</td>
+          <td >{{ each.totalqty}}</td>
+          <td >{{ each.paidamount}}</td>
+        </tr>
+      {% endfor %}
+      <tr class="text-center">
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col">应付总额:</th>
+        <th scope="col">{{ totalpaidamount }}</th>
+      </tr>
+      </tbody>
+  </table>
+  <div class="mt-5 row">
+      <div class="col-sm ">
+          <div class="form-group">
+            <a class="btn btn-block btn-outline-primary" href="{% url 'order:invoicelist'%}" role="button">返回</a>
+          </div>
+      </div>
+      <div class="col-sm ">
+        <div class="form-group">
+          <a href="" class="btn btn-block btn-outline-primary" onclick="window.print()" role="button">打印</a>
+        </div>
+    </div>
+  </div>
+
+{% endblock %}

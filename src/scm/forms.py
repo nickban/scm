@@ -9,7 +9,7 @@ from .models import (User, Factory,
                      Sample_size_spec_factory,
                      Order, Order_color_ratio_qty, Order_size_specs,
                      Order_swatches, Order_shipping_pics, Order_avatar,
-                     Order_packing_ctn)
+                     Order_packing_ctn, Invoice, Factory)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
@@ -255,8 +255,7 @@ class OrderForm(forms.ModelForm):
                   'brand', 'merchandiser', 'designer', 'style',
                   'factory', 'sample', 'factory_price', 'disigner_price',
                   'handover_date_f', 'handover_date_d', 'comments',
-                  'parent', 'discount', 'discount_reason',
-                  'invoice', 'main_label', 'main_tag', 'addition_tag',
+                  'parent', 'invoice', 'main_label', 'main_tag', 'addition_tag',
                   'packing_type', 'destination', 'labeltype')
         widgets = {
                   'comments': forms.Textarea(attrs={'rows': 5}),
@@ -334,6 +333,12 @@ class OrderavatarForm(forms.ModelForm):
         fields = ('file',)
 
 
+class InvoiceForm(forms.ModelForm):
+    class Meta:
+        model = Invoice
+        fields = ('file',)
+
+
 class OrderpackingctnForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.order = kwargs.pop('order', None)
@@ -346,3 +351,9 @@ class OrderpackingctnForm(forms.ModelForm):
         fields = ('color', 'ctn_start_no',
                   'ctn_end_no', 'totalboxes', 'bags', 'size1',
                   'size2', 'size3', 'size4', 'size5', 'totalqty')
+
+
+class InvoiceSearchForm(forms.Form):
+    start_handover_date_f = forms.DateField(widget=DatePicker(), label="工厂交期", required=False)
+    end_handover_date_f = forms.DateField(widget=DatePicker(), label="客人交期", required=False)
+    factory = forms.ModelChoiceField(queryset=Factory.objects.all(), empty_label="请选择", required=False)

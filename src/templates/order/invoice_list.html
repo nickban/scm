@@ -1,0 +1,125 @@
+{% extends 'base_home.html' %}
+{% load static %}
+{% load basename %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+{% block css%}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<!-- 需要重新加载一次，否则页面颜色显示有点问题 -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- 日期选择器，必须在本页面加装js和bootstrap，否则无效 -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+{{ form.media }}
+{% endblock%}
+
+{% block content %}
+<div class="row">
+  <div class="col-sm-12">
+    {% if request.user.is_merchandiser %}
+    <form method="POST" novalidate>
+      {% csrf_token%}
+      <div class="form-row d-flex align-items-end">
+        <div class="form-group col-md-2">
+          <label >起始入仓期</label>
+          {% render_field form.start_handover_date_f class="form-control" %}
+        </div>
+        <div class="form-group col-md-2">
+          <label >结束入仓期</label>
+          {% render_field form.end_handover_date_f class="form-control" %}
+        </div>
+        <div class="form-group col-md-2">
+          <label >工厂</label>
+          {% render_field form.factory class="form-control" %}
+        </div>
+        <div class="form-group col-md-2">
+          <input type="submit" value="查找" class="btn btn-block btn-outline-primary">
+        </div>
+      </div>
+    </form>
+    {% endif %}
+  </div>
+  <div class="col-sm-6">
+    <h6 class="text-left">发票列表</h6>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">序号</th>
+          <th scope="col">创建日期</th>
+          <th scope="col">发票号</th>
+          <th scope="col">工厂</th>
+          <th scope="col">状态</th>
+          <th scope="col">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for invoice in invoiceqs %}
+        <tr>
+          <td>{{ forloop.counter}}</td>
+          <td>{{ invoice.created_date |date:"SHORT_DATE_FORMAT"}}</td>
+          <td><a href="{% url 'order:invoicedetail' invoice.pk%}">{{ invoice.invoice_no}}</a></td>
+          <td>{{ invoice.factory}}</td>
+          <td>{{ invoice.get_status_display}}</td>
+          {% if request.user.is_factory%}
+          <td><a href="{% url 'order:invoicedelete' invoice.pk%}">删除</a></td>
+          {% endif %}
+          {% if request.user.is_merchandiser%}
+            {% if invoice.status == 'PAID' %}
+            <td></td>
+            {% else %}
+            <td><a href="{% url 'order:invoicepay' invoice.pk%}">已付款</a></td>
+            {% endif%}
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="col-sm-6">
+    <h6 class="text-left">待做发票的订单</h6>
+    <form action="{% url 'order:invoiceadd'%}" method="post">
+      {%csrf_token%}
+          <table  class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">序号</th>
+                  <th scope="col">订单号</th>
+                  <th scope="col">款号</th>
+                  <th scope="col">品牌</th>
+                  <th scope="col">工厂</th>
+                  <th scope="col">工厂交期</th>
+                  <th scope="col">状态</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for order in orderqs %}
+                <tr class="text-left">
+                  <td class="text-right"><input class="form-check-input" type="checkbox" value="{{order.pk}}"  name="orderpk"></td>
+                  <td >{{ forloop.counter }}</td>
+                  <td ><a href="{% url 'order:orderdetail' order.pk%}">{{ order.po }}</a></td>
+                  <td >{{ order.style_no }}</td>
+                  <td >{{ order.brand }}</td>
+                  <td >{{ order.factory }}</td>
+                  <td >{{ order.handover_date_f |date:"SHORT_DATE_FORMAT"}}</td>
+                  <td >{{ order.get_status_display}}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+          </table>
+          {% if request.user.is_factory%}
+          <div class="row">
+              <div class="col-sm ">
+                  <div class="form-group">
+                      <input type="submit" value="创建发票" class="btn btn-block btn-outline-primary">
+                  </div>
+              </div>
+          </div>
+          {% endif %}
+      </form>
+  </div>
+
+</div>
+
+
+{% endblock %}

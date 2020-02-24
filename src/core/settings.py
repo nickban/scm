@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     # 日期选择器
     'tempus_dominus',
+    'mathfilters',
 ]
 
 TEMPUS_DOMINUS_LOCALIZE = True

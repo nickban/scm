@@ -1,1 +1,0 @@
-<h1>invoice_list</h1>

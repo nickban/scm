@@ -67,10 +67,16 @@ urlpatterns = [
         path('<int:pk>/packinglist/reset/', order.packinglistreset, name='packinglistreset'),
         # 查订单颜色的比列
         path('getratio/', order.getratio, name='getratio'),
-        
-        
-        # 装箱单查找
+        # 装箱单查找, 此功能系统暂不使用，代码可以供未来参考
         path('search/', order.plsearch, name='plsearch'),
+
+        path('invoice/add/', order.invoiceadd, name='invoiceadd'),
+        path('invoice/<int:pk>/detail/', order.invoicedetail, name='invoicedetail'),
+        path('invoice/<int:pk>/delete/', order.invoicedelete, name='invoicedelete'),
+        path('invoice/<int:pk>/pay/', order.invoicepay, name='invoicepay'),
+        path('invoice/list/', order.invoicelist, name='invoicelist'),
+        path('invoice/<int:pk>/attachadd/', order.invoiceattachadd, name='invoiceattachadd'),
+
         # 订单上传资料通用功能
         path('<int:pk>/<str:attachtype>/add/', order.orderattachadd, name='orderattachadd'),
         path('<int:pk>/<str:attachtype>/collection/', order.orderattachcollection, name='orderattachcollection'),
@@ -83,11 +89,6 @@ urlpatterns = [
     path('admin/', include(([
         path('', order.FunctionList.as_view(), name='function_list'),
     ], 'scm'), namespace='admin')),
-
-    # Finance地址导航
-    path('finance/', include(([
-        path('', order.InvoiceList.as_view(), name='invoice_list'),
-    ], 'scm'), namespace='finance')),
 
     # post地址导航
     path('post/', include(([

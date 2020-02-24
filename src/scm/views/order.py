@@ -2,12 +2,12 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import CreateView, ListView, UpdateView, TemplateView, DeleteView
 from scm.models import (Order, Order_color_ratio_qty, Order_avatar,
                         Order_swatches, Order_size_specs,
-                        Order_shipping_pics, Order_packing_ctn)
+                        Order_shipping_pics, Order_packing_ctn, Invoice)
 from scm.forms import (
                        OrderForm, Order_color_ratio_qty_Form,
                        OrderavatarForm, OrdersizespecsForm,
                        OrderswatchForm, OrdershippingpicsForm,
-                       OrderpackingctnForm)
+                       OrderpackingctnForm, InvoiceSearchForm, InvoiceForm)
 from django.contrib.auth.decorators import login_required
 from scm.decorators import m_mg_or_required, factory_required, office_required, order_is_shipped
 from django.utils.decorators import method_decorator
@@ -19,6 +19,8 @@ from django.contrib import messages
 from django.contrib.auth.views import reverse_lazy
 from scm.filters import OrderFilter
 from django.db.models import F, Sum, IntegerField
+from time import strftime
+from datetime import datetime, timedelta
 
 
 # 订单列表-未确认(新建，已送工厂状态)
@@ -282,6 +284,30 @@ def orderattachadd(request, pk, attachtype):
     else:
         return render(request, 'order_attach_add.html', {'order': order, 'attachtype': attachtype})
 
+# 上传发票
+@login_required
+def invoiceattachadd(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+    if request.method == 'POST':
+        form = InvoiceForm(request.POST, request.FILES, instance=invoice)
+        if request.FILES:
+            try:
+                invoice.file.delete()
+            except ObjectDoesNotExist:
+                pass
+        if form.is_valid():
+            invoice = form.save()
+            data = {"files": [{
+                        "name": invoice.file.name,
+                        "url": invoice.file.url, },
+                        ]}
+        else:
+            data = {'is_valid': False}
+        return JsonResponse(data)
+    else:
+        return render(request, 'invoice_attach_add.html', {'invoice': invoice})
+
+
 
 @login_required
 def orderattachdelete(request, pk, attachtype, attach_pk):
@@ -477,9 +503,139 @@ def getratio(request):
     return JsonResponse(data)
 
 
+def increment_invoice_number():
+    last_invoice = Invoice.objects.all().order_by('id').last()
+    if not last_invoice:
+        return '000001'
+    invoice_no = last_invoice.invoice_no
+    invoice_no_new = invoice_no[9:]
+    print(invoice_no_new)
+    new_invoice_no = str(int(invoice_no_new) + 1)
+    new_invoice_no = invoice_no_new[0:-(len(new_invoice_no))] + new_invoice_no
+    print(new_invoice_no)
+    return new_invoice_no
+
+
+@factory_required
+def invoiceadd(request):
+    qs = []
+    orderlist = {}
+    totalpaidamount = 0
+    orderpklist = request.POST.getlist('orderpk')
+    if not orderpklist:
+        return redirect('order:invoicelist')
+    else:
+        orderlist = Order.objects.in_bulk(orderpklist)
+        orderlist = orderlist.values()
+        datelist = [order.handover_date_f for order in orderlist]
+        mindate = min(datelist)
+        maxdate = max(datelist)
+        start_of_week = mindate - timedelta(days=mindate.weekday())   # Monday
+        end_of_week = start_of_week + timedelta(days=6)   # Sunday
+        new_invoiceno = increment_invoice_number()
+        if maxdate >= start_of_week and maxdate <= end_of_week:
+            invoiceno = mindate.strftime("%Y%m%d") + '_' + new_invoiceno
+            factory = request.user.factory
+            invoice = Invoice.objects.create(invoice_no=invoiceno, factory=factory,
+                                             handoverdate=mindate, start_of_week=start_of_week,
+                                             end_of_week=end_of_week)
+            for order in orderlist:
+                totalqty = order.packing_ctns.aggregate(totalqty=Sum('totalqty', output_field=IntegerField()))
+                totalqty = totalqty.get('totalqty')
+                paidamount = totalqty * order.factory_price
+                totalpaidamount = totalpaidamount + paidamount
+                orderobject = {'order': order, 'totalqty': totalqty, 'paidamount': paidamount}
+                qs.append(orderobject)
+                order.invoice = invoice
+                order.save()
+        else:
+            messages.warning(request, '请把同一周出货的订单创建在一张发票里！')
+            return redirect('order:invoicelist')
+
+    return render(request, 'invoice_detail.html', {'qs': qs, 'invoice': invoice, 'factory': factory, 'totalpaidamount': totalpaidamount})
+
+
+def invoicedelete(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+    invoice.delete()
+    Order.objects.filter(invoice=invoice).update(invoice=None)
+    return redirect('order:invoicelist')
+
+
+def invoicedetail(request, pk):
+    qs = []
+    totalpaidamount = 0
+    invoice = get_object_or_404(Invoice, pk=pk)
+    orderqs = Order.objects.filter(invoice=invoice)
+    factory = invoice.factory
+    for order in orderqs:
+        totalqty = order.packing_ctns.aggregate(totalqty=Sum('totalqty', output_field=IntegerField()))
+        totalqty = totalqty.get('totalqty')
+        paidamount = totalqty * order.factory_price
+        totalpaidamount = totalpaidamount + paidamount
+        orderobject = {'order': order, 'totalqty': totalqty, 'paidamount': paidamount}
+        qs.append(orderobject)
+    return render(request, 'invoice_detail.html', {'qs': qs, 'invoice': invoice, 'factory': factory, 'totalpaidamount': totalpaidamount})
+
+
+def invoicelist(request):
+    loginuser = request.user
+    if loginuser.is_factory:
+        invoiceqs = Invoice.objects.filter(factory=loginuser.factory)
+        orderqs = Order.objects.filter(Q(factory=loginuser.factory), Q(status='SHIPPED'), Q(invoice=None))
+        return render(request, 'invoice_list.html',  {'invoiceqs': invoiceqs, 'orderqs': orderqs})
+    else:
+        if request.method == 'POST':
+            if request.POST.get('start_handover_date_f') and request.POST.get('end_handover_date_f') and request.POST.get('factory'):
+                form = InvoiceSearchForm(request.POST)
+                if form.is_valid():
+                    factory = form.cleaned_data['factory']
+                    start_handover_date_f = form.cleaned_data['start_handover_date_f']
+                    end_handover_date_f = form.cleaned_data['end_handover_date_f']
+                    invoiceqs = Invoice.objects.filter(factory=factory, handoverdate__range=(start_handover_date_f, end_handover_date_f))
+                    print(invoiceqs)
+            elif request.POST.get('start_handover_date_f') and request.POST.get('end_handover_date_f'):
+                print(1)
+                form = InvoiceSearchForm(request.POST)
+                print(2)
+                print(request.POST.get('start_handover_date_f'))
+                print(request.POST.get('end_handover_date_f'))
+
+                if form.is_valid():
+                    print(3)
+                    start_handover_date_f = form.cleaned_data['start_handover_date_f']
+                    end_handover_date_f = form.cleaned_data['end_handover_date_f']
+                    invoiceqs = Invoice.objects.filter(handoverdate__range=(start_handover_date_f, end_handover_date_f))
+                    print(invoiceqs)
+            elif request.POST.get('factory'):
+                form = InvoiceSearchForm(request.POST)
+                if form.is_valid():
+                    factory = form.cleaned_data['factory']
+                    invoiceqs = Invoice.objects.filter(factory=factory)
+                    print(invoiceqs)
+
+            else:
+                messages.warning(request, '请选择开始和结束工厂入仓日期！')
+                return redirect('order:invoicelist')
+            orderqs = Order.objects.filter(Q(status='SHIPPED'), Q(invoice=None))
+        else:
+            form = InvoiceSearchForm()
+            invoiceqs = Invoice.objects.filter()
+            orderqs = Order.objects.filter(Q(status='SHIPPED'), Q(invoice=None))
+
+        return render(request, 'invoice_list.html',  {'invoiceqs': invoiceqs, 'orderqs': orderqs, 'form': form})
+
+
+def invoicepay(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+    invoice.status = 'PAID'
+    invoice.save()
+    return redirect('order:invoicelist')
+
+
+
 class FunctionList(TemplateView):
     template_name = 'function_list.html'
 
 
-class InvoiceList(TemplateView):
-    template_name = 'invoice_list.html'
+

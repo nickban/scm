@@ -14,8 +14,8 @@
 <div class="row text-center">
     <div class="col-12 col-md-12">
         <h5>装箱单信息</h5>
-        <h6>状态:{{order.packing_status.get_status_display}} &nbsp 订单号:{{order.po}} &nbsp 款号:{{order.style_no}}
-            &nbsp 品牌:{{ order.brand}} &nbsp 工厂:{{order.factory}} &nbsp工厂交期: {{order.handover_date_f}}
+        <h6 >状态:{{order.packing_status.get_status_display}} &nbsp 订单号:{{order.po}} &nbsp 款号:{{order.style_no}}
+            &nbsp 品牌:{{ order.brand}} &nbsp 工厂:{{order.factory}} &nbsp工厂交期: {{order.handover_date_f |date:"SHORT_DATE_FORMAT"}}
         </h6>
     </div>
 </div>
@@ -279,7 +279,7 @@
                     {% else %}
                     <th>{{orderctnsum.totalqty}}</th>
                     {% endif %}
-                    <th scope="col"></th>
+
                 </tr>
             </table>
         </div>
