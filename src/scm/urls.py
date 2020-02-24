@@ -32,7 +32,7 @@ urlpatterns = [
     # 订单地址导航
     path('order/', include(([
         # 未确认,已确认,已出货订单列表
-        path('', order.OrderListNew.as_view(), name='orderlistnew'),
+        path('new/<str:type>/', order.OrderListNew.as_view(), name='orderlistnew'),
         path('confirmed/', order.OrderListConfrimed.as_view(), name='orderlistconfirmed'),
         path('shipped/', order.OrderListShipped.as_view(), name='orderlistshipped'),
         # 订单新增
@@ -53,6 +53,13 @@ urlpatterns = [
         path('<int:pk>/shipped/', order.ordershipped, name='ordershipped'),
         # 测试用
         path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
+        # 订单进度管理
+        path('<int:pk>/progress/', order.orderprogress, name='orderprogress'),
+        path('<int:pk>/bulkfabric/', order.orderbulkfabric, name='orderbulkfabric'),
+        path('<int:pk>/fittingsample/', order.orderfittingsample, name='orderfittingsample'),
+        path('<int:pk>/shippingsample/', order.ordershippingsample, name='ordershippingsample'),
+        path('<int:pk>/childorder/', order.orderchildorder, name='orderchildorder'),
+
         # 创建装箱单
         path('<int:pk>/packinglist/add/', order.packinglistadd, name='packinglistadd'),
         # 删除装箱单
@@ -76,7 +83,7 @@ urlpatterns = [
         path('invoice/<int:pk>/pay/', order.invoicepay, name='invoicepay'),
         path('invoice/list/', order.invoicelist, name='invoicelist'),
         path('invoice/<int:pk>/attachadd/', order.invoiceattachadd, name='invoiceattachadd'),
-
+        
         # 订单上传资料通用功能
         path('<int:pk>/<str:attachtype>/add/', order.orderattachadd, name='orderattachadd'),
         path('<int:pk>/<str:attachtype>/collection/', order.orderattachcollection, name='orderattachcollection'),

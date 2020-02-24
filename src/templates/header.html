@@ -20,7 +20,7 @@
       {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
       <a class="dropdown-item" href="{% url 'order:orderadd' %}">新建</a>
       {% endif %}
-      <a class="dropdown-item" href="{% url 'order:orderlistnew' %}">未确认</a>
+      <a class="dropdown-item" href="{% url 'order:orderlistnew' type='list' %}">未确认</a>
       <a class="dropdown-item" href="{% url 'order:orderlistconfirmed' %}">已确认</a>
       <a class="dropdown-item" href="{% url 'order:orderlistshipped' %}">已出货</a>
       <a class="dropdown-item" href="{% url 'order:invoicelist' %}">对账单</a>

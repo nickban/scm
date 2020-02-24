@@ -703,3 +703,71 @@ class Order_packing_status(models.Model):
                                        null=True,
                                        blank=True,
                                        default=14)
+
+
+class Order_bulk_fabric(models.Model):
+    NORMAL = 'NORMAL'
+    WARNING = 'WARNING'
+    URGENT = 'URGENT'
+    CHOICES = [
+        (NORMAL, '正常'),
+        (WARNING, '警告'),
+        (URGENT, '紧急'),
+    ]
+    created_date = models.DateTimeField(auto_now_add=True)
+    order = models.OneToOneField(Order,
+                                 on_delete=models.CASCADE,
+                                 related_name='bulkfabric')
+    bulk_fabric = models.CharField('大货布', max_length=200)
+    status = models.CharField('状态',
+                              max_length=100,
+                              choices=CHOICES,
+                              default=NORMAL)
+
+
+class Order_fitting_sample(models.Model):
+    NORMAL = 'NORMAL'
+    WARNING = 'WARNING'
+    URGENT = 'URGENT'
+    CHOICES = [
+        (NORMAL, '正常'),
+        (WARNING, '警告'),
+        (URGENT, '紧急'),
+    ]
+    created_date = models.DateTimeField(auto_now_add=True)
+    order = models.OneToOneField(Order,
+                                 on_delete=models.CASCADE,
+                                 related_name='fittingsample')
+    sample = models.CharField('船头板', max_length=200)
+    status = models.CharField('状态',
+                              max_length=100,
+                              choices=CHOICES,
+                              default=NORMAL)
+
+
+class Order_shipping_sample(models.Model):
+    NORMAL = 'NORMAL'
+    WARNING = 'WARNING'
+    URGENT = 'URGENT'
+    CHOICES = [
+        (NORMAL, '正常'),
+        (WARNING, '警告'),
+        (URGENT, '紧急'),
+    ]
+    created_date = models.DateTimeField(auto_now_add=True)
+    order = models.OneToOneField(Order,
+                                 on_delete=models.CASCADE,
+                                 related_name='shippingsample')
+    shipping_sample = models.CharField('船头板', max_length=200)
+    status = models.CharField('状态',
+                              max_length=100,
+                              choices=CHOICES,
+                              default=NORMAL)
+
+
+class Order_child_order(models.Model):
+    created_date = models.DateTimeField(auto_now_add=True)
+    order = models.OneToOneField(Order,
+                                 on_delete=models.CASCADE,
+                                 related_name='childorder')
+    child_order = models.CharField('小单', max_length=200)

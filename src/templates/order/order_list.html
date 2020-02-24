@@ -9,7 +9,10 @@
 {% endblock %}
 
 {% block content %}
+{{type}}
+{{listtype}}
 <div class="table-responsive">
+  {% if type == 'list' %}
   <table id="orderlistnew" class="table table-hover">
     <thead>
       <tr>
@@ -86,6 +89,73 @@
       {% endfor %}
     </tbody>
   </table>
+  {% else %}
+  <table id="orderlistnew_p" class="table table-hover" style="width:100%">
+    <thead>
+      <tr>
+        <th style="min-width: 70px;">创建日期</th>
+        <th style="min-width: 70px;">款式图</th>
+        <th style="min-width: 50px;">订单号</th>
+        <th style="min-width: 50px;">款号</th>
+        <th style="min-width: 50px;">工厂</th>
+        <th style="min-width: 70px;">工厂交期</th>
+        <th style="min-width: 500px;">生产办</th>
+        <th style="min-width: 400px;">大货布</th>
+        <th style="min-width: 300px;">船头板</th>
+        <th style="min-width: 200px;">小单</th>
+        <th style="min-width: 50px;">状态</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+        <tr>
+          <td>{{ order.created_date |date:"SHORT_DATE_FORMAT"  }}</td>
+          <td><img src="{{ order.avatar.file.url }}" width=100px, height=100px></td>
+          {% if order.status == 'SHIPPED' %}
+            <td><a href="{% url 'order:orderdetail'  order.pk %}">{{ order.po }}</a></td>
+          {% else %}
+            {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
+            <td><a href="{% url 'order:orderedit'  order.pk %}">{{ order.po }}</a></td>
+            {% else %}
+            <td><a href="{% url 'order:orderdetail'  order.pk %}">{{ order.po }}</a></td>
+            {% endif %}
+          {% endif %}
+          <td>{{ order.style_no }}</td>
+          {% if order.factory == None %}
+          <td></td>
+          {% else %}
+          <td>{{ order.factory }}</td>
+          {% endif %}
+          {% if order.handover_date_f == None %}
+          <td></td>
+          {% else %}
+          <td>{{ order.handover_date_f |date:"SHORT_DATE_FORMAT" }}</td>
+          {% endif %}
+          <td>
+            <li>9/5 安排样板给工厂，请报价并同时提供色卡</li>
+            <li>kldfjsdlfjadsl</li>
+            <li>kldfjsdlfjadsl</li>
+            <li>kldfjsdlfjadsl</li>
+            <li>kldfjsdlfjadsl</li>
+          </td>
+          <td>
+            <li>kldfjsdlfjsjflsjsfsdfsadfsdfdfdsfdfdsfdsfdfadfadffflsjflsjf</li>
+
+          </td>
+          <td>
+            <li>kldfjsdlfsdfsdfdsfjsjflsj</li>
+
+          </td>
+          <td>
+            <li>kldfjsdlfjasdfsddsfasdfsjflsjf</li>
+
+          </td>
+          <td>{{ order.get_status_display }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
 </div>
 {% endblock %}
 
@@ -95,6 +165,24 @@
 <script>
 $(document).ready( function () {
   var table =$('#orderlistnew').DataTable({
+        "language": {
+          "processing": "处理中...",
+          "loadingRecords": "载入中...",
+          "lengthMenu": "显示 _MENU_ 项结果",
+          "zeroRecords": "没有符合的结果",
+          "info": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+          "infoEmpty": "显示第 0 至 0 项结果，共 0 项",
+          "infoFiltered": "(从 _MAX_ 项结果中过滤)",
+          "infoPostFix":  "",
+          "search": "搜索:",
+          "paginate": {
+            "next": "下一页",
+            "previous": "上一页",
+          }, 
+        },
+        "order": [[ 0, 'desc' ],]
+    });
+    var table =$('#orderlistnew_p').DataTable({
         "language": {
           "processing": "处理中...",
           "loadingRecords": "载入中...",

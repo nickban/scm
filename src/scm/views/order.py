@@ -42,7 +42,9 @@ class OrderListNew(ListView):
             return Order.objects.filter(Q(status='NEW') | Q(status='SENT_FACTORY')).order_by('-created_date')
 
     def get_context_data(self, **kwargs):
+        type = self.kwargs.get('type')
         kwargs['listtype'] = 'new'
+        kwargs['type'] = type
         return super().get_context_data(**kwargs)
 
 # 订单列表-已确认(已确认状态)
@@ -89,7 +91,9 @@ class OrderListShipped(ListView):
             return Order.objects.filter(status='SHIPPED')
 
     def get_context_data(self, **kwargs):
+
         kwargs['listtype'] = 'shipped'
+        kwargs['type'] = type
         return super().get_context_data(**kwargs)
 
 # 订单新建
@@ -632,6 +636,25 @@ def invoicepay(request, pk):
     invoice.save()
     return redirect('order:invoicelist')
 
+
+def orderprogress(request, pk):
+    pass
+
+
+def orderbulkfabric(request, pk):
+    pass
+
+
+def orderfittingsample(request, pk):
+    pass
+
+
+def ordershippingsample(request, pk):
+    pass
+
+
+def orderchildorder(request, pk):
+    pass
 
 
 class FunctionList(TemplateView):
