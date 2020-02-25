@@ -715,9 +715,9 @@ class Order_bulk_fabric(models.Model):
         (URGENT, '紧急'),
     ]
     created_date = models.DateTimeField(auto_now_add=True)
-    order = models.OneToOneField(Order,
-                                 on_delete=models.CASCADE,
-                                 related_name='bulkfabric')
+    order = models.ForeignKey(Order,
+                              on_delete=models.CASCADE,
+                              related_name='bulkfabrics')
     bulk_fabric = models.CharField('大货布', max_length=200)
     status = models.CharField('状态',
                               max_length=100,
@@ -735,10 +735,10 @@ class Order_fitting_sample(models.Model):
         (URGENT, '紧急'),
     ]
     created_date = models.DateTimeField(auto_now_add=True)
-    order = models.OneToOneField(Order,
-                                 on_delete=models.CASCADE,
-                                 related_name='fittingsample')
-    sample = models.CharField('船头板', max_length=200)
+    order = models.ForeignKey(Order,
+                              on_delete=models.CASCADE,
+                              related_name='fittingsamples')
+    sample = models.CharField('生产办进度', max_length=200)
     status = models.CharField('状态',
                               max_length=100,
                               choices=CHOICES,
@@ -755,9 +755,9 @@ class Order_shipping_sample(models.Model):
         (URGENT, '紧急'),
     ]
     created_date = models.DateTimeField(auto_now_add=True)
-    order = models.OneToOneField(Order,
-                                 on_delete=models.CASCADE,
-                                 related_name='shippingsample')
+    order = models.ForeignKey(Order,
+                              on_delete=models.CASCADE,
+                              related_name='shippingsamples')
     shipping_sample = models.CharField('船头板', max_length=200)
     status = models.CharField('状态',
                               max_length=100,
@@ -767,7 +767,7 @@ class Order_shipping_sample(models.Model):
 
 class Order_child_order(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
-    order = models.OneToOneField(Order,
-                                 on_delete=models.CASCADE,
-                                 related_name='childorder')
+    order = models.ForeignKey(Order,
+                              on_delete=models.CASCADE,
+                              related_name='childorders')
     child_order = models.CharField('小单', max_length=200)

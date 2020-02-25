@@ -7,7 +7,8 @@ from scm.forms import (
                        OrderForm, Order_color_ratio_qty_Form,
                        OrderavatarForm, OrdersizespecsForm,
                        OrderswatchForm, OrdershippingpicsForm,
-                       OrderpackingctnForm, InvoiceSearchForm, InvoiceForm)
+                       OrderpackingctnForm, InvoiceSearchForm, InvoiceForm,
+                       OrderfittingsampleForm)
 from django.contrib.auth.decorators import login_required
 from scm.decorators import m_mg_or_required, factory_required, office_required, order_is_shipped
 from django.utils.decorators import method_decorator
@@ -21,6 +22,7 @@ from scm.filters import OrderFilter
 from django.db.models import F, Sum, IntegerField
 from time import strftime
 from datetime import datetime, timedelta
+from django.template.loader import render_to_string
 
 
 # 订单列表-未确认(新建，已送工厂状态)
@@ -645,8 +647,7 @@ def orderbulkfabric(request, pk):
     pass
 
 
-def orderfittingsample(request, pk):
-    pass
+
 
 
 def ordershippingsample(request, pk):
@@ -661,4 +662,36 @@ class FunctionList(TemplateView):
     template_name = 'function_list.html'
 
 
-
+def orderfittingsample(request, pk):
+    pk = pk
+    print(pk)
+    data = dict()
+    order = get_object_or_404(Order, pk=pk)
+    print(order)
+    if request.method == 'POST':
+        print(2)
+        form = OrderfittingsampleForm(request.POST)
+        if form.is_valid():
+            print(3)
+            fittingsample = form.save(commit=False)
+            print(4)
+            fittingsample.order = order
+            print(5)
+            fittingsample.save()
+            print(6)
+            data['form_is_valid'] = True
+            print(7)
+            qs = order.fittingsamples.all()
+            print(8)
+            data['html_fs_list'] = render_to_string('fs_list.html', {'qs': qs})
+        else:
+            data['form_is_valid'] = False
+    else:
+        form = OrderfittingsampleForm()
+    context = {'form': form, 'pk': pk}
+    print(1)
+    data['html_form'] = render_to_string('fs_create_form.html',
+                                         context,
+                                         request=request)
+    data['pk'] = pk
+    return JsonResponse(data)

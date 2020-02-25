@@ -9,7 +9,7 @@ from .models import (User, Factory,
                      Sample_size_spec_factory,
                      Order, Order_color_ratio_qty, Order_size_specs,
                      Order_swatches, Order_shipping_pics, Order_avatar,
-                     Order_packing_ctn, Invoice, Factory)
+                     Order_packing_ctn, Invoice, Factory, Order_fitting_sample)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
@@ -357,3 +357,9 @@ class InvoiceSearchForm(forms.Form):
     start_handover_date_f = forms.DateField(widget=DatePicker(), label="工厂交期", required=False)
     end_handover_date_f = forms.DateField(widget=DatePicker(), label="客人交期", required=False)
     factory = forms.ModelChoiceField(queryset=Factory.objects.all(), empty_label="请选择", required=False)
+
+
+class OrderfittingsampleForm(forms.ModelForm):
+    class Meta:
+        model = Order_fitting_sample
+        fields = ('sample', 'status')
