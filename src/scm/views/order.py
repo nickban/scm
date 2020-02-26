@@ -3,13 +3,13 @@ from django.views.generic import CreateView, ListView, UpdateView, TemplateView,
 from scm.models import (Order, Order_color_ratio_qty, Order_avatar,
                         Order_swatches, Order_size_specs,
                         Order_shipping_pics, Order_packing_ctn, Invoice,
-                        Order_fitting_sample)
+                        Order_fitting_sample, Order_bulk_fabric)
 from scm.forms import (
                        OrderForm, Order_color_ratio_qty_Form,
                        OrderavatarForm, OrdersizespecsForm,
                        OrderswatchForm, OrdershippingpicsForm,
                        OrderpackingctnForm, InvoiceSearchForm, InvoiceForm,
-                       OrderfittingsampleForm)
+                       OrderfittingsampleForm, OrderbulkfabricForm)
 from django.contrib.auth.decorators import login_required
 from scm.decorators import m_mg_or_required, factory_required, office_required, order_is_shipped
 from django.utils.decorators import method_decorator
@@ -640,22 +640,17 @@ def invoicepay(request, pk):
     return redirect('order:invoicelist')
 
 
-def orderprogress(request, pk):
-    pass
-
-
-def orderbulkfabric(request, pk):
+def progress(request, pk):
     pass
 
 
 
 
-
-def ordershippingsample(request, pk):
+def shippingsample(request, pk):
     pass
 
 
-def orderchildorder(request, pk):
+def child(request, pk):
     pass
 
 
@@ -663,7 +658,8 @@ class FunctionList(TemplateView):
     template_name = 'function_list.html'
 
 
-def orderfittingsample(request, pk):
+# 生产板进度增加
+def fittingsample(request, pk):
     pk = pk
     data = dict()
     order = get_object_or_404(Order, pk=pk)
@@ -688,8 +684,8 @@ def orderfittingsample(request, pk):
     return JsonResponse(data)
 
 
+# 生产板进度删除
 def fsdelete(request, pk):
-    print(1)
     data = dict()
     fs = get_object_or_404(Order_fitting_sample, pk=pk)
     order = fs.order
@@ -702,8 +698,8 @@ def fsdelete(request, pk):
     return JsonResponse(data)
 
 
+# 生产板进度修改
 def fsedit(request, pk):
-    print('00')
     data = dict()
     fs = get_object_or_404(Order_fitting_sample, pk=pk)
     order = fs.order
@@ -721,6 +717,76 @@ def fsedit(request, pk):
         form = OrderfittingsampleForm(instance=fs)
     context = {'form': form, 'pk': fs.pk}
     data['html_form'] = render_to_string('fs_edit_form.html',
+                                         context,
+                                         request=request)
+    data['pk'] = pk
+    return JsonResponse(data)
+
+
+# 大货布进度增加
+def bulkfabric(request, pk):
+    pk = pk
+    data = dict()
+    order = get_object_or_404(Order, pk=pk)
+    if request.method == 'POST':
+        print(11)
+        form = OrderbulkfabricForm(request.POST)
+        if form.is_valid():
+            print(12)
+            bulkfabric = form.save(commit=False)
+            bulkfabric.order = order
+            bulkfabric.save()
+            print(13)
+            data['form_is_valid'] = True
+            qs = order.bulkfabrics.all().order_by('-created_date')
+            data['html_bf_list'] = render_to_string('bf_list.html', {'qs': qs})
+            print(14)
+        else:
+            data['form_is_valid'] = False
+    else:
+        form = OrderbulkfabricForm()
+    context = {'form': form, 'pk': pk}
+    data['html_form'] = render_to_string('bf_create_form.html',
+                                         context,
+                                         request=request)
+    data['pk'] = pk
+    return JsonResponse(data)
+
+
+# 大货布进度删除
+def bfdelete(request, pk):
+    print(7)
+    data = dict()
+    bf = get_object_or_404(Order_bulk_fabric, pk=pk)
+    order = bf.order
+    pk = order.pk
+    bf.delete()
+    qs = order.bulkfabrics.all().order_by('-created_date')
+    data['form_is_valid'] = True
+    data['html_bf_list'] = render_to_string('bf_list.html', {'qs': qs})
+    data['pk'] = pk
+    return JsonResponse(data)
+
+
+# 大货布进度修改
+def bfedit(request, pk):
+    data = dict()
+    bf = get_object_or_404(Order_bulk_fabric, pk=pk)
+    order = bf.order
+    pk = order.pk
+    if request.method == 'POST':
+        form = OrderbulkfabricForm(request.POST, instance=bf)
+        if form.is_valid():
+            form.save()
+            qs = order.bulkfabrics.all().order_by('-created_date')
+            data['form_is_valid'] = True
+            data['html_bf_list'] = render_to_string('bf_list.html', {'qs': qs})
+        else:
+            data['form_is_valid'] = False
+    else:
+        form = OrderbulkfabricForm(instance=bf)
+    context = {'form': form, 'pk': bf.pk}
+    data['html_form'] = render_to_string('bf_edit_form.html',
                                          context,
                                          request=request)
     data['pk'] = pk

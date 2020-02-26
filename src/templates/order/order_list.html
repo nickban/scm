@@ -10,6 +10,7 @@
 
 {% block content %}
 <div class="table-responsive">
+  <!-- 用type标记显示普通列表还是进度列表 -->
   {% if type == 'list' %}
   <table id="orderlistnew" class="table table-hover">
     <thead>
@@ -88,6 +89,7 @@
     </tbody>
   </table>
   {% else %}
+  <!-- 用type标记显示普通列表还是进度列表 -->
   <table id="orderlistnew_p" class="table table-hover" style="width:100%">
     <thead>
       <tr>
@@ -97,88 +99,128 @@
         <th style="min-width: 50px;">工厂</th>
         <th style="min-width: 70px;">工厂交期</th>
         <th style="min-width: 70px;">款式图</th>
-        <th style="min-width: 400px;">生产办</th>
-        <th style="min-width: 200px;">大货布</th>
-        <th style="min-width: 200px;">船头板</th>
+        <th style="min-width: 450px;">生产办</th>
+        <th style="min-width: 350px;">大货布</th>
+        <th style="min-width: 350px;">船头板</th>
         <th style="min-width: 100px;">小单</th>
         <th style="min-width: 50px;">状态</th>
       </tr>
     </thead>
     <tbody>
       {% for order in orders %}
-        <tr>
-          <td>{{ order.created_date |date:"SHORT_DATE_FORMAT"  }}</td>
-          {% if order.status == 'SHIPPED' %}
-            <td><a href="{% url 'order:orderdetail'  order.pk %}">{{ order.po }}</a></td>
-          {% else %}
-            {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
+      <tr>
+        <td>{{ order.created_date |date:"SHORT_DATE_FORMAT"  }}</td>
+        {% if order.status == 'SHIPPED' %}
+          <td><a href="{% url 'order:orderdetail'  order.pk %}">{{ order.po }}</a></td>
+        {% else %}
+          {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
             <td><a href="{% url 'order:orderedit'  order.pk %}">{{ order.po }}</a></td>
-            {% else %}
+          {% else %}
             <td><a href="{% url 'order:orderdetail'  order.pk %}">{{ order.po }}</a></td>
-            {% endif %}
           {% endif %}
-          <td>{{ order.style_no }}</td>
-          {% if order.factory == None %}
-          <td></td>
-          {% else %}
-          <td>{{ order.factory }}</td>
-          {% endif %}
-          {% if order.handover_date_f == None %}
-          <td></td>
-          {% else %}
-          <td>{{ order.handover_date_f |date:"SHORT_DATE_FORMAT" }}</td>
-          {% endif %}
-          <td><img src="{{ order.avatar.file.url }}" width=100px, height=100px></td>
-          <td>
-            <i  class="fas fa-plus-circle fa-1x js-create-fs"></i>
-              <ul  id=fs{{order.pk}} class="list-unstyled">
-                {% if order.fittingsamples.count > 0 %}
-                  {% for each in order.fittingsamples.all|slice:":3" %}
-                    {% if each.status == 'WARNING' %}
-                    <li style="color:red;">{{each.sample}}<i id=fsd{{each.pk}} class="mx-2 fs-delete far fa-trash-alt fa-1x"></i><i id=fse{{each.pk}} class="fs-edit fas fa-edit fa-1x"></i></li>
-                    {% else %}
-                    <li >{{each.sample}}<i id=fsd{{each.pk}} class="mx-2 fs-delete far fa-trash-alt fa-1x"></i><i id=fse{{each.pk}} class="fs-edit fas fa-edit fa-1x"></i></li>
-                    {% endif %}
-                  {% endfor %}
-                {% endif %}
-              </ul>
-          </td>
-          <td>
-            <ul class="list-unstyled">
-              <li><i class="fas fa-plus-circle fa-1x"></i></li>
-            </ul>
-          </td>
-          <td>
-            <ul class="list-unstyled">
-              <li><i class="fas fa-plus-circle fa-1x"></i></li>
-            </ul>
-          </td>
-          <td>
-            <ul class="list-unstyled">
-              <li><i class="fas fa-plus-circle fa-1x"></i></li>
-              {% include 'fs_list.html' %}
-            </ul>
-          </td>
-          <td>{{ order.get_status_display }}</td>
-        </tr>
+        {% endif %}
+        <td>{{ order.style_no }}</td>
+        {% if order.factory == None %}
+        <td></td>
+        {% else %}
+        <td>{{ order.factory }}</td>
+        {% endif %}
+        {% if order.handover_date_f == None %}
+        <td></td>
+        {% else %}
+        <td>{{ order.handover_date_f |date:"SHORT_DATE_FORMAT" }}</td>
+        {% endif %}
+        <td><img src="{{ order.avatar.file.url }}" width=100px, height=100px></td>
+        <!-- 生产板列表 -->
+        <td>
+          <!-- 通过class:js-create-fs激活js -->
+          <i class="fas fa-plus-circle fa-1x js-create-fs"></i>
+          <!-- 设置唯一id, 传值给js, 因为页面有多个进度种类,前面加类别fs -->
+          <ul id=fs{{order.pk}} class="list-unstyled">
+              {% if order.fittingsamples.count > 0 %}
+                <!-- 每个订单只显示最近3条进度记录 -->
+                {% for each in order.fittingsamples.all|slice:":3" %}
+                  {% if each.status == 'WARNING' %}
+                  <li style="color:red;">{{each.sample}}
+                  <!-- 删除进度图标, 设置id,传值js, fs-delete 用于js事件 -->
+                  <i id=fsd{{each.pk}} class="mx-2 fs-delete far fa-trash-alt fa-1x"></i>
+                  <!-- 编辑进度图标, 设置id,传值js, fs-edit 用于js事件 -->
+                  <i id=fse{{each.pk}} class="fs-edit fas fa-edit fa-1x"></i></li>
+                  {% else %}
+                  <li >{{each.sample}}
+                  <i id=fsd{{each.pk}} class="mx-2 fs-delete far fa-trash-alt fa-1x"></i>
+                  <i id=fse{{each.pk}} class="fs-edit fas fa-edit fa-1x"></i></li>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+          </ul>
+        </td>
+        <!-- 大货布列表 -->
+        <td>
+          <!-- 通过class:js-create-bf激活js -->
+          <i class="fas fa-plus-circle fa-1x js-create-bf"></i>
+          <!-- 设置唯一id, 传值给js, 因为页面有多个进度种类,前面加类别fs -->
+          <ul id=bf{{order.pk}} class="list-unstyled">
+              {% if order.bulkfabrics.count > 0 %}
+                <!-- 每个订单只显示最近3条进度记录 -->
+                {% for each in order.bulkfabrics.all|slice:":3" %}
+                  {% if each.status == 'WARNING' %}
+                  <li style="color:red;">{{each.bulk_fabric}}
+                  <!-- 删除进度图标, 设置id,传值js, fs-delete 用于js事件 -->
+                  <i id=bfd{{each.pk}} class="mx-2 bf-delete far fa-trash-alt fa-1x"></i>
+                  <!-- 编辑进度图标, 设置id,传值js, fs-edit 用于js事件 -->
+                  <i id=bfe{{each.pk}} class="bf-edit fas fa-edit fa-1x"></i></li>
+                  {% else %}
+                  <li >{{each.bulk_fabric}}
+                  <i id=bfd{{each.pk}} class="mx-2 bf-delete far fa-trash-alt fa-1x"></i>
+                  <i id=bfe{{each.pk}} class="bf-edit fas fa-edit fa-1x"></i></li>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+          </ul>
+        </td>
+        <!-- 船头板列表 -->
+        <td>
+          <ul class="list-unstyled">
+            <li><i class="fas fa-plus-circle fa-1x"></i></li>
+          </ul>
+        </td>
+        <!-- 小单列表 -->
+        <td>
+          <ul class="list-unstyled">
+            <li><i class="fas fa-plus-circle fa-1x"></i></li>
+          </ul>
+        </td>
+        <td>{{ order.get_status_display }}</td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
   {% endif %}
 </div>
-
+<!-- 生产办的弹出框 -->
 <div class="modal fade" id="modal-fs">
   <div class="modal-dialog">
     <div class="modal-content">
     </div>
   </div>
-
+</div>
+<!-- 大货布的弹出框 -->
+<div class="modal fade" id="modal-bf">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block script %}
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" ></script>
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" ></script>
+<!-- 生产板进度js -->
 <script src="{% static 'js/fittingsample.js'%}"></script>
+<script src="{% static 'js/bulkfabric.js'%}"></script>
+<!-- datatable的js设置 -->
 <script>
 $(document).ready( function () {
   var table =$('#orderlistnew').DataTable({

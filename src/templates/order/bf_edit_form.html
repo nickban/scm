@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
 
-<form method="post" action="{% url 'order:fittingsample' pk=pk %}" class="js-fs-create-form" >
+<form method="post" action="{% url 'order:bfedit' pk=pk %}" class="js-bf-create-form" >
   {% csrf_token %}
   <div class="modal-body">
     {% for field in form %}

@@ -54,13 +54,18 @@ urlpatterns = [
         # 测试用
         path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
         # 订单进度管理
-        path('<int:pk>/progress/', order.orderprogress, name='orderprogress'),
-        path('<int:pk>/bulkfabric/', order.orderbulkfabric, name='orderbulkfabric'),
-        path('<int:pk>/fittingsample/', order.orderfittingsample, name='orderfittingsample'),
-        path('<int:pk>/shippingsample/', order.ordershippingsample, name='ordershippingsample'),
-        path('<int:pk>/childorder/', order.orderchildorder, name='orderchildorder'),
+        path('<int:pk>/progress/', order.progress, name='progress'),
+        path('<int:pk>/progress/bf/', order.bulkfabric, name='bulkfabric'),
+        path('<int:pk>/progress/ss/', order.shippingsample, name='shippingsample'),
+        path('<int:pk>/progress/child/', order.child, name='child'),
+        # 生产板进度增删改
+        path('<int:pk>/progress/fs/', order.fittingsample, name='fittingsample'),
         path('fs/<int:pk>/delete/', order.fsdelete, name='fsdelete'),
         path('fs/<int:pk>/edit/', order.fsedit, name='fsedit'),
+        # 大货布进度增删改
+        path('<int:pk>/progress/bf/', order.bulkfabric, name='bulkfabric'),
+        path('bf/<int:pk>/delete/', order.bfdelete, name='bfdelete'),
+        path('bf/<int:pk>/edit/', order.bfedit, name='bfedit'),
 
         # 创建装箱单
         path('<int:pk>/packinglist/add/', order.packinglistadd, name='packinglistadd'),

@@ -712,13 +712,12 @@ class Order_bulk_fabric(models.Model):
     CHOICES = [
         (NORMAL, '正常'),
         (WARNING, '警告'),
-        (URGENT, '紧急'),
     ]
     created_date = models.DateTimeField(auto_now_add=True)
     order = models.ForeignKey(Order,
                               on_delete=models.CASCADE,
                               related_name='bulkfabrics')
-    bulk_fabric = models.CharField('大货布', max_length=200)
+    bulk_fabric = models.CharField('大货布进度', max_length=200)
     status = models.CharField('状态',
                               max_length=100,
                               choices=CHOICES,
