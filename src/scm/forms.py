@@ -10,7 +10,7 @@ from .models import (User, Factory,
                      Order, Order_color_ratio_qty, Order_size_specs,
                      Order_swatches, Order_shipping_pics, Order_avatar,
                      Order_packing_ctn, Invoice, Factory, Order_fitting_sample,
-                     Order_bulk_fabric)
+                     Order_bulk_fabric, Order_shipping_sample)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
@@ -370,3 +370,9 @@ class OrderbulkfabricForm(forms.ModelForm):
     class Meta:
         model = Order_bulk_fabric
         fields = ('bulk_fabric', 'status')
+
+
+class OrdershippingsampleForm(forms.ModelForm):
+    class Meta:
+        model = Order_shipping_sample
+        fields = ('shipping_sample', 'status')

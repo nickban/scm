@@ -3,13 +3,14 @@ from django.views.generic import CreateView, ListView, UpdateView, TemplateView,
 from scm.models import (Order, Order_color_ratio_qty, Order_avatar,
                         Order_swatches, Order_size_specs,
                         Order_shipping_pics, Order_packing_ctn, Invoice,
-                        Order_fitting_sample, Order_bulk_fabric)
+                        Order_fitting_sample, Order_bulk_fabric, Order_shipping_sample)
 from scm.forms import (
                        OrderForm, Order_color_ratio_qty_Form,
                        OrderavatarForm, OrdersizespecsForm,
                        OrderswatchForm, OrdershippingpicsForm,
                        OrderpackingctnForm, InvoiceSearchForm, InvoiceForm,
-                       OrderfittingsampleForm, OrderbulkfabricForm)
+                       OrderfittingsampleForm, OrderbulkfabricForm,
+                       OrdershippingsampleForm)
 from django.contrib.auth.decorators import login_required
 from scm.decorators import m_mg_or_required, factory_required, office_required, order_is_shipped
 from django.utils.decorators import method_decorator
@@ -47,7 +48,6 @@ class OrderListNew(ListView):
     def get_context_data(self, **kwargs):
         type = self.kwargs.get('type')
         kwargs['listtype'] = 'new'
-        kwargs['type'] = type
         return super().get_context_data(**kwargs)
 
 # 订单列表-已确认(已确认状态)
@@ -644,12 +644,6 @@ def progress(request, pk):
     pass
 
 
-
-
-def shippingsample(request, pk):
-    pass
-
-
 def child(request, pk):
     pass
 
@@ -787,6 +781,71 @@ def bfedit(request, pk):
         form = OrderbulkfabricForm(instance=bf)
     context = {'form': form, 'pk': bf.pk}
     data['html_form'] = render_to_string('bf_edit_form.html',
+                                         context,
+                                         request=request)
+    data['pk'] = pk
+    return JsonResponse(data)
+
+
+# 船头板进度增加
+def shippingsample(request, pk):
+    pk = pk
+    data = dict()
+    order = get_object_or_404(Order, pk=pk)
+    if request.method == 'POST':
+        form = OrdershippingsampleForm(request.POST)
+        if form.is_valid():
+            shippingsample = form.save(commit=False)
+            shippingsample.order = order
+            shippingsample.save()
+            data['form_is_valid'] = True
+            qs = order.shippingsamples.all().order_by('-created_date')
+            data['html_ss_list'] = render_to_string('ss_list.html', {'qs': qs})
+        else:
+            data['form_is_valid'] = False
+    else:
+        form = OrdershippingsampleForm()
+    context = {'form': form, 'pk': pk}
+    data['html_form'] = render_to_string('ss_create_form.html',
+                                         context,
+                                         request=request)
+    data['pk'] = pk
+    return JsonResponse(data)
+
+
+# 船头板进度删除
+def ssdelete(request, pk):
+    data = dict()
+    ss = get_object_or_404(Order_shipping_sample, pk=pk)
+    order = ss.order
+    pk = order.pk
+    ss.delete()
+    qs = order.shippingsamples.all().order_by('-created_date')
+    data['form_is_valid'] = True
+    data['html_ss_list'] = render_to_string('ss_list.html', {'qs': qs})
+    data['pk'] = pk
+    return JsonResponse(data)
+
+
+# 船头板进度修改
+def ssedit(request, pk):
+    data = dict()
+    ss = get_object_or_404(Order_shipping_sample, pk=pk)
+    order = ss.order
+    pk = order.pk
+    if request.method == 'POST':
+        form = OrdershippingsampleForm(request.POST, instance=ss)
+        if form.is_valid():
+            form.save()
+            qs = order.shippingsamples.all().order_by('-created_date')
+            data['form_is_valid'] = True
+            data['html_ss_list'] = render_to_string('ss_list.html', {'qs': qs})
+        else:
+            data['form_is_valid'] = False
+    else:
+        form = OrdershippingsampleForm(instance=ss)
+    context = {'form': form, 'pk': ss.pk}
+    data['html_form'] = render_to_string('ss_edit_form.html',
                                          context,
                                          request=request)
     data['pk'] = pk

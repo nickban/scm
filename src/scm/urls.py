@@ -32,7 +32,7 @@ urlpatterns = [
     # 订单地址导航
     path('order/', include(([
         # 未确认,已确认,已出货订单列表
-        path('new/<str:type>/', order.OrderListNew.as_view(), name='orderlistnew'),
+        path('new/', order.OrderListNew.as_view(), name='orderlistnew'),
         path('confirmed/', order.OrderListConfrimed.as_view(), name='orderlistconfirmed'),
         path('shipped/', order.OrderListShipped.as_view(), name='orderlistshipped'),
         # 订单新增
@@ -55,8 +55,6 @@ urlpatterns = [
         path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
         # 订单进度管理
         path('<int:pk>/progress/', order.progress, name='progress'),
-        path('<int:pk>/progress/bf/', order.bulkfabric, name='bulkfabric'),
-        path('<int:pk>/progress/ss/', order.shippingsample, name='shippingsample'),
         path('<int:pk>/progress/child/', order.child, name='child'),
         # 生产板进度增删改
         path('<int:pk>/progress/fs/', order.fittingsample, name='fittingsample'),
@@ -66,6 +64,10 @@ urlpatterns = [
         path('<int:pk>/progress/bf/', order.bulkfabric, name='bulkfabric'),
         path('bf/<int:pk>/delete/', order.bfdelete, name='bfdelete'),
         path('bf/<int:pk>/edit/', order.bfedit, name='bfedit'),
+        # 船头板进度增删改
+        path('<int:pk>/progress/ss/', order.shippingsample, name='shippingsample'),
+        path('ss/<int:pk>/delete/', order.ssdelete, name='ssdelete'),
+        path('ss/<int:pk>/edit/', order.ssedit, name='ssedit'),
 
         # 创建装箱单
         path('<int:pk>/packinglist/add/', order.packinglistadd, name='packinglistadd'),
