@@ -59,6 +59,8 @@ urlpatterns = [
         path('<int:pk>/fittingsample/', order.orderfittingsample, name='orderfittingsample'),
         path('<int:pk>/shippingsample/', order.ordershippingsample, name='ordershippingsample'),
         path('<int:pk>/childorder/', order.orderchildorder, name='orderchildorder'),
+        path('fs/<int:pk>/delete/', order.fsdelete, name='fsdelete'),
+        path('fs/<int:pk>/edit/', order.fsedit, name='fsedit'),
 
         # 创建装箱单
         path('<int:pk>/packinglist/add/', order.packinglistadd, name='packinglistadd'),

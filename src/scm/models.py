@@ -732,7 +732,6 @@ class Order_fitting_sample(models.Model):
     CHOICES = [
         (NORMAL, '正常'),
         (WARNING, '警告'),
-        (URGENT, '紧急'),
     ]
     created_date = models.DateTimeField(auto_now_add=True)
     order = models.ForeignKey(Order,
@@ -743,6 +742,9 @@ class Order_fitting_sample(models.Model):
                               max_length=100,
                               choices=CHOICES,
                               default=NORMAL)
+
+    class Meta:
+        ordering = ['-created_date']
 
 
 class Order_shipping_sample(models.Model):

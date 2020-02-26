@@ -2,7 +2,8 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import CreateView, ListView, UpdateView, TemplateView, DeleteView
 from scm.models import (Order, Order_color_ratio_qty, Order_avatar,
                         Order_swatches, Order_size_specs,
-                        Order_shipping_pics, Order_packing_ctn, Invoice)
+                        Order_shipping_pics, Order_packing_ctn, Invoice,
+                        Order_fitting_sample)
 from scm.forms import (
                        OrderForm, Order_color_ratio_qty_Form,
                        OrderavatarForm, OrdersizespecsForm,
@@ -664,33 +665,62 @@ class FunctionList(TemplateView):
 
 def orderfittingsample(request, pk):
     pk = pk
-    print(pk)
     data = dict()
     order = get_object_or_404(Order, pk=pk)
-    print(order)
     if request.method == 'POST':
-        print(2)
         form = OrderfittingsampleForm(request.POST)
         if form.is_valid():
-            print(3)
             fittingsample = form.save(commit=False)
-            print(4)
             fittingsample.order = order
-            print(5)
             fittingsample.save()
-            print(6)
             data['form_is_valid'] = True
-            print(7)
-            qs = order.fittingsamples.all()
-            print(8)
+            qs = order.fittingsamples.all().order_by('-created_date')
             data['html_fs_list'] = render_to_string('fs_list.html', {'qs': qs})
         else:
             data['form_is_valid'] = False
     else:
         form = OrderfittingsampleForm()
     context = {'form': form, 'pk': pk}
-    print(1)
     data['html_form'] = render_to_string('fs_create_form.html',
+                                         context,
+                                         request=request)
+    data['pk'] = pk
+    return JsonResponse(data)
+
+
+def fsdelete(request, pk):
+    print(1)
+    data = dict()
+    fs = get_object_or_404(Order_fitting_sample, pk=pk)
+    order = fs.order
+    pk = order.pk
+    fs.delete()
+    qs = order.fittingsamples.all().order_by('-created_date')
+    data['form_is_valid'] = True
+    data['html_fs_list'] = render_to_string('fs_list.html', {'qs': qs})
+    data['pk'] = pk
+    return JsonResponse(data)
+
+
+def fsedit(request, pk):
+    print('00')
+    data = dict()
+    fs = get_object_or_404(Order_fitting_sample, pk=pk)
+    order = fs.order
+    pk = order.pk
+    if request.method == 'POST':
+        form = OrderfittingsampleForm(request.POST, instance=fs)
+        if form.is_valid():
+            form.save()
+            qs = order.fittingsamples.all().order_by('-created_date')
+            data['form_is_valid'] = True
+            data['html_fs_list'] = render_to_string('fs_list.html', {'qs': qs})
+        else:
+            data['form_is_valid'] = False
+    else:
+        form = OrderfittingsampleForm(instance=fs)
+    context = {'form': form, 'pk': fs.pk}
+    data['html_form'] = render_to_string('fs_edit_form.html',
                                          context,
                                          request=request)
     data['pk'] = pk
