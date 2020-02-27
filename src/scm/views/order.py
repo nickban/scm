@@ -46,7 +46,6 @@ class OrderListNew(ListView):
             return Order.objects.filter(Q(status='NEW') | Q(status='SENT_FACTORY')).order_by('-created_date')
 
     def get_context_data(self, **kwargs):
-        type = self.kwargs.get('type')
         kwargs['listtype'] = 'new'
         return super().get_context_data(**kwargs)
 
@@ -548,8 +547,9 @@ def invoiceadd(request):
                                              end_of_week=end_of_week)
             for order in orderlist:
                 totalqty = order.packing_ctns.aggregate(totalqty=Sum('totalqty', output_field=IntegerField()))
-                totalqty = totalqty.get('totalqty')
-                paidamount = totalqty * order.factory_price
+                totalqty = totalqty.get('totalqty') or 0
+                factory_price = order.factory_price or 0
+                paidamount = totalqty * factory_price
                 totalpaidamount = totalpaidamount + paidamount
                 orderobject = {'order': order, 'totalqty': totalqty, 'paidamount': paidamount}
                 qs.append(orderobject)
@@ -577,8 +577,9 @@ def invoicedetail(request, pk):
     factory = invoice.factory
     for order in orderqs:
         totalqty = order.packing_ctns.aggregate(totalqty=Sum('totalqty', output_field=IntegerField()))
-        totalqty = totalqty.get('totalqty')
-        paidamount = totalqty * order.factory_price
+        totalqty = totalqty.get('totalqty') or 0
+        factory_price = order.factory_price or 0
+        paidamount = totalqty * factory_price
         totalpaidamount = totalpaidamount + paidamount
         orderobject = {'order': order, 'totalqty': totalqty, 'paidamount': paidamount}
         qs.append(orderobject)

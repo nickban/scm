@@ -34,11 +34,14 @@
               <th>工厂</th>
               <th>运输</th>
               <th>工厂交期</th>
+              {% if not request.user.is_factory%}
               <th>客人交期</th>
+              {% endif %}
               {% if listtype == 'confirmed' or listtype == 'shipped' %}
                 <th>装箱单</th>
             {% endif %}
               <th>目的地</th>
+              <th>小单</th>
               <th>状态</th>
             </tr>
           </thead>
@@ -71,10 +74,12 @@
                 {% else %}
                 <td>{{ order.handover_date_f |date:"SHORT_DATE_FORMAT" }}</td>
                 {% endif %}
-                {% if order.handover_date_d == None %}
-                <td></td>
-                {% else %}
-                <td>{{ order.handover_date_d |date:"SHORT_DATE_FORMAT" }}</td>
+                {% if not request.user.is_factory%}
+                  {% if order.handover_date_d == None %}
+                  <td></td>
+                  {% else %}
+                  <td>{{ order.handover_date_d |date:"SHORT_DATE_FORMAT" }}</td>
+                  {% endif %}
                 {% endif %}
                 {% if listtype == 'confirmed' or listtype == 'shipped' %}
                   {% if order.packing_ctns.all.count > 0 %}
@@ -92,6 +97,7 @@
                   {% endif %}
                 {% endif %}
                 <td>{{ order.get_destination_display }}</td>
+                <td>{{ order.get_childorder_display }}</td>
                 <td>{{ order.get_status_display }}</td>
               </tr>
             {% endfor %}
@@ -101,7 +107,7 @@
     </div>
     <div id="progress" class="tab-pane fade"><br>
       <div class="table-responsive">
-        <table id="orderlistnew_p" class="table table-hover" style="width:100%">
+        <table id="orderlistnew_p" class="table table-hover">
           <thead>
             <tr>
               <th style="min-width: 70px;">创建日期</th>
@@ -110,10 +116,9 @@
               <th style="min-width: 50px;">工厂</th>
               <th style="min-width: 70px;">工厂交期</th>
               <th style="min-width: 70px;">款式图</th>
-              <th style="min-width: 450px;">生产办</th>
+              <th style="min-width: 450px;">生产板</th>
               <th style="min-width: 350px;">大货布</th>
               <th style="min-width: 300px;">船头板</th>
-              <th style="min-width: 100px;">小单</th>
               <th style="min-width: 50px;">状态</th>
             </tr>
           </thead>
@@ -238,12 +243,6 @@
                     {% endif %}
                 </ul>
               </td>
-              <!-- 小单列表 -->
-              <td>
-                <ul class="list-unstyled">
-                  <li><i class="fas fa-plus-circle fa-1x"></i></li>
-                </ul>
-              </td>
               <td>{{ order.get_status_display }}</td>
             </tr>
             {% endfor %}
@@ -253,17 +252,7 @@
     </div>
   </div>
 
-
-<div class="table-responsive">
-  <!-- 用type标记显示普通列表还是进度列表 -->
-  {% if type == 'list' %}
-
-  {% else %}
-  <!-- 用type标记显示普通列表还是进度列表 -->
-
-  {% endif %}
-</div>
-<!-- 生产办的弹出框 -->
+<!-- 生产板的弹出框 -->
 <div class="modal fade" id="modal-fs">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -296,29 +285,7 @@
 <!-- datatable的js设置 -->
 <script>
 $(document).ready( function () {
-  var table =$('#orderlistnew').DataTable({
-        "language": {
-          "processing": "处理中...",
-          "loadingRecords": "载入中...",
-          "lengthMenu": "显示 _MENU_ 项结果",
-          "zeroRecords": "没有符合的结果",
-          "info": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-          "infoEmpty": "显示第 0 至 0 项结果，共 0 项",
-          "infoFiltered": "(从 _MAX_ 项结果中过滤)",
-          "infoPostFix":  "",
-          "search": "搜索:",
-          "paginate": {
-            "next": "下一页",
-            "previous": "上一页",
-          }, 
-        },
-        "order": [[ 0, 'desc' ],]
-    });
-    var table =$('#orderlistnew_p').DataTable({
-        'columnDefs': [ {
-          'targets': [6,7,8,9,10],
-          'orderable': false,
-        }],
+  var table =$('.table').DataTable({
         "language": {
           "processing": "处理中...",
           "loadingRecords": "载入中...",

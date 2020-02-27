@@ -19,8 +19,8 @@ from django.shortcuts import get_object_or_404
 
 class MyAuthenticationForm(AuthenticationForm):
     error_messages = {
-        'invalid_login': _("用户名和密码不匹配，请重新输入!"),
-        'inactive': _("该账号已被冻结!"),
+        'invalid_login': _("用户名和密码不匹配"),
+        'inactive': _("该账号已被冻结"),
     }
 
 
@@ -257,7 +257,7 @@ class OrderForm(forms.ModelForm):
                   'factory', 'sample', 'factory_price', 'disigner_price',
                   'handover_date_f', 'handover_date_d', 'comments',
                   'parent', 'invoice', 'main_label', 'main_tag', 'addition_tag',
-                  'packing_type', 'destination', 'labeltype')
+                  'packing_type', 'destination', 'labeltype', 'childorder')
         widgets = {
                   'comments': forms.Textarea(attrs={'rows': 5}),
                   }

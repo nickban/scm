@@ -1,0 +1,36 @@
+{% extends 'base_login.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block css%}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Diplomata|Noto+Serif+SC|Zhi+Mang+Xing&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center ">
+            <div class="card border-0">
+                <div class="card_body">
+                    <form  class="form-signin" method="post" novalidate>
+                        <h1 class="logo">缘色供应链系统</h1>
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-primary alert-dismissible fade show my-0" role="alert">
+                            {% for error in form.non_field_errors %}
+                            <p{% if forloop.last %} class="mb-0"{% endif %}>{{ error }}</p>
+                            {% endfor %}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        {% endif %}
+                        {% csrf_token %}
+                        {% render_field form.username class="form-control my-2" placeholder='用户名' %}
+                        {% render_field form.password class="form-control my-2" placeholder='密码' %}
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+                    </form>
+                </div>
+            </div> 
+        </div>
+    </div>
+{% endblock %}

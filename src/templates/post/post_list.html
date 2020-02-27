@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block content %}
-{% include 'header.html'%}
   {% if request.user.is_office %}
     <a class="btn btn-outline-primary my-3" href="{% url 'post:postadd'%}" role="button">新建通知</a>
   {% endif %}

@@ -3,7 +3,6 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-{% include 'header.html'%}
     <form class="my-3" method="post">{% csrf_token %}
         <p>确定要删除此消息吗?</p>
         <p>标题：{{ post.title }}</p>

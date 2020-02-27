@@ -447,6 +447,16 @@ class Order(models.Model):
         (SG, '新加坡'),
     ]
 
+    CNZ = 'CNZ'
+    CSG = 'CSG'
+    CNZSG = 'CNZSG'
+    CHILDORDER = [
+        (None, '请选择'),
+        (CNZ, 'NZ'),
+        (CSG, 'SG'),
+        (CNZSG, 'NZ,SG'),
+    ]
+
     NUMBER = 'NUMBER'
     ALPHABET = 'ALPHABET'
     LABELTYPE = [
@@ -469,6 +479,11 @@ class Order(models.Model):
     destination = models.CharField('目的地', max_length=50,
                                    choices=DESTINATION,
                                    blank=True)
+
+    childorder = models.CharField('小单', max_length=50,
+                                  choices=CHILDORDER,
+                                  blank=True)
+
     tran_type = models.CharField('运输类型', max_length=50, choices=TRAN_TYPE, blank=True)
     brand = models.ForeignKey(Brand,
                               verbose_name='品牌',
@@ -758,7 +773,7 @@ class Order_shipping_sample(models.Model):
     order = models.ForeignKey(Order,
                               on_delete=models.CASCADE,
                               related_name='shippingsamples')
-    shipping_sample = models.CharField('船头板', max_length=200)
+    shipping_sample = models.CharField('船头板进度', max_length=200)
     status = models.CharField('状态',
                               max_length=100,
                               choices=CHOICES,

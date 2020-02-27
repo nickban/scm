@@ -78,7 +78,6 @@
           <th scope="col">品牌</th>
           <th scope="col">工厂交期</th>
           <th scope="col">单价</th>
-          <th scope="col">折扣金额</th>
           <th scope="col">实际出货数</th>
           <th scope="col">应付金额</th>
         </tr>
@@ -92,13 +91,11 @@
           <td>{{each.order.brand}}</td>
           <td >{{ each.order.handover_date_f |date:"SHORT_DATE_FORMAT"}}</td>
           <td >{{ each.order.factory_price}}</td>
-          <td >{{ each.order.discount}}</td>
           <td >{{ each.totalqty}}</td>
           <td >{{ each.paidamount}}</td>
         </tr>
       {% endfor %}
       <tr class="text-center">
-        <th scope="col"></th>
         <th scope="col"></th>
         <th scope="col"></th>
         <th scope="col"></th>
