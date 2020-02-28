@@ -1,7 +1,7 @@
 
 body, button, input, select,
 textarea, h1 ,h2, h3,
-h4, h5, h6, p { font-family: Microsoft YaHei,'宋体' , Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;}
+h4, h5, h6, p { font-family: Microsoft YaHei,'宋体' , Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif !important;}
 
 html,
 body,
@@ -20,6 +20,7 @@ body {
   background-color: #F5F5F5;
 }
 
+
 .logo {
   font-size: 1.6em;
   background-color: #007BFF;
@@ -32,3 +33,5 @@ body {
 .fas {
   color: #007BFF !important;
 }
+
+

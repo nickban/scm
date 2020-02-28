@@ -11,7 +11,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-10">
+    <div class="col-12 col-md-10">
         <div class="col-12">
             <p style="font-weight: bolder; margin-bottom: 3px;">样板详情页{% if sample %}:{{sample.get_status_display}}{% endif %}</p>
         </div>
@@ -220,7 +220,6 @@
                         <a class="btn btn-block btn-outline-primary" href="{% url 'sample:samplelistnew' %}" role="button">返回</a>
                         {% else %}
                         <a class="btn btn-block btn-outline-primary" href="{% url 'sample:samplelistcompleted' %}" role="button">返回</a>
-                        <!-- <input class="btn btn-block btn-outline-primary" type=button value="返回" onClick="javascript:history.go(-1);"> -->
                         {% endif %}
                     </div>
                 </div>
