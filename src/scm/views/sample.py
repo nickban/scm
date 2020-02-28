@@ -36,6 +36,10 @@ class SampleListNew(ListView):
         else:
             return Sample.objects.filter(Q(status='NEW') | Q(status='SENT_F')).order_by('-created_date')
 
+    def get_context_data(self, **kwargs):
+        kwargs['type'] = 'NEW'
+        return super().get_context_data(**kwargs)
+
 # 样板列表-已完成(已完成状态)
 @method_decorator([login_required], name='dispatch')
 class SampleListCompleted(ListView):
@@ -54,6 +58,10 @@ class SampleListCompleted(ListView):
                                          Q(status='COMPLETED'))
         else:
             return Sample.objects.filter(status='COMPLETED')
+
+    def get_context_data(self, **kwargs):
+        kwargs['type'] = 'COMPLETED'
+        return super().get_context_data(**kwargs)
 
 # 样板新建第一步
 @method_decorator([login_required, o_m_mg_or_required], name='dispatch')
