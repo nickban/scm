@@ -3,17 +3,11 @@
 {% load crispy_forms_tags %}
 
 
-
 {% block css%}
-<!-- <link rel="stylesheet" href="{% static 'css/paginator.css' %}"> -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
-
 {% endblock %}
 
 {% block content %}
-  <!-- {% if request.user.is_office or request.user.is_merchandiser %}
-    <a class="btn btn-outline-primary my-3" href="{% url 'sample:sampleaddstep1'%}" role="button">新建样板</a>
-  {% endif %} -->
   <div class="table-responsive">
     <div class="row">
       <div class="col-12">
@@ -73,15 +67,11 @@
       </tbody>
     </table>
   </div>
-
-<!-- {% include 'paginator.html'%} -->
-
 {% endblock %}
 
 {% block script %}
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" ></script>
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" ></script>
-
 <script>
 $(document).ready( function () {
   var table =$('#samplelist').DataTable({

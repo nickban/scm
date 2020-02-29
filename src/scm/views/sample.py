@@ -90,7 +90,7 @@ class SampleAddStep2(UpdateView):
         try:
             kwargs['os_avatar'] = self.get_object().os_avatar
         except ObjectDoesNotExist:
-            kwargs['os_avatar'] = ''
+            pass
         kwargs['os_pics'] = self.get_object().os_pics.all()
         kwargs['size_specs'] = self.get_object().size_specs.all()
         return super().get_context_data(**kwargs)
@@ -149,7 +149,7 @@ def samplecompleted(request, pk):
     messages.success(request, '样板已完成, 请在已完成列表查找!')
     return redirect('sample:sampledetail', pk=sample.pk)
 
-# 改变样板状态到已完成状态
+# 重置样板状态到新建状态
 @o_m_mg_or_required
 def samplereset(request, pk):
     sample = get_object_or_404(Sample, pk=pk)
@@ -158,7 +158,7 @@ def samplereset(request, pk):
     messages.success(request, '样板已重置到新建状态, 请在未完成样板列表查找!')
     return redirect('sample:sampleedit', pk=sample.pk)
 
-# 工厂查看样板详情页，部分信息，报价单，色卡，成样照片，成样尺寸表
+# 样板详情页
 @method_decorator([login_required], name='dispatch')
 class SampleDetail(UpdateView):
     template_name = 'sample_detail.html'
@@ -178,11 +178,11 @@ class SampleDetail(UpdateView):
         try:
             kwargs['quotation'] = self.get_object().quotation
         except ObjectDoesNotExist:
-            kwargs['quotation'] = ''
+            pass
         try:
             kwargs['sizespecf'] = self.get_object().sizespecf
         except ObjectDoesNotExist:
-            kwargs['sizespecf'] = ''
+            pass
         return super().get_context_data(**kwargs)
 
 
