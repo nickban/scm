@@ -158,8 +158,6 @@ def samplereset(request, pk):
     messages.success(request, '样板已重置到新建状态, 请在未完成样板列表查找!')
     return redirect('sample:sampleedit', pk=sample.pk)
 
-
-
 # 工厂查看样板详情页，部分信息，报价单，色卡，成样照片，成样尺寸表
 @method_decorator([login_required], name='dispatch')
 class SampleDetail(UpdateView):
