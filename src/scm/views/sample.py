@@ -9,7 +9,7 @@ from scm.forms import (NewsampleForm, SampleForm, SamplesizespecsForm,
                        SampleswatchForm, SamplefpicsForm, SamplequotationForm,
                        SamplesizespecfForm, SampledetailForm)
 from django.contrib.auth.decorators import login_required
-from scm.decorators import o_m_mg_or_required
+from scm.decorators import o_m_mg_or_required, sample_is_completed
 from django.utils.decorators import method_decorator
 from django.contrib.auth.views import reverse_lazy
 from django.http import JsonResponse
@@ -96,7 +96,7 @@ class SampleAddStep2(UpdateView):
         return super().get_context_data(**kwargs)
 
 # 样板更新
-@method_decorator([login_required, o_m_mg_or_required], name='dispatch')
+@method_decorator([login_required, sample_is_completed, o_m_mg_or_required], name='dispatch')
 class SampleEdit(UpdateView):
     model = Sample
     form_class = SampleForm
@@ -148,6 +148,16 @@ def samplecompleted(request, pk):
     sample.save()
     messages.success(request, '样板已完成, 请在已完成列表查找!')
     return redirect('sample:sampledetail', pk=sample.pk)
+
+# 改变样板状态到已完成状态
+@o_m_mg_or_required
+def samplereset(request, pk):
+    sample = get_object_or_404(Sample, pk=pk)
+    sample.status = "NEW"
+    sample.save()
+    messages.success(request, '样板已重置到新建状态, 请在未完成样板列表查找!')
+    return redirect('sample:sampleedit', pk=sample.pk)
+
 
 
 # 工厂查看样板详情页，部分信息，报价单，色卡，成样照片，成样尺寸表

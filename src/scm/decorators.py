@@ -1,6 +1,6 @@
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import user_passes_test
-from scm.models import Order
+from scm.models import Order, Sample
 from django.contrib import messages
 from django.shortcuts import redirect
 
@@ -178,6 +178,19 @@ def order_is_shipped(function):
         order = Order.objects.get(pk=kwargs['pk'])
         if order.status == 'SHIPPED':
             return redirect('order:orderdetail', pk=order.pk)
+        else:
+            return function(request, *args, **kwargs)
+    wrap.__doc__ = function.__doc__
+    wrap.__name__ = function.__name__
+    return wrap
+
+
+# 订单状态已经出货转到Detail
+def sample_is_completed(function):
+    def wrap(request, *args, **kwargs):
+        sample = Sample.objects.get(pk=kwargs['pk'])
+        if sample.status == 'COMPLETED':
+            return redirect('sample:sampledetail', pk=sample.pk)
         else:
             return function(request, *args, **kwargs)
     wrap.__doc__ = function.__doc__

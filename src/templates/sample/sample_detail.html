@@ -139,11 +139,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-3 ">
-                    {% if request.user.is_factory %}
-                    <div class="form-group ">
-                        {{ form.qutation |as_crispy_field }}
-                    </div>
-                    {% else %}
+                    {% if sample.status == 'COMPLETED' %}
                     <div class="form-group">
                         <div class="col-12 text-left pl-0">
                             <label for="sample_no">工厂报价:</label>
@@ -155,6 +151,24 @@
                             {% endif %}
                         </div>
                     </div>
+                    {% else %}
+                        {% if request.user.is_factory %}
+                        <div class="form-group ">
+                            {{ form.qutation |as_crispy_field }}
+                        </div>
+                        {% else %}
+                        <div class="form-group">
+                            <div class="col-12 text-left pl-0">
+                                <label for="sample_no">工厂报价:</label>
+                            </div>
+                            <div style="min-height: 38px"; class="col-12 mt-0.5 pt-2 pb-1 border border-1 rounded text-left">
+                                {% if not sample.qutation %}
+                                {% else %}
+                                    {{ sample.qutation}}
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -235,14 +249,16 @@
                 </div>
             </div>
              <div class="row">
-                {% if request.user.is_factory %}
-                <div class="col-12 col-md-2 ">
-                    <div class="form-group">
-                        <input type="submit" value="保存" class="btn btn-block btn-outline-primary">
+                {% if not sample.status == 'COMPLETED' %}
+                    {% if request.user.is_factory %}
+                    <div class="col-12 col-md-2 ">
+                        <div class="form-group">
+                            <input type="submit" value="保存" class="btn btn-block btn-outline-primary">
+                        </div>
                     </div>
-                </div>
+                    {% endif%}
                 {% endif%}
-                
+
                 <div class="col-col-12 col-md-2 ">
                     <div class="form-group">
                         {% if sample.status == 'NEW' or sample.status == 'SENT_F'%}
@@ -266,6 +282,15 @@
                         {% endif%}
                     </div>
                 </div>
+
+                <div class=" col-col-12 col-md-2 ">
+                    {% if not request.user.is_factory %}
+                        <div class="form-group">
+                            <a class="btn btn-block btn-outline-primary" href="{% url 'sample:samplereset' pk=sample.pk%}" role="button">样板重置</a>
+                        </div>
+                    {% endif %}
+                </div>
+
             </div>
         </form>
     </div>

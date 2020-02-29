@@ -25,8 +25,10 @@ urlpatterns = [
         path('<int:pk>/sentfactory/', sample.samplesentfactory, name='samplesentfactory'),
         # 样板已完成
         path('<int:pk>/completed/', sample.samplecompleted, name='samplecompleted'),
+        # 样板重置
+        path('<int:pk>/reset/', sample.samplereset, name='samplereset'),
         # 测试用
-        path('<int:pk>/copy/', sample.samplecopy, name='samplecopy'),
+        # path('<int:pk>/copy/', sample.samplecopy, name='samplecopy'),
     ], 'scm'), namespace='sample')),
 
     # 订单地址导航
@@ -92,13 +94,11 @@ urlpatterns = [
         path('invoice/<int:pk>/pay/', order.invoicepay, name='invoicepay'),
         path('invoice/list/', order.invoicelist, name='invoicelist'),
         path('invoice/<int:pk>/attachadd/', order.invoiceattachadd, name='invoiceattachadd'),
-        
+
         # 订单上传资料通用功能
         path('<int:pk>/<str:attachtype>/add/', order.orderattachadd, name='orderattachadd'),
         path('<int:pk>/<str:attachtype>/collection/', order.orderattachcollection, name='orderattachcollection'),
         path('<int:pk>/<str:attachtype>/<int:attach_pk>/delete/', order.orderattachdelete, name='orderattachdelete'),
-
-
     ], 'scm'), namespace='order')),
 
     # admin地址导航
