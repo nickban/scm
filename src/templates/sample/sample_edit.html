@@ -18,6 +18,7 @@
 {% block content %}
 <div class="row">
     <div class="col-12 col-md-10">
+        {% include 'message.html'%}
         <div class="col-12">
             <p style="font-weight: bolder; margin-bottom: 3px;">样板详情页{% if sample %}:{{sample.get_status_display}}{% endif %}</p>
         </div>

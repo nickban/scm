@@ -147,7 +147,7 @@ def samplecompleted(request, pk):
     sample.status = "COMPLETED"
     sample.save()
     messages.success(request, '样板已完成, 请在已完成列表查找!')
-    return redirect('sample:sampleedit', pk=sample.pk)
+    return redirect('sample:sampledetail', pk=sample.pk)
 
 
 # 工厂查看样板详情页，部分信息，报价单，色卡，成样照片，成样尺寸表
