@@ -27,7 +27,7 @@
                         <div class="col-12 text-left pl-0">
                             <label for="sample_no">样板号:</label>
                         </div>
-                        <div class="col-12 py-2 border border-1 rounded text-left">
+                        <div class="fielddetail col-12 py-2 border border-1 rounded text-left">
                             {{ sample.sample_no}}
                         </div>
                     </div>
@@ -35,7 +35,7 @@
                         <div class="col-12 text-left pl-0">
                             <label for="sample_no">跟单:</label>
                         </div>
-                        <div class="col-12 py-2 border border-1 rounded text-left">
+                        <div class="fielddetail col-12 py-2 border border-1 rounded text-left">
                             {{ sample.merchandiser}}
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                         <div class="col-12 text-left pl-0">
                             <label for="sample_no">品牌:</label>
                         </div>
-                        <div class="col-12 py-2 border border-1 rounded text-left">
+                        <div class="fielddetail col-12 py-2 border border-1 rounded text-left">
                             {{ sample.brand}}
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                         <div class="col-12 text-left pl-0">
                             <label for="sample_no">款式:</label>
                         </div>
-                        <div style="min-height: 38px"; class="col-12 py-2 border border-1 rounded text-left">
+                        <div style="min-height: 38px"; class="fielddetail col-12 py-2 border border-1 rounded text-left">
                            {% if not sample.style %}
                             
                            {% else %}
@@ -67,7 +67,7 @@
                         <div class="col-12 text-left pl-0">
                             <label for="sample_no">买手:</label>
                         </div>
-                        <div class="col-12 py-2 border border-1 rounded text-left">
+                        <div class="fielddetail col-12 py-2 border border-1 rounded text-left">
                             {{ sample.designer}}
                         </div>
                     </div>
@@ -75,7 +75,7 @@
                         <div  class="col-12 text-left pl-0">
                             <label for="sample_no">寄件日期:</label>
                         </div>
-                        <div style="min-height: 38px"; class="col-12 py-2 border border-1 rounded text-left">
+                        <div style="min-height: 38px"; class="fielddetail col-12 py-2 border border-1 rounded text-left">
                             {{ sample.parcel_date |date:"SHORT_DATE_FORMAT"}}
                         </div>
                     </div>
@@ -122,7 +122,7 @@
             <div class="row">
                 <div class="col-12">
                     <label for="ateration">做板评语:</label>
-                    <div style="min-height: 120px"; class="form-group border border-1 pl-2 pt-2" >
+                    <div style="min-height: 120px"; class="fielddetail form-group border border-1 pl-2 pt-2" >
                         {{sample.alteration | linebreaks}}
                     </div>
                 </div>
@@ -133,7 +133,7 @@
                         <div class="col-12 text-left pl-0">
                             <label for="sample_no">工厂:</label>
                         </div>
-                        <div class="col-12 mt-0.5 pt-2 pb-1 border border-1 rounded text-left">
+                        <div class="fielddetail col-12 py-2 pb-1 border border-1 rounded text-left">
                             {{ sample.factory}}
                         </div>
                     </div>
@@ -144,7 +144,7 @@
                         <div class="col-12 text-left pl-0">
                             <label for="sample_no">工厂报价:</label>
                         </div>
-                        <div style="min-height: 38px"; class="col-12 mt-0.5 pt-2 pb-1 border border-1 rounded text-left">
+                        <div style="min-height: 38px"; class="fielddetail col-12 py-2 border border-1 rounded text-left">
                             {% if not sample.qutation %}
                             {% else %}
                                 {{ sample.qutation}}
@@ -161,7 +161,7 @@
                             <div class="col-12 text-left pl-0">
                                 <label for="sample_no">工厂报价:</label>
                             </div>
-                            <div style="min-height: 38px"; class="col-12 mt-0.5 pt-2 pb-1 border border-1 rounded text-left">
+                            <div style="min-height: 38px"; class="fielddetail col-12 py-2 border border-1 rounded text-left">
                                 {% if not sample.qutation %}
                                 {% else %}
                                     {{ sample.qutation}}
