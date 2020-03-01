@@ -319,12 +319,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 <script>
     $('a.delete').confirm({
-        content: "确定要删除吗？",
-        type: 'blue',
+        content: "确定要删除此附件吗？",
+        icon: 'fa fa-warning',
         typeAnimated: true,
         buttons: {
         确认: {
-            btnClass: 'btn-blue',
+            btnClass: 'btn-default',
             action:function(){
             location.href = this.$target.attr('href');
             },},

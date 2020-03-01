@@ -129,11 +129,11 @@
 <script>
     $('a.delete').confirm({
         content: "确定要删除此附件吗？",
-        type: 'blue',
+        icon: 'fa fa-warning',
         typeAnimated: true,
         buttons: {
         确认: {
-            btnClass: 'btn-blue',
+            btnClass: 'btn-default',
             action:function(){
             location.href = this.$target.attr('href');
             },},

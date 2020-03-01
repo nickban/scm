@@ -333,11 +333,11 @@
 <script>
     $('a.delete').confirm({
         content: "确认后将不能更改，是否确认？",
-        type: 'blue',
+        icon: 'fa fa-warning',
         typeAnimated: true,
         buttons: {
         确认: {
-            btnClass: 'btn-blue',
+            btnClass: 'btn-default',
             action:function(){
             location.href = this.$target.attr('href');
             },},
