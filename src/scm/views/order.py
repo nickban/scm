@@ -371,16 +371,23 @@ def getacutalcolorqty(pk):
     colorobject = {}
     order = get_object_or_404(Order, pk=pk)
     colors = order.colorqtys.all()
-    for color in colors:
-        qty = color.packing_ctns.annotate(eachitemtotalbags=F('bags')*F('totalboxes'))
-        qty = qty.aggregate(totalbags=Sum('eachitemtotalbags'), size1=Sum('size1'),
-                            size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
-                            totalqty=Sum('totalqty'))
-        # print(qty)
-        colorobject = {'color': color, 'qty': qty}
-        # print(colorobject)
-        actualorderqty.append(colorobject)
-        # print(actualorderqty)
+    if order.packing_type.shortname == '单件包装':
+        for color in colors:
+            qty = color.packing_ctns.aggregate(totalbags=Sum('bags'), size1=Sum('size1'),
+                                               size2=Sum('size2'), size3=Sum('size3'),
+                                               size4=Sum('size4'), size5=Sum('size5'),
+                                               totalqty=Sum('totalqty'))
+            print(qty)
+            colorobject = {'color': color, 'qty': qty}
+            actualorderqty.append(colorobject)
+    else:
+        for color in colors:
+            qty = color.packing_ctns.annotate(eachitemtotalbags=F('bags')*F('totalboxes'))
+            qty = qty.aggregate(totalbags=Sum('eachitemtotalbags'), size1=Sum('size1'),
+                                size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
+                                totalqty=Sum('totalqty'))
+            colorobject = {'color': color, 'qty': qty}
+            actualorderqty.append(colorobject)
     return actualorderqty
 
 
@@ -395,7 +402,6 @@ def packinglistadd(request, pk):
                                         size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
                                         totalqty=Sum('totalqty'))
     actualqty = getacutalcolorqty(order.pk)
-    # print(actualqty)
     if request.method == 'POST':
         if form.is_valid():
             packinglist = form.save(commit=False)
@@ -500,12 +506,21 @@ def packinglistreset(request, pk):
 def getratio(request):
     colorratio_pk = request.GET.get('color', None)
     colorratio = get_object_or_404(Order_color_ratio_qty, pk=colorratio_pk)
+    order = colorratio.order
+    print(order.packing_type.shortname)
+    if order.packing_type.shortname == '单件包装':
+        packing_type = 1
+    else:
+        packing_type = 2
     ratio = colorratio.ratio
     ratiolist = ratio.split(":")
     ratiolist = list(map(int, ratiolist))
     data = {
         'ratio': ratiolist
     }
+    data['packing_type'] = packing_type
+  
+    print(data)
     return JsonResponse(data)
 
 

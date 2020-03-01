@@ -338,7 +338,7 @@ class Invoice(models.Model):
     status = models.CharField('状态', max_length=50, choices=INVOICESTATUS, default="NEW")
     file = models.FileField(upload_to='order/invoice/', blank=True)
     handoverdate = models.DateTimeField('出货日期', null=True)
-    start_of_week = models.DateTimeField( null=True)
+    start_of_week = models.DateTimeField(null=True)
     end_of_week = models.DateTimeField(null=True)
     factory = models.ForeignKey(Factory,
                                 verbose_name='工厂',
@@ -363,6 +363,9 @@ class Mainlabel(models.Model):
                               on_delete=models.SET_NULL,
                               null=True)
 
+    def __str__(self):
+        return self.name
+
 
 @receiver(models.signals.post_delete, sender=Mainlabel)
 def auto_delete_file_mainlabel(sender, instance, **kwargs):
@@ -379,6 +382,9 @@ class Maintag(models.Model):
                               related_name='maintags',
                               on_delete=models.SET_NULL,
                               null=True)
+
+    def __str__(self):
+        return self.name
 
 
 @receiver(models.signals.post_delete, sender=Maintag)
@@ -397,6 +403,9 @@ class Addtiontag(models.Model):
                               on_delete=models.SET_NULL,
                               null=True)
 
+    def __str__(self):
+        return self.name
+
 
 @receiver(models.signals.post_delete, sender=Addtiontag)
 def auto_delete_file_addtiontag(sender, instance, **kwargs):
@@ -408,6 +417,9 @@ def auto_delete_file_addtiontag(sender, instance, **kwargs):
 class Packingtype(models.Model):
     shortname = models.CharField('包装方式', max_length=50)
     description = models.TextField('说明', blank=True)
+
+    def __str__(self):
+        return self.shortname
 
 
 class Order(models.Model):
@@ -665,7 +677,7 @@ class Order_packing_ctn(models.Model):
     ctn_start_no = models.PositiveSmallIntegerField()
     ctn_end_no = models.PositiveSmallIntegerField()
     totalboxes = models.PositiveSmallIntegerField()
-    bags = models.PositiveSmallIntegerField()
+    bags = models.PositiveSmallIntegerField(default=0, null=True, blank=True)
     size1 = models.PositiveSmallIntegerField()
     size2 = models.PositiveSmallIntegerField()
     size3 = models.PositiveSmallIntegerField()

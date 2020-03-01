@@ -54,7 +54,7 @@ urlpatterns = [
         # 订单出货
         path('<int:pk>/shipped/', order.ordershipped, name='ordershipped'),
         # 测试用
-        path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
+        # path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
         # 订单进度管理
         path('<int:pk>/progress/', order.progress, name='progress'),
         path('<int:pk>/progress/child/', order.child, name='child'),

@@ -8,4 +8,6 @@ label {
 
 .fielddetail {
     background-color: white !important;
+    padding-top: 6px;
+    padding-bottom: 6px;
 }

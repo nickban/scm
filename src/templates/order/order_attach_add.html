@@ -22,7 +22,7 @@
         {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
             <a class="btn btn-outline-primary" href="{% url 'order:orderedit' order.pk %}" role="button">返回</a>
         {% else %}
-            <a class="btn btn-outline-primary" href="{% url 'order:orderedit' order.pk %}" role="button">返回</a>
+            <a class="btn btn-outline-primary" href="{% url 'order:orderdetail' order.pk %}" role="button">返回</a>
         {% endif %}
     </form>
 {% endblock %}
