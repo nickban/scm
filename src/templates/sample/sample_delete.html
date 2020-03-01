@@ -6,15 +6,18 @@
 {% block content %}
     <form class="my-3" method="post">{% csrf_token %}
         <div class="row">
-            <div class="col-12 col-md-3">
+            <div class="col-2">
                 <div class="form-group">
-                    <img  class="rounded" src="{{ sample.os_avatar.file.url }}" width=150 height=150 alt="款式图">
+                    <img  class="rounded" src="{{ sample.os_avatar.file.url }}" width=200 height=200 alt="款式图">
                     <p class="mt-2 card-text">样板号:{{sample.sample_no}}</p>
-                    <p class="card-title">确定要删除此样板吗?</p>
                 </div>
-                <div class="form-group">
-                    <input class="btn btn-outline-primary" type="submit" value="确认删除">
-                    <a class="btn btn-outline-primary" href="{% url 'sample:sampleedit' sample.pk %}" role="button">返回</a>
+                <div class="row">
+                    <div class="col-6">
+                        <input class="btn btn-block btn-outline-primary" type="submit" value="确认删除">
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-block btn-outline-primary" href="{% url 'sample:sampleedit' sample.pk %}" role="button">返回</a>
+                    </div>
                 </div>
             </div>
         </div>

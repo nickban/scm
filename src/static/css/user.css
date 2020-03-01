@@ -16,7 +16,7 @@ body {
   align-items: center;
 }
 
-.card, body {
+.card, .card-body, body {
   background-color: #F5F5F5;
 }
 
