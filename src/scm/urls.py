@@ -73,6 +73,8 @@ urlpatterns = [
 
         # 创建装箱单
         path('<int:pk>/packinglist/add/', order.packinglistadd, name='packinglistadd'),
+        # 修改装箱单纸箱规格
+        path('<int:pk>/changeboxsize/', order.Update_packingstatus.as_view(), name='changeboxsize'),
         # 删除装箱单
         path('<int:pk>/packinglist/<int:plpk>/delete/', order.packinglistdelete, name='packinglistdelete'),
         # 装箱单详情

@@ -570,7 +570,6 @@ class Order(models.Model):
                                      null=True)
     packing_type = models.ForeignKey(Packingtype,
                                      verbose_name='包装方式',
-                                     blank=True,
                                      on_delete=models.SET_NULL,
                                      null=True)
     labeltype = models.CharField('码标类型',
@@ -653,14 +652,14 @@ class Order_color_ratio_qty(models.Model):
     color = models.CharField('颜色(英文)', max_length=100)
     color_cn = models.CharField('颜色(中文)', max_length=100)
     color_no = models.CharField('色号', max_length=100)
-    ratio = models.CharField('比列', max_length=100)
-    size1 = models.IntegerField()
-    size2 = models.IntegerField()
-    size3 = models.IntegerField()
-    size4 = models.IntegerField()
-    size5 = models.IntegerField()
-    bags = models.IntegerField()
-    qty = models.IntegerField()
+    ratio = models.CharField('比列', max_length=100, default='', null=True, blank=True)
+    size1 = models.PositiveSmallIntegerField()
+    size2 = models.PositiveSmallIntegerField()
+    size3 = models.PositiveSmallIntegerField()
+    size4 = models.PositiveSmallIntegerField()
+    size5 = models.PositiveSmallIntegerField()
+    bags = models.PositiveSmallIntegerField(null=True, blank=True)
+    qty = models.PositiveSmallIntegerField()
 
     def __str__(self):
         return self.color_cn
@@ -677,7 +676,8 @@ class Order_packing_ctn(models.Model):
     ctn_start_no = models.PositiveSmallIntegerField()
     ctn_end_no = models.PositiveSmallIntegerField()
     totalboxes = models.PositiveSmallIntegerField()
-    bags = models.PositiveSmallIntegerField(default=0, null=True, blank=True)
+    sharebox = models.BooleanField(default=False)
+    bags = models.PositiveSmallIntegerField(null=True, blank=True)
     size1 = models.PositiveSmallIntegerField()
     size2 = models.PositiveSmallIntegerField()
     size3 = models.PositiveSmallIntegerField()

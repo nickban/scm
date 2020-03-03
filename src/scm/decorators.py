@@ -196,3 +196,17 @@ def sample_is_completed(function):
     wrap.__doc__ = function.__doc__
     wrap.__name__ = function.__name__
     return wrap
+
+
+# 确认装箱单是否被提交或已确认，如果是，回到详情页
+def packinglist_is_sented(function):
+    def wrap(request, *args, **kwargs):
+        order = Order.objects.get(pk=kwargs['pk'])
+        print(order.packing_status.status)
+        if order.packing_status.status == 'CLOSED' or order.packing_status.status == 'SUBMIT':
+            return redirect('order:packinglistdetail', pk=order.pk)
+        else:
+            return function(request, *args, **kwargs)
+    wrap.__doc__ = function.__doc__
+    wrap.__name__ = function.__name__
+    return wrap

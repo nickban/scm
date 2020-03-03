@@ -3,16 +3,18 @@ from django.views.generic import CreateView, ListView, UpdateView, TemplateView,
 from scm.models import (Order, Order_color_ratio_qty, Order_avatar,
                         Order_swatches, Order_size_specs,
                         Order_shipping_pics, Order_packing_ctn, Invoice,
-                        Order_fitting_sample, Order_bulk_fabric, Order_shipping_sample)
+                        Order_fitting_sample, Order_bulk_fabric, Order_shipping_sample,
+                        Order_packing_status)
 from scm.forms import (
                        OrderForm, Order_color_ratio_qty_Form,
                        OrderavatarForm, OrdersizespecsForm,
                        OrderswatchForm, OrdershippingpicsForm,
                        OrderpackingctnForm, InvoiceSearchForm, InvoiceForm,
                        OrderfittingsampleForm, OrderbulkfabricForm,
-                       OrdershippingsampleForm)
+                       OrdershippingsampleForm, OrderpackingstatusForm)
 from django.contrib.auth.decorators import login_required
-from scm.decorators import m_mg_or_required, factory_required, office_required, order_is_shipped
+from scm.decorators import (m_mg_or_required, factory_required, office_required,
+                            order_is_shipped, packinglist_is_sented)
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 from django.db import transaction
@@ -140,7 +142,7 @@ def orderdetail(request, pk):
     swatches = order.swatches.all()
     sizespecs = order.sizespecs.all()
     shippingpics = order.shippingpics.all()
-    colorqtys = order.colorqtys.all()
+    colorqtys = order.colorqtys.all().order_by('-created_date')
     return render(request, 'order_detail.html', {'order': order, 'swatches': swatches,
                                                  'sizespecs': sizespecs, 'shippingpics': shippingpics,
                                                  'colorqtys': colorqtys})
@@ -391,16 +393,24 @@ def getacutalcolorqty(pk):
     return actualorderqty
 
 
-# 创建装箱单
+# 创建装箱单,创建前检查状态，如果已经提交回到详情页
+@packinglist_is_sented
 def packinglistadd(request, pk):
     order = get_object_or_404(Order, pk=pk)
     form = OrderpackingctnForm(request.POST, order=order)
     colorqtys = order.colorqtys.all()
+    gross_weight = order.packing_status.gross_weight
     packing_ctns = order.packing_ctns.all()
+    packing_ctns = packing_ctns.annotate(gross_weight=F('totalboxes')*gross_weight)
     orderctnsum = order.packing_ctns.annotate(eachitemtotalbags=F('bags')*F('totalboxes'))
-    orderctnsum = orderctnsum.aggregate(totalboxes=Sum('totalboxes'), totalbags=Sum('eachitemtotalbags'), size1=Sum('size1'),
+    orderctnsum = orderctnsum.aggregate(totalbags=Sum('eachitemtotalbags'), size1=Sum('size1'),
                                         size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
                                         totalqty=Sum('totalqty'))
+    packing_ctns_exclude_share = order.packing_ctns.filter(sharebox=False)
+    totalboxes = packing_ctns_exclude_share.aggregate(totalboxes=Sum('totalboxes'))
+    totalboxes = totalboxes['totalboxes']
+    print(totalboxes)
+
     actualqty = getacutalcolorqty(order.pk)
     if request.method == 'POST':
         if form.is_valid():
@@ -415,7 +425,8 @@ def packinglistadd(request, pk):
                                                     'order': order,
                                                     'packing_ctns': packing_ctns,
                                                     'orderctnsum': orderctnsum,
-                                                    'actualqty': actualqty})
+                                                    'actualqty': actualqty,
+                                                    'totalboxes': totalboxes})
 
 
 def packinglistsubmit(request, pk):
@@ -437,26 +448,25 @@ def packinglistsubmit(request, pk):
             actualqty = actualqty['colortotalpcs']
             print(actualqty)
             if colorqty in range(401):
-                if actualqty in range(int(colorqty*0.9), int(colorqty*1.1) + 1):
-                    packing_status.status = 'SUBMIT'
-                    packing_status.save()
-                else:
+                accepted = actualqty in range(int(colorqty*0.9), int(colorqty*1.1) + 1)
+                print(accepted)
+                if not accepted:
                     messages.warning(request, '每个颜色的订单数小于400件，只能接受正负10%!')
                     return redirect('order:packinglistadd', pk=order.pk)
             else:
-                if actualqty in range(int(colorqty*0.95), int(colorqty*1.05) + 1):
-                    if actualqty <= colorqty + 50:
-                        packing_status.status = 'SUBMIT'
-                        packing_status.save()
-                    else:
-                        messages.warning(request, '每个颜色的订单数大于400件，只能接受正负5%，最多接受50件!')
-                        return redirect('order:packinglistadd', pk=order.pk)
-                else:
+                accepted = actualqty in range(int(colorqty*0.95), int(colorqty*1.05) + 1)
+                if not accepted:
                     messages.warning(request, '每个颜色的订单数大于400件，只能接受正负5%，最多接受50件!')
                     return redirect('order:packinglistadd', pk=order.pk)
+                else:
+                    if (actualqty > colorqty + 50):
+                        messages.warning(request, '每个颜色的订单数大于400件，只能接受正负5%，最多接受50件!')
+                        return redirect('order:packinglistadd', pk=order.pk)
         else:
             messages.warning(request, "{}没有添加装箱单.".format(color.color_cn))
             return redirect('order:packinglistadd', pk=order.pk)
+    packing_status.status = 'SUBMIT'
+    packing_status.save()
     return redirect('order:packinglistdetail', pk=order.pk)
 
 
@@ -474,8 +484,11 @@ def packinglistdetail(request, pk):
     colorqtys = order.colorqtys.all()
     packing_ctns = order.packing_ctns.all()
     actualqty = getacutalcolorqty(order.pk)
+    packing_ctns_exclude_share = order.packing_ctns.filter(sharebox=False)
+    totalboxes = packing_ctns_exclude_share.aggregate(totalboxes=Sum('totalboxes'))
+    totalboxes = totalboxes['totalboxes']
     orderctnsum = order.packing_ctns.annotate(eachitemtotalbags=F('bags')*F('totalboxes'))
-    orderctnsum = orderctnsum.aggregate(totalboxes=Sum('totalboxes'), totalbags=Sum('eachitemtotalbags'), size1=Sum('size1'),
+    orderctnsum = orderctnsum.aggregate(totalbags=Sum('eachitemtotalbags'), size1=Sum('size1'),
                                         size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
                                         totalqty=Sum('totalqty'))
 
@@ -483,7 +496,8 @@ def packinglistdetail(request, pk):
                                                        'colorqtys': colorqtys,
                                                        'packing_ctns': packing_ctns,
                                                        'actualqty': actualqty,
-                                                       'orderctnsum': orderctnsum})
+                                                       'orderctnsum': orderctnsum,
+                                                       'totalboxes': totalboxes})
 
 
 def packinglistclose(request, pk):
@@ -502,6 +516,26 @@ def packinglistreset(request, pk):
     return redirect('order:packinglistadd', pk=order.pk)
 
 
+# 修改纸箱规格
+@method_decorator([login_required], name='dispatch')
+class Update_packingstatus(UpdateView):
+    model = Order_packing_status
+    form_class = OrderpackingstatusForm
+    template_name = 'order_update_packingstatus.html'
+    context_object_name = 'packingstatus'
+
+    def form_valid(self, form):
+        packingstatus = form.save()
+        return redirect('order:packinglistadd', pk=packingstatus.pk)
+
+    def get_context_data(self, **kwargs):
+        kwargs['order'] = self.get_object().order
+        return super().get_context_data(**kwargs)
+
+
+
+
+
 # 查订单比列
 def getratio(request):
     colorratio_pk = request.GET.get('color', None)
@@ -510,16 +544,17 @@ def getratio(request):
     print(order.packing_type.shortname)
     if order.packing_type.shortname == '单件包装':
         packing_type = 1
+        ratiolist = []
     else:
         packing_type = 2
-    ratio = colorratio.ratio
-    ratiolist = ratio.split(":")
-    ratiolist = list(map(int, ratiolist))
+        ratio = colorratio.ratio
+        ratiolist = ratio.split(":")
+        ratiolist = list(map(int, ratiolist))
     data = {
         'ratio': ratiolist
     }
     data['packing_type'] = packing_type
-  
+
     print(data)
     return JsonResponse(data)
 

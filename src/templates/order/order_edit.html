@@ -115,7 +115,7 @@
                         <a href="{% url 'order:orderattachadd' pk=order.pk attachtype='swatch'%}" role="button">
                         <i class="fas fa-file-upload fa-2x"></i></a>
                         {% endif %}
-                        <span class="mr-5">色卡</span>
+                        <span >色卡</span>
                         <div class="form-group">
                             {% if swatches %}
                             <a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='swatch'%}">
@@ -139,7 +139,7 @@
                         <a href="{% url 'order:orderattachadd' pk=order.pk attachtype='shipppingpics'%}" role="button">
                         <i class="fas fa-file-upload fa-2x"></i></a>
                         {% endif %}
-                        <span class="mr-5" for="">船样照片</span>
+                        <span>船样照片</span>
                         <div class="form-group">
                             {% if shippingpics %}
                             <a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='shipppingpics'%}">
@@ -158,11 +158,11 @@
                         <a href="{% url 'order:orderattachadd' pk=order.pk attachtype='sizespecs' %}" role="button">
                         <i class="fas fa-file-upload fa-2x"></i></a>
                         {% endif %}
-                        <span class="mr-5" for="">批改意见</span>
+                        <span>批改意见</span>
                     </div>
                     <div class="form-group">
                         {% if sizespecs %}
-                        <ul class="list-group list-group-horizontal">
+                        <ul class="list-group list-group-horizontal d-flex flex-wrap">
                         {% for sizespec in sizespecs %}
                             <li class="list-group-item flex-fill">
                                 <a href="{{ sizespec.file.url }}">{{ sizespec.file.name |basename }}</a> 
@@ -181,97 +181,104 @@
                     </div>
                 </div>
             </div>
-            <div class="row my-2" style="min-height: 150px;">
+            <div class="row my-2 " style="min-height: 150px;">
                 <div class="col-12">
-                    <div class="form-group">
+                    <!-- <div class="form-group"> -->
                         <label for="">订单数量</label>
                         {% if order.pk %}
                             <a class="mx-2" href="{% url 'order:colorqtyadd' pk=order.pk %}"><i class="fas fa-plus-circle fa-1x"></i></a>
                         {% endif %}
-                        <table class="table table-sm table-bordered">
-                            <thead>
-                                    <tr class="text-center">
-                                        <th colspan="3" scope="col">颜色</th>
-                                        <th class="align-middle" rowspan="2" scope="col">比列</th>
-                                        <th colspan="5" scope="col">尺码</th>
-                                        <th colspan="2" scope="col">数量</th>
-                                        <th class="align-middle" rowspan="2" scope="col">操作</th>
-                                    </tr>
-                                    {% if order.labeltype == 'NUMBER'%}
-                                    <tr class="text-center">
-                                        <th scope="col">中文</th>
-                                        <th scope="col">英文</th>
-                                        <th scope="col">色号</th>
-                                        <th scope="col">6</th>
-                                        <th scope="col">8</th>
-                                        <th scope="col">10</th>
-                                        <th scope="col">12</th>
-                                        <th scope="col">14</th>
-                                        <th scope="col">中包</th>
-                                        <th scope="col">件数</th>
-                                    </tr>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                        <tr class="text-center">
+                                            <th colspan="3" scope="col">颜色</th>
+                                            <th class="align-middle" rowspan="2" scope="col">比列</th>
+                                            <th colspan="5" scope="col">尺码</th>
+                                            <th colspan="2" scope="col">数量</th>
+                                            <th class="align-middle" rowspan="2" scope="col">操作</th>
+                                        </tr>
+                                        {% if order.labeltype == 'NUMBER'%}
+                                        <tr class="text-center">
+                                            <th scope="col">中文</th>
+                                            <th scope="col">英文</th>
+                                            <th scope="col">色号</th>
+                                            <th scope="col">6</th>
+                                            <th scope="col">8</th>
+                                            <th scope="col">10</th>
+                                            <th scope="col">12</th>
+                                            <th scope="col">14</th>
+                                            <th scope="col">中包</th>
+                                            <th scope="col">件数</th>
+                                        </tr>
+                                        {% else %}
+                                        <tr class="text-center">
+                                            <th scope="col">中文</th>
+                                            <th scope="col">英文</th>
+                                            <th scope="col">色号</th>
+                                            <th scope="col">XS</th>
+                                            <th scope="col">S</th>
+                                            <th scope="col">M</th>
+                                            <th scope="col">L</th>
+                                            <th scope="col">XL</th>
+                                            <th scope="col">中包</th>
+                                            <th scope="col">件数</th>
+                                        </tr>
+                                        {% endif %}
+                                    </thead>
+                                    {% if colorqtys %}
+                                        {%for colorqty in colorqtys%}
+                                        <tr  class="text-center fielddetail">
+                                            <td>{{colorqty.color_cn}}</td>
+                                            <td>{{colorqty.color}}</td>
+                                            <td>{{colorqty.color_no}}</td>
+                                            <td>{{colorqty.ratio}}</td>
+                                            {% if colorqty.size1 == 0 %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{colorqty.size1}}</td>
+                                            {% endif %}
+                                            {% if colorqty.size2 == 0 %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{colorqty.size2}}</td>
+                                            {% endif %}
+                                            {% if colorqty.size3 == 0 %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{colorqty.size3}}</td>
+                                            {% endif %}
+                                            {% if colorqty.size4 == 0 %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{colorqty.size4}}</td>
+                                            {% endif %}
+                                            {% if colorqty.size5 == 0 %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{colorqty.size5}}</td>
+                                            {% endif %}
+                                            {% if colorqty.bags == None %}
+                                            <td></td>
+                                            {% else %}
+                                            <td>{{colorqty.bags}}</td>
+                                            {% endif %}
+                                            <td>{{colorqty.qty}}</td>
+                                            <td style="width: 8%">
+                                                <a  class="mr-2" href="{% url 'order:colorqtyedit' pk=order.pk colorqtypk=colorqty.pk%}"><i class="fas fa-edit fa-1x"></i></a>
+                                                <a  data-title="提示" class="delete" href="{% url 'order:colorqtydelete' pk=order.pk colorqtypk=colorqty.pk%}"><i class="far fa-trash-alt fa-1x"></i></a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
                                     {% else %}
-                                    <tr class="text-center">
-                                        <th scope="col">中文</th>
-                                        <th scope="col">英文</th>
-                                        <th scope="col">色号</th>
-                                        <th scope="col">XS</th>
-                                        <th scope="col">S</th>
-                                        <th scope="col">M</th>
-                                        <th scope="col">L</th>
-                                        <th scope="col">XL</th>
-                                        <th scope="col">中包</th>
-                                        <th scope="col">件数</th>
+                                    <tr>
+                                        <td class="text-center fielddetail" colspan="12" scope="col">尚未添加</td>
                                     </tr>
                                     {% endif %}
-                                </thead>
-                                {% if colorqtys %}
-                                    {%for colorqty in colorqtys%}
-                                    <tr  class="text-center fielddetail">
-                                        <td>{{colorqty.color_cn}}</td>
-                                        <td>{{colorqty.color}}</td>
-                                        <td>{{colorqty.color_no}}</td>
-                                        <td>{{colorqty.ratio}}</td>
-                                        {% if colorqty.size1 == 0 %}
-                                        <td></td>
-                                        {% else %}
-                                        <td>{{colorqty.size1}}</td>
-                                        {% endif %}
-                                        {% if colorqty.size2 == 0 %}
-                                        <td></td>
-                                        {% else %}
-                                        <td>{{colorqty.size2}}</td>
-                                        {% endif %}
-                                        {% if colorqty.size3 == 0 %}
-                                        <td></td>
-                                        {% else %}
-                                        <td>{{colorqty.size3}}</td>
-                                        {% endif %}
-                                        {% if colorqty.size4 == 0 %}
-                                        <td></td>
-                                        {% else %}
-                                        <td>{{colorqty.size4}}</td>
-                                        {% endif %}
-                                        {% if colorqty.size5 == 0 %}
-                                        <td></td>
-                                        {% else %}
-                                        <td>{{colorqty.size5}}</td>
-                                        {% endif %}
-                                        <td>{{colorqty.bags}}</td>
-                                        <td>{{colorqty.qty}}</td>
-                                        <td style="width: 8%">
-                                            <a  class="mr-2" href="{% url 'order:colorqtyedit' pk=order.pk colorqtypk=colorqty.pk%}"><i class="fas fa-edit fa-1x"></i></a>
-                                            <a  data-title="提示" class="delete" href="{% url 'order:colorqtydelete' pk=order.pk colorqtypk=colorqty.pk%}"><i class="far fa-trash-alt fa-1x"></i></a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                {% else %}
-                                <tr>
-                                    <td class="text-center fielddetail" colspan="12" scope="col">尚未添加</td>
-                                </tr>
-                                {% endif %}
-                        </table>
-                    </div>
+                            </table>
+                        </div>
+
+                    <!-- </div> -->
                 </div>
             </div>
             <div class="row">

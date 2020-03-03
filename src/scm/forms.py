@@ -10,7 +10,7 @@ from .models import (User, Factory,
                      Order, Order_color_ratio_qty, Order_size_specs,
                      Order_swatches, Order_shipping_pics, Order_avatar,
                      Order_packing_ctn, Invoice, Factory, Order_fitting_sample,
-                     Order_bulk_fabric, Order_shipping_sample)
+                     Order_bulk_fabric, Order_shipping_sample, Order_packing_status)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
@@ -277,6 +277,9 @@ class OrderForm(forms.ModelForm):
             'designer': {
                 'required': "必填字段！",
             },
+            'packing_type': {
+                'required': "必填字段！",
+            },
         }
 
 
@@ -284,30 +287,6 @@ class Order_color_ratio_qty_Form(forms.ModelForm):
     class Meta:
         model = Order_color_ratio_qty
         fields = ('color', 'color_cn', 'color_no', 'ratio', 'size1', 'size2', 'size3', 'size4', 'size5', 'bags', 'qty')
-
-
-# class OrderdetailForm(forms.ModelForm):
-#     qutation = forms.DecimalField(label="工厂报价(元)", required=False)
-
-#     def __init__(self, *args, **kwargs):
-#         super(SampledetailForm, self).__init__(*args, **kwargs)
-#         instance = getattr(self, 'instance', None)
-#         if instance and instance.id:
-#             self.fields['has_os_sample'].disabled = True
-
-#         def clean_has_os_sample_field(self):
-#             instance = getattr(self, 'instance', None)
-#             if instance and instance.id:
-#                 return instance.has_os_sample
-#             else:
-#                 return self.cleaned_data['has_os_sample']
-
-#     class Meta:
-#         model = Sample
-#         fields = ('has_os_sample', 'qutation')
-#         widgets = {
-#                   'alteration': forms.Textarea(attrs={'rows': 6}),
-#                   }
 
 
 class OrdersizespecsForm(forms.ModelForm):
@@ -350,7 +329,7 @@ class OrderpackingctnForm(forms.ModelForm):
     class Meta:
         model = Order_packing_ctn
         fields = ('color', 'ctn_start_no',
-                  'ctn_end_no', 'totalboxes', 'bags', 'size1',
+                  'ctn_end_no', 'totalboxes', 'sharebox', 'bags', 'size1',
                   'size2', 'size3', 'size4', 'size5', 'totalqty')
 
 
@@ -376,3 +355,9 @@ class OrdershippingsampleForm(forms.ModelForm):
     class Meta:
         model = Order_shipping_sample
         fields = ('shipping_sample', 'status')
+
+
+class OrderpackingstatusForm(forms.ModelForm):
+    class Meta:
+        model = Order_packing_status
+        fields = ('length', 'width', 'height', 'cube', 'gross_weight')
