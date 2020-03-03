@@ -54,10 +54,7 @@ urlpatterns = [
         # 订单出货
         path('<int:pk>/shipped/', order.ordershipped, name='ordershipped'),
         # 测试用
-        # path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
-        # 订单进度管理
-        path('<int:pk>/progress/', order.progress, name='progress'),
-        path('<int:pk>/progress/child/', order.child, name='child'),
+        path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
         # 生产板进度增删改
         path('<int:pk>/progress/fs/', order.fittingsample, name='fittingsample'),
         path('fs/<int:pk>/delete/', order.fsdelete, name='fsdelete'),
@@ -70,7 +67,6 @@ urlpatterns = [
         path('<int:pk>/progress/ss/', order.shippingsample, name='shippingsample'),
         path('ss/<int:pk>/delete/', order.ssdelete, name='ssdelete'),
         path('ss/<int:pk>/edit/', order.ssedit, name='ssedit'),
-
         # 创建装箱单
         path('<int:pk>/packinglist/add/', order.packinglistadd, name='packinglistadd'),
         # 修改装箱单纸箱规格
@@ -89,14 +85,13 @@ urlpatterns = [
         path('getratio/', order.getratio, name='getratio'),
         # 装箱单查找, 此功能系统暂不使用，代码可以供未来参考
         path('search/', order.plsearch, name='plsearch'),
-
+        # 订单发票部分
         path('invoice/add/', order.invoiceadd, name='invoiceadd'),
         path('invoice/<int:pk>/detail/', order.invoicedetail, name='invoicedetail'),
         path('invoice/<int:pk>/delete/', order.invoicedelete, name='invoicedelete'),
         path('invoice/<int:pk>/pay/', order.invoicepay, name='invoicepay'),
         path('invoice/list/', order.invoicelist, name='invoicelist'),
         path('invoice/<int:pk>/attachadd/', order.invoiceattachadd, name='invoiceattachadd'),
-
         # 订单上传资料通用功能
         path('<int:pk>/<str:attachtype>/add/', order.orderattachadd, name='orderattachadd'),
         path('<int:pk>/<str:attachtype>/collection/', order.orderattachcollection, name='orderattachcollection'),

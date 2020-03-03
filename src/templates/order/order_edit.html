@@ -183,7 +183,6 @@
             </div>
             <div class="row my-2 " style="min-height: 150px;">
                 <div class="col-12">
-                    <!-- <div class="form-group"> -->
                         <label for="">订单数量</label>
                         {% if order.pk %}
                             <a class="mx-2" href="{% url 'order:colorqtyadd' pk=order.pk %}"><i class="fas fa-plus-circle fa-1x"></i></a>
@@ -278,7 +277,6 @@
                             </table>
                         </div>
 
-                    <!-- </div> -->
                 </div>
             </div>
             <div class="row">
@@ -320,13 +318,13 @@
                 </div> 
                 {% endif %}
                 <!-- 测试用 -->
-                <!-- {% if order.pk%}
+                {% if order.pk%}
                 <div class=" col-sm">
                     <div class="form-group">
-                        <a class="btn btn-block btn-outline-primary" href="" role="button">订单复制</a>
+                        <a class="btn btn-block btn-outline-primary" href="{% url 'order:ordercopy' pk=order.pk%}" role="button">订单复制</a>
                     </div>
                 </div> 
-                {% endif %} -->
+                {% endif %}
             </div>
         </form>
     </div>

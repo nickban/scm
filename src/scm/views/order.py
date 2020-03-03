@@ -24,8 +24,7 @@ from django.contrib import messages
 from django.contrib.auth.views import reverse_lazy
 from scm.filters import OrderFilter
 from django.db.models import F, Sum, IntegerField
-from time import strftime
-from datetime import datetime, timedelta
+from datetime import timedelta
 from django.template.loader import render_to_string
 
 
@@ -97,7 +96,8 @@ class OrderListShipped(ListView):
     def get_context_data(self, **kwargs):
 
         kwargs['listtype'] = 'shipped'
-        kwargs['type'] = type
+        # 待确认，应该type没有用到
+        # kwargs['type'] = type
         return super().get_context_data(**kwargs)
 
 # 订单新建
@@ -131,7 +131,7 @@ class OrderEdit(UpdateView):
         try:
             kwargs['colorqtys'] = self.get_object().colorqtys.all().order_by('-created_date')
         except ObjectDoesNotExist:
-            kwargs['colorqtys'] = ''
+            pass
         return super().get_context_data(**kwargs)
 
 
@@ -153,8 +153,8 @@ def orderdetail(request, pk):
 @m_mg_or_required
 def colorqtyadd(request, pk):
     order = get_object_or_404(Order, pk=pk)
-    form = Order_color_ratio_qty_Form(request.POST)
     if request.method == 'POST':
+        form = Order_color_ratio_qty_Form(request.POST)
         if form.is_valid():
             colorqty = form.save(commit=False)
             colorqty.order = order
@@ -171,8 +171,8 @@ def colorqtyadd(request, pk):
 def colorqtyedit(request, pk, colorqtypk):
     order = get_object_or_404(Order, pk=pk)
     colorqty = get_object_or_404(Order_color_ratio_qty, pk=colorqtypk)
-    form = Order_color_ratio_qty_Form(request.POST, instance=colorqty)
     if request.method == 'POST':
+        form = Order_color_ratio_qty_Form(request.POST, instance=colorqty)
         if form.is_valid():
             colorqty = form.save(commit=False)
             colorqty.order = order
@@ -294,6 +294,7 @@ def orderattachadd(request, pk, attachtype):
 
 # 上传发票
 @login_required
+@factory_required
 def invoiceattachadd(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
     if request.method == 'POST':
@@ -315,8 +316,7 @@ def invoiceattachadd(request, pk):
     else:
         return render(request, 'invoice_attach_add.html', {'invoice': invoice})
 
-
-
+# 订单附件删除
 @login_required
 def orderattachdelete(request, pk, attachtype, attach_pk):
     order = get_object_or_404(Order, pk=pk)
@@ -342,7 +342,7 @@ def orderattachdelete(request, pk, attachtype, attach_pk):
         attach.delete()
         return redirect('order:orderattachcollection', pk=order.pk, attachtype=attachtype)
 
-
+# 订单附件集
 @login_required
 def orderattachcollection(request, pk, attachtype):
     order = get_object_or_404(Order, pk=pk)
@@ -355,7 +355,7 @@ def orderattachcollection(request, pk, attachtype):
                   'attachtype': attachtype, 'attaches': attaches})
 
 
-# 装箱单查找
+# 装箱单查找，暂时不用，供今后参考
 def plsearch(request):
     loginuser = request.user
     if loginuser.is_factory:
@@ -375,11 +375,11 @@ def getacutalcolorqty(pk):
     colors = order.colorqtys.all()
     if order.packing_type.shortname == '单件包装':
         for color in colors:
+            # 单件包装不用中包,但是可以放到模板里做判断，这样不用写2套模板
             qty = color.packing_ctns.aggregate(totalbags=Sum('bags'), size1=Sum('size1'),
                                                size2=Sum('size2'), size3=Sum('size3'),
                                                size4=Sum('size4'), size5=Sum('size5'),
                                                totalqty=Sum('totalqty'))
-            print(qty)
             colorobject = {'color': color, 'qty': qty}
             actualorderqty.append(colorobject)
     else:
@@ -393,7 +393,9 @@ def getacutalcolorqty(pk):
     return actualorderqty
 
 
-# 创建装箱单,创建前检查状态，如果已经提交回到详情页
+# 创建装箱单----创建前检查状态，如果已经提交回到详情页
+@login_required
+@factory_required
 @packinglist_is_sented
 def packinglistadd(request, pk):
     order = get_object_or_404(Order, pk=pk)
@@ -409,8 +411,6 @@ def packinglistadd(request, pk):
     packing_ctns_exclude_share = order.packing_ctns.filter(sharebox=False)
     totalboxes = packing_ctns_exclude_share.aggregate(totalboxes=Sum('totalboxes'))
     totalboxes = totalboxes['totalboxes']
-    print(totalboxes)
-
     actualqty = getacutalcolorqty(order.pk)
     if request.method == 'POST':
         if form.is_valid():
@@ -429,6 +429,9 @@ def packinglistadd(request, pk):
                                                     'totalboxes': totalboxes})
 
 
+# 提交装箱单
+@login_required
+@factory_required
 def packinglistsubmit(request, pk):
     order = get_object_or_404(Order, pk=pk)
     packing_status = order.packing_status
@@ -446,10 +449,8 @@ def packinglistsubmit(request, pk):
             actualqty = colorboxqs.aggregate(colortotalpcs=Sum('totalpcs', output_field=IntegerField()))
             # 取值
             actualqty = actualqty['colortotalpcs']
-            print(actualqty)
             if colorqty in range(401):
                 accepted = actualqty in range(int(colorqty*0.9), int(colorqty*1.1) + 1)
-                print(accepted)
                 if not accepted:
                     messages.warning(request, '每个颜色的订单数小于400件，只能接受正负10%!')
                     return redirect('order:packinglistadd', pk=order.pk)
@@ -471,6 +472,8 @@ def packinglistsubmit(request, pk):
 
 
 # 删除装箱单
+@login_required
+@factory_required
 def packinglistdelete(request, pk, plpk):
     order = get_object_or_404(Order, pk=pk)
     plctn = get_object_or_404(Order_packing_ctn, pk=plpk)
@@ -479,6 +482,7 @@ def packinglistdelete(request, pk, plpk):
 
 
 # 装箱单详情
+@login_required
 def packinglistdetail(request, pk):
     order = get_object_or_404(Order, pk=pk)
     colorqtys = order.colorqtys.all()
@@ -499,7 +503,9 @@ def packinglistdetail(request, pk):
                                                        'orderctnsum': orderctnsum,
                                                        'totalboxes': totalboxes})
 
-
+# 确认装箱单
+@login_required
+@office_required
 def packinglistclose(request, pk):
     order = get_object_or_404(Order, pk=pk)
     packing_status = order.packing_status
@@ -508,6 +514,9 @@ def packinglistclose(request, pk):
     return redirect('order:packinglistdetail', pk=order.pk)
 
 
+# 重置装箱单
+@login_required
+@office_required
 def packinglistreset(request, pk):
     order = get_object_or_404(Order, pk=pk)
     packing_status = order.packing_status
@@ -517,7 +526,7 @@ def packinglistreset(request, pk):
 
 
 # 修改纸箱规格
-@method_decorator([login_required], name='dispatch')
+@method_decorator([login_required, factory_required], name='dispatch')
 class Update_packingstatus(UpdateView):
     model = Order_packing_status
     form_class = OrderpackingstatusForm
@@ -533,15 +542,11 @@ class Update_packingstatus(UpdateView):
         return super().get_context_data(**kwargs)
 
 
-
-
-
 # 查订单比列
 def getratio(request):
     colorratio_pk = request.GET.get('color', None)
     colorratio = get_object_or_404(Order_color_ratio_qty, pk=colorratio_pk)
     order = colorratio.order
-    print(order.packing_type.shortname)
     if order.packing_type.shortname == '单件包装':
         packing_type = 1
         ratiolist = []
@@ -554,24 +559,22 @@ def getratio(request):
         'ratio': ratiolist
     }
     data['packing_type'] = packing_type
-
-    print(data)
     return JsonResponse(data)
 
 
+# 发票号递增规则
 def increment_invoice_number():
     last_invoice = Invoice.objects.all().order_by('id').last()
     if not last_invoice:
         return '000001'
     invoice_no = last_invoice.invoice_no
     invoice_no_new = invoice_no[9:]
-    print(invoice_no_new)
     new_invoice_no = str(int(invoice_no_new) + 1)
     new_invoice_no = invoice_no_new[0:-(len(new_invoice_no))] + new_invoice_no
-    print(new_invoice_no)
     return new_invoice_no
 
-
+# 创建发票
+@login_required
 @factory_required
 def invoiceadd(request):
     qs = []
@@ -586,8 +589,8 @@ def invoiceadd(request):
         datelist = [order.handover_date_f for order in orderlist]
         mindate = min(datelist)
         maxdate = max(datelist)
-        start_of_week = mindate - timedelta(days=mindate.weekday())   # Monday
-        end_of_week = start_of_week + timedelta(days=6)   # Sunday
+        start_of_week = mindate - timedelta(days=mindate.weekday())   # 周一
+        end_of_week = start_of_week + timedelta(days=6)   # 周日
         new_invoiceno = increment_invoice_number()
         if maxdate >= start_of_week and maxdate <= end_of_week:
             invoiceno = mindate.strftime("%Y%m%d") + '_' + new_invoiceno
@@ -612,6 +615,9 @@ def invoiceadd(request):
     return render(request, 'invoice_detail.html', {'qs': qs, 'invoice': invoice, 'factory': factory, 'totalpaidamount': totalpaidamount})
 
 
+# 删除发票
+@login_required
+@factory_required
 def invoicedelete(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
     invoice.delete()
@@ -619,6 +625,7 @@ def invoicedelete(request, pk):
     return redirect('order:invoicelist')
 
 
+# 发票详情页
 def invoicedetail(request, pk):
     qs = []
     totalpaidamount = 0
@@ -636,6 +643,7 @@ def invoicedetail(request, pk):
     return render(request, 'invoice_detail.html', {'qs': qs, 'invoice': invoice, 'factory': factory, 'totalpaidamount': totalpaidamount})
 
 
+# 发票列表
 def invoicelist(request):
     loginuser = request.user
     if loginuser.is_factory:
@@ -651,27 +659,17 @@ def invoicelist(request):
                     start_handover_date_f = form.cleaned_data['start_handover_date_f']
                     end_handover_date_f = form.cleaned_data['end_handover_date_f']
                     invoiceqs = Invoice.objects.filter(factory=factory, handoverdate__range=(start_handover_date_f, end_handover_date_f))
-                    print(invoiceqs)
             elif request.POST.get('start_handover_date_f') and request.POST.get('end_handover_date_f'):
-                print(1)
                 form = InvoiceSearchForm(request.POST)
-                print(2)
-                print(request.POST.get('start_handover_date_f'))
-                print(request.POST.get('end_handover_date_f'))
-
                 if form.is_valid():
-                    print(3)
                     start_handover_date_f = form.cleaned_data['start_handover_date_f']
                     end_handover_date_f = form.cleaned_data['end_handover_date_f']
                     invoiceqs = Invoice.objects.filter(handoverdate__range=(start_handover_date_f, end_handover_date_f))
-                    print(invoiceqs)
             elif request.POST.get('factory'):
                 form = InvoiceSearchForm(request.POST)
                 if form.is_valid():
                     factory = form.cleaned_data['factory']
                     invoiceqs = Invoice.objects.filter(factory=factory)
-                    print(invoiceqs)
-
             else:
                 messages.warning(request, '请选择开始和结束工厂入仓日期！')
                 return redirect('order:invoicelist')
@@ -680,27 +678,15 @@ def invoicelist(request):
             form = InvoiceSearchForm()
             invoiceqs = Invoice.objects.filter()
             orderqs = Order.objects.filter(Q(status='SHIPPED'), Q(invoice=None))
-
         return render(request, 'invoice_list.html',  {'invoiceqs': invoiceqs, 'orderqs': orderqs, 'form': form})
 
 
+# 发票已付款
 def invoicepay(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
     invoice.status = 'PAID'
     invoice.save()
     return redirect('order:invoicelist')
-
-
-def progress(request, pk):
-    pass
-
-
-def child(request, pk):
-    pass
-
-
-class FunctionList(TemplateView):
-    template_name = 'function_list.html'
 
 
 # 生产板进度增加
@@ -901,3 +887,7 @@ def ssedit(request, pk):
                                          request=request)
     data['pk'] = pk
     return JsonResponse(data)
+
+
+class FunctionList(TemplateView):
+    template_name = 'function_list.html'
