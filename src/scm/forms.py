@@ -9,14 +9,14 @@ from .models import (User, Factory,
                      Sample_size_spec_factory,
                      Order, Order_color_ratio_qty, Order_size_specs,
                      Order_swatches, Order_shipping_pics, Order_avatar,
-                     Order_packing_ctn, Invoice, Factory, Order_fitting_sample,
+                     Order_packing_ctn, Invoice, Order_fitting_sample,
                      Order_bulk_fabric, Order_shipping_sample, Order_packing_status)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import get_object_or_404
 
 
+# 登录表单
 class MyAuthenticationForm(AuthenticationForm):
     error_messages = {
         'invalid_login': _("用户名和密码不匹配"),
@@ -24,20 +24,19 @@ class MyAuthenticationForm(AuthenticationForm):
     }
 
 
-USER_ROLE_TYPE = [
-    (1, '工厂'),
-    (2, '跟单'),
-    (3, '设计师'),
-    (4, '财务'),
-    (5, '船务'),
-    (6, '质检'),
-    (7, '行政'),
-    (8, '管理员'),
-    (9, '跟单主管'),
-]
-
-
+# 用户注册
 class SignUpForm(UserCreationForm):
+    USER_ROLE_TYPE = [
+        (1, '工厂'),
+        (2, '跟单'),
+        (3, '设计师'),
+        (4, '财务'),
+        (5, '船务'),
+        (6, '质检'),
+        (7, '行政'),
+        (8, '管理员'),
+        (9, '跟单主管'),
+    ]
     username = forms.CharField(label=_('用户名'), error_messages={'required': "此字段必须填写！"})
     password1 = forms.CharField(label=_('密码'), error_messages={'required': "此字段必须填写！"})
     password2 = forms.CharField(label=_('确认密码'), error_messages={'required': "此字段必须填写！"})
@@ -101,18 +100,21 @@ class SignUpForm(UserCreationForm):
         return user
 
 
+# 新消息表单
 class NewpostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ('title', 'content', 'created_by', 'catagory')
 
 
+# 上传附件表单
 class PostAttachmentForm(forms.ModelForm):
     class Meta:
         model = PostAttachment
         fields = ('file',)
 
 
+# 新建样板表单
 class NewsampleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(NewsampleForm, self).__init__(*args, **kwargs)
@@ -140,6 +142,7 @@ class NewsampleForm(forms.ModelForm):
         }
 
 
+# 样板表单
 class SampleForm(forms.ModelForm):
     parcel_date = forms.DateField(widget=DatePicker(), label="寄件日期", required=False)
     qutation = forms.DecimalField(label="工厂报价(元)", required=False)
@@ -162,6 +165,7 @@ class SampleForm(forms.ModelForm):
                   }
 
 
+# 详情页表单，工厂提交数据
 class SampledetailForm(forms.ModelForm):
     qutation = forms.DecimalField(label="工厂报价(元)", required=False)
 
@@ -186,42 +190,49 @@ class SampledetailForm(forms.ModelForm):
                   }
 
 
+# 样板尺寸表
 class SamplesizespecsForm(forms.ModelForm):
     class Meta:
         model = Sample_size_specs
         fields = ('file',)
 
 
+# 样板色卡
 class SampleswatchForm(forms.ModelForm):
     class Meta:
         model = Sample_swatches
         fields = ('file',)
 
 
+# 生产办照片
 class SamplefpicsForm(forms.ModelForm):
     class Meta:
         model = Sample_pics_factory
         fields = ('file',)
 
 
+# 样板头像表单
 class SampleosavatarForm(forms.ModelForm):
     class Meta:
         model = Sample_os_avatar
         fields = ('file',)
 
 
+# 样板报价单
 class SamplequotationForm(forms.ModelForm):
     class Meta:
         model = Sample_quotation_form
         fields = ('file',)
 
 
+# 样板尺寸表
 class SamplesizespecfForm(forms.ModelForm):
     class Meta:
         model = Sample_size_spec_factory
         fields = ('file',)
 
 
+# 样板原版照片
 class SampleospicsForm(forms.ModelForm):
     class Meta:
         model = Sample_os_pics
@@ -229,8 +240,6 @@ class SampleospicsForm(forms.ModelForm):
 
 
 # 订单表
-
-
 class OrderForm(forms.ModelForm):
     handover_date_f = forms.DateField(widget=DatePicker(), label="工厂交期", required=False)
     handover_date_d = forms.DateField(widget=DatePicker(), label="客人交期", required=False)
@@ -283,42 +292,49 @@ class OrderForm(forms.ModelForm):
         }
 
 
+# 订单颜色配比表单
 class Order_color_ratio_qty_Form(forms.ModelForm):
     class Meta:
         model = Order_color_ratio_qty
         fields = ('color', 'color_cn', 'color_no', 'ratio', 'size1', 'size2', 'size3', 'size4', 'size5', 'bags', 'qty')
 
 
+# 订单尺寸表
 class OrdersizespecsForm(forms.ModelForm):
     class Meta:
         model = Order_size_specs
         fields = ('file',)
 
 
+# 订单色卡
 class OrderswatchForm(forms.ModelForm):
     class Meta:
         model = Order_swatches
         fields = ('file',)
 
 
+# 订单船头板
 class OrdershippingpicsForm(forms.ModelForm):
     class Meta:
         model = Order_shipping_pics
         fields = ('file',)
 
 
+# 订单头像
 class OrderavatarForm(forms.ModelForm):
     class Meta:
         model = Order_avatar
         fields = ('file',)
 
 
+# 发票表单
 class InvoiceForm(forms.ModelForm):
     class Meta:
         model = Invoice
         fields = ('file',)
 
 
+# 订单装箱单表单
 class OrderpackingctnForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.order = kwargs.pop('order', None)
@@ -333,30 +349,35 @@ class OrderpackingctnForm(forms.ModelForm):
                   'size2', 'size3', 'size4', 'size5', 'totalqty')
 
 
+# 发票搜索表单
 class InvoiceSearchForm(forms.Form):
     start_handover_date_f = forms.DateField(widget=DatePicker(), label="工厂交期", required=False)
     end_handover_date_f = forms.DateField(widget=DatePicker(), label="客人交期", required=False)
     factory = forms.ModelChoiceField(queryset=Factory.objects.all(), empty_label="请选择", required=False)
 
 
+# 订单生产办进度
 class OrderfittingsampleForm(forms.ModelForm):
     class Meta:
         model = Order_fitting_sample
         fields = ('sample', 'status')
 
 
+# 订单大货布进度
 class OrderbulkfabricForm(forms.ModelForm):
     class Meta:
         model = Order_bulk_fabric
         fields = ('bulk_fabric', 'status')
 
 
+# 订单船头板进度
 class OrdershippingsampleForm(forms.ModelForm):
     class Meta:
         model = Order_shipping_sample
         fields = ('shipping_sample', 'status')
 
 
+# 修改纸箱规格
 class OrderpackingstatusForm(forms.ModelForm):
     class Meta:
         model = Order_packing_status
