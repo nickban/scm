@@ -341,12 +341,14 @@
         </div>
         {% endif %}
     {% endif %}
+    {% if not order.status == 'SHIPPED' %}
     {% if request.user.is_office or request.user.is_merchandiser%}
     <div class=" col-sm">
         <div class="form-group">
             <a class=" btn btn-block btn-outline-primary" href="{% url 'order:packinglistreset' pk=order.pk %}" role="button">重置</a>
         </div>
     </div>
+    {% endif %}
     {% endif %}
 </div>
 

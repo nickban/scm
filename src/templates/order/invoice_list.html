@@ -11,10 +11,14 @@
 <!-- 日期选择器，必须在本页面加装js和bootstrap，否则无效 -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 {{ form.media }}
+<!-- 样式被更改，需要重新加载一次用户样式 -->
+<link rel="stylesheet" href="{% static 'css/user.css' %}">
 {% endblock%}
 
 {% block content %}
+
 <div class="row">
+  {% include 'message.html'%}
   <div class="col-sm-12">
     {% if request.user.is_merchandiser %}
     <form method="POST" novalidate>
@@ -40,7 +44,7 @@
     {% endif %}
   </div>
   <div class="col-sm-6">
-    <h6 class="text-left">发票列表</h6>
+    <p style="font-weight: bolder; margin-bottom: 3px;" class="text-left">发票列表</p>
     <table class="table">
       <thead>
         <tr>
@@ -76,7 +80,7 @@
     </table>
   </div>
   <div class="col-sm-6">
-    <h6 class="text-left">待做发票的订单</h6>
+    <p style="font-weight: bolder; margin-bottom: 3px;" class="text-left">待做发票的订单</p>
     <form action="{% url 'order:invoiceadd'%}" method="post">
       {%csrf_token%}
           <table  class="table table-hover">
