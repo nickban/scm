@@ -126,6 +126,7 @@
             <th style="min-width: 70px;">创建日期</th>
             <th style="min-width: 50px;">订单号</th>
             <th style="min-width: 50px;">款号</th>
+            <th style="min-width: 50px;">跟单</th>
             <th style="min-width: 50px;">工厂</th>
             <th style="min-width: 70px;">工厂交期</th>
             <th style="min-width: 70px;">款式图</th>
@@ -149,6 +150,7 @@
               {% endif %}
             {% endif %}
             <td>{{ order.style_no }}</td>
+            <td>{{ order.merchandiser }}</td>
             {% if order.factory == None %}
             <td></td>
             {% else %}

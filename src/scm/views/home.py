@@ -3,20 +3,22 @@ from django.views.generic import (TemplateView,
                                   CreateView, ListView, UpdateView, DetailView,
                                   DeleteView)
 from scm.models import (Order, Order_bulk_fabric, Order_fitting_sample,
-                        Order_shipping_sample, User, Post, PostAttachment, Sample, Sample_os_pics,
+                        Order_shipping_sample, User, Post, PostAttachment, Sample,
+                        Sample_os_pics, Mainlabel,
                      Sample_size_specs, Sample_os_avatar,
                      Sample_swatches, Sample_quotation_form,
                      Sample_pics_factory, Sample_size_spec_factory)
-from scm.forms import (SignUpForm, NewpostForm, PostAttachmentForm,
+from scm.forms import (SignUpForm, NewpostForm, PostAttachmentForm, FactoryForm,
                     NewsampleForm, SampleForm, SamplesizespecsForm,
                     SampleosavatarForm, SampleospicsForm,
                     SampleswatchForm, SamplefpicsForm,
-                     SampledetailForm)
+                    SampledetailForm, MainlabelForm)
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.views import reverse_lazy
-from scm.decorators import office_required, merchandiser_required
+from scm.decorators import (office_required, merchandiser_required, factory_required,
+                            o_m_mg_or_required)
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.views import View
@@ -91,12 +93,88 @@ def home(request):
                                          'orders_shipping_p_number': orders_shipping_p_number})
 
 
+@login_required
+@factory_required
+def setting(request):
+    loginuser = request.user
+    user = loginuser
+    factory = user.factory
+    form = FactoryForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            factory = form.save(commit=False)
+            factory.user = user
+            factory.save()
+            return redirect('home')
+    else:
+        form = FactoryForm(instance=factory)
+    return render(request, 'setting.html', {'form': form})
+
+
 class SignUpView(CreateView):
     model = User
     form_class = SignUpForm
     template_name = 'registration/signup.html'
 
+    # 保存的逻辑写在form的save里
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
         return redirect('login')
+
+
+@method_decorator([login_required], name='dispatch')
+class Syssetting(TemplateView):
+    template_name = 'syssetting.html'
+
+
+class MainLabel(ListView):
+    model = Mainlabel
+    ordering = ('brand',)
+    context_object_name = 'mainlabels'
+    template_name = 'syssetting.html'
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        kwargs['type'] = 'mainlabel'
+        return super().get_context_data(**kwargs)
+
+
+class MainLabelAdd(CreateView):
+    model = Mainlabel
+    form_class = MainlabelForm
+    template_name = 'mainlabel.html'
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('mainlabel')
+
+
+# 修改主唛
+@method_decorator([login_required], name='dispatch')
+class MainLabelUpdate(UpdateView):
+    model = Mainlabel
+    form_class = MainlabelForm
+    template_name = 'mainlabel.html'
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('mainlabel')
+
+
+# 主唛删除
+@login_required
+def mainlabeldelete(request, pk):
+    mainlabel = get_object_or_404(Mainlabel, pk=pk)
+    mainlabel.delete()
+    return redirect('mainlabel')
+
+
+class Tag(ListView):
+    pass
+
+
+class AdditionTag(ListView):
+    pass
+
+

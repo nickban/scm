@@ -1,0 +1,30 @@
+{% extends 'base_home.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block css%}
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
+<link rel="stylesheet" href="{% static 'css/user.css' %}">
+{% endblock%}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 col-md-7">
+        <div class="card">
+            <div class="card-header py-1">
+                <strong>工厂信息</strong>
+            </div>
+            <div class="card-body">
+                <form  method="post" enctype="multipart/form-data" novalidate>
+                    {%csrf_token%}
+                    {{form | crispy}}
+                    <div class="form-group">
+                        <button type="submit" class="mt-2 btn btn-block btn-outline-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+          </div>
+    </div>
+</div>
+{% endblock %}

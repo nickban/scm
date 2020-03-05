@@ -2,8 +2,17 @@ from django.urls import path, include
 from .views import order, sample, post, home
 
 urlpatterns = [
-    # 入口链接按角色分类
+    # 可以在这个地方做一个角色入口重定向, 但是本系统没有做，都定位到home
     path('', home.home, name='home'),
+    path('setting/', home.setting, name='setting'),
+    path('syssetting/', home.Syssetting.as_view(), name='syssetting'),
+    path('syssetting/mainlabel/', home.MainLabel.as_view(), name='mainlabel'),
+    path('syssetting/mainlabel/add/', home.MainLabelAdd.as_view(), name='mainlabeladd'),
+    path('syssetting/mainlabel/<int:pk>/update/', home.MainLabelUpdate.as_view(), name='mainlabelupdate'),
+    path('syssetting/mainlabel/<int:pk>/delete/', home.mainlabeldelete, name='mainlabeldelete'),
+    path('syssetting/tags/', home.Tag.as_view(), name='tag'),
+    path('syssetting/addtiontags/', home.AdditionTag.as_view(), name='addtiontag'),
+
 
     # 样板地址导航
     path('sample/', include(([

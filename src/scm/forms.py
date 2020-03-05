@@ -10,7 +10,8 @@ from .models import (User, Factory,
                      Order, Order_color_ratio_qty, Order_size_specs,
                      Order_swatches, Order_shipping_pics, Order_avatar,
                      Order_packing_ctn, Invoice, Order_fitting_sample,
-                     Order_bulk_fabric, Order_shipping_sample, Order_packing_status)
+                     Order_bulk_fabric, Order_shipping_sample, Order_packing_status,
+                     Mainlabel)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
@@ -382,3 +383,44 @@ class OrderpackingstatusForm(forms.ModelForm):
     class Meta:
         model = Order_packing_status
         fields = ('length', 'width', 'height', 'cube', 'gross_weight')
+
+
+# 工厂信息表单
+class FactoryForm(forms.ModelForm):
+    class Meta:
+        model = Factory
+        fields = ('name', 'contactperson', 'address', 'email', 'phone', 'bank',
+                  'bankaccount', 'bankaccountnumber')
+        error_messages = {
+            'name': {
+                'required': "必填字段！",
+            },
+            'contactperson': {
+                'required': "必填字段！",
+            },
+            'address': {
+                'required': "必填字段！",
+            },
+            'email': {
+                'required': "必填字段！",
+            },
+            'phone': {
+                'required': "必填字段！",
+            },
+            'bank': {
+                'required': "必填字段！",
+            },
+            'bankaccount': {
+                'required': "必填字段！",
+            },
+            'bankaccountnumber': {
+                'required': "必填字段！",
+            },
+        }
+
+
+# 主唛表单
+class MainlabelForm(forms.ModelForm):
+    class Meta:
+        model = Mainlabel
+        fields = ('name', 'brand', 'file')
