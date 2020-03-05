@@ -300,7 +300,7 @@ NOTIFICATION_CATAGORY = [
 class Post(models.Model):
     title = models.CharField('标题', max_length=100)
     content = models.TextField('内容')
-    create_time = models.DateField('发布日期', auto_now_add=True)
+    create_time = models.DateTimeField('发布日期', auto_now_add=True)
     created_by = models.ForeignKey(Office, on_delete=models.CASCADE, verbose_name='发布人')
     catagory = models.CharField('类别', max_length=100, choices=NOTIFICATION_CATAGORY)
 
@@ -735,7 +735,6 @@ class Order_packing_status(models.Model):
 class Order_bulk_fabric(models.Model):
     NORMAL = 'NORMAL'
     WARNING = 'WARNING'
-    URGENT = 'URGENT'
     CHOICES = [
         (NORMAL, '正常'),
         (WARNING, '警告'),

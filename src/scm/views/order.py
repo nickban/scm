@@ -889,5 +889,53 @@ def ssedit(request, pk):
     return JsonResponse(data)
 
 
+def progessplist(request, type):
+    loginuser = request.user
+    # 有问题的大货布进度记录对应的订单列表['orderid']
+    bulk_fabric_p = Order_bulk_fabric.objects.filter(status="WARNING").values_list('order', flat=True)
+    print(bulk_fabric_p)
+    # 有大货布问题的订单
+    orders_bulk_fabric_p = Order.objects.filter(pk__in=bulk_fabric_p)
+    print(orders_bulk_fabric_p)
+    # 有问题的生产办进度记录对应的订单列表['orderid']
+    fitting_p = Order_fitting_sample.objects.filter(status="WARNING").values_list('order', flat=True)
+    print(fitting_p)
+    # 有生产板问题的订单
+    orders_fitting_p = Order.objects.filter(pk__in=fitting_p)
+    print(orders_fitting_p)
+    # 有问题的船头板进度记录对应的订单列表['orderid']
+    shipping_p = Order_shipping_sample.objects.filter(status="WARNING").values_list('order', flat=True)
+    print(shipping_p)
+    # 有船头板问题的订单
+    orders_shipping_p = Order.objects.filter(pk__in=shipping_p)
+    print(orders_shipping_p)
+    if type == 'fitting':
+        if loginuser.is_factory:
+            orders = orders_fitting_p.filter(Q(factory=loginuser.factory), Q(status="SENT_FACTORY"))
+        elif loginuser.is_merchandiser:
+            orders = orders_fitting_p.filter(merchandiser=loginuser.merchandiser)
+        else:
+            orders = orders_fitting_p
+        return render(request, 'order_list.html', {'orders': orders})
+
+    elif type == 'bulkfabric':
+        if loginuser.is_factory:
+            orders = orders_bulk_fabric_p.filter(Q(factory=loginuser.factory), Q(status="SENT_FACTORY"))
+        elif loginuser.is_merchandiser:
+            orders = orders_bulk_fabric_p.filter(merchandiser=loginuser.merchandiser)
+        else:
+            orders = orders_bulk_fabric_p
+        return render(request, 'order_list.html', {'orders': orders})
+
+    else:
+        if loginuser.is_factory:
+            orders = orders_shipping_p.filter(Q(factory=loginuser.factory), Q(status="SENT_FACTORY"))
+        elif loginuser.is_merchandiser:
+            orders = orders_shipping_p.filter(merchandiser=loginuser.merchandiser)
+        else:
+            orders = orders_shipping_p
+        return render(request, 'order_list.html', {'orders': orders})
+
+
 class FunctionList(TemplateView):
     template_name = 'function_list.html'

@@ -3,7 +3,7 @@ from .views import order, sample, post, home
 
 urlpatterns = [
     # 入口链接按角色分类
-    path('', home.home.as_view(), name='home'),
+    path('', home.home, name='home'),
 
     # 样板地址导航
     path('sample/', include(([
@@ -67,6 +67,8 @@ urlpatterns = [
         path('<int:pk>/progress/ss/', order.shippingsample, name='shippingsample'),
         path('ss/<int:pk>/delete/', order.ssdelete, name='ssdelete'),
         path('ss/<int:pk>/edit/', order.ssedit, name='ssedit'),
+        # 进度有问题的订单试图
+        path('progressp/<str:type>/', order.progessplist, name='progessplist'),
         # 创建装箱单
         path('<int:pk>/packinglist/add/', order.packinglistadd, name='packinglistadd'),
         # 修改装箱单纸箱规格
@@ -92,6 +94,8 @@ urlpatterns = [
         path('invoice/<int:pk>/pay/', order.invoicepay, name='invoicepay'),
         path('invoice/list/', order.invoicelist, name='invoicelist'),
         path('invoice/<int:pk>/attachadd/', order.invoiceattachadd, name='invoiceattachadd'),
+
+
         # 订单上传资料通用功能
         path('<int:pk>/<str:attachtype>/add/', order.orderattachadd, name='orderattachadd'),
         path('<int:pk>/<str:attachtype>/collection/', order.orderattachcollection, name='orderattachcollection'),
@@ -110,7 +114,7 @@ urlpatterns = [
         path('<int:pk>/', post.PostEdit.as_view(), name='postedit'),
         path('<int:pk>/detail/', post.PostDetail.as_view(), name='postdetail'),
         path('<int:pk>/attach/add/', post.postattach, name='postattach'),
-        path('<int:pk>/attach/<int:postattach_pk>/delete/', post.PostAttachDelete.as_view(), name='postattachdelete'),
+        path('<int:pk>/attach/<int:postattach_pk>/delete/', post.postattachdelete, name='postattachdelete'),
         path('<int:pk>/delete/', post.PostDelete.as_view(), name='postdelete'),
     ], 'scm'), namespace='post')),
 ]

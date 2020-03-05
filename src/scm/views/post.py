@@ -32,10 +32,9 @@ from django.contrib import messages
 @method_decorator([login_required], name='dispatch')
 class PostList(ListView):
     model = Post
-    ordering = ('create_time', )
+    ordering = ('-create_time', )
     context_object_name = 'posts'
     template_name = 'post_list.html'
-    paginate_by = 10
     queryset = Post.objects.all()
 
 
@@ -110,3 +109,12 @@ class PostAttachDelete(DeleteView):
     def get_success_url(self):
         post = self.object.post
         return reverse_lazy('post:postedit', kwargs={'pk': post.pk})
+
+# 附件删除
+@login_required
+@office_required
+def postattachdelete(request, pk, postattach_pk):
+    post = get_object_or_404(Post, pk=pk)
+    postattach = get_object_or_404(PostAttachment, pk=postattach_pk)
+    postattach.delete()
+    return redirect('post:postedit', pk=post.pk)
