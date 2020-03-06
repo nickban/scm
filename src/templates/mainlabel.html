@@ -1,24 +1,38 @@
 {% extends 'base_home.html' %}
 {% load static %}
+{% load widget_tweaks %}
 {% load crispy_forms_tags %}
 
 
 {% block css%}
 <link rel="stylesheet" href="{% static 'css/form.css' %}">
 <link rel="stylesheet" href="{% static 'css/user.css' %}">
+<link rel="stylesheet" href="{% static 'css/inputfile.css' %}">
+
 {% endblock%}
 
 {% block content %}
 <div class="row">
     <div class="col-12 col-md-7">
         <div class="card">
-            <div class="card-header py-1">
-                <strong>工厂信息</strong>
-            </div>
             <div class="card-body">
                 <form  method="post" enctype="multipart/form-data" novalidate>
                     {%csrf_token%}
-                    {{form | crispy}}
+                    <div class="form-group">
+                        {{ form.name |as_crispy_field }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.brand |as_crispy_field }}
+                    </div>
+                    <div class="form-group">
+                        <label >图片</label>
+                        <input class="form-control" id="uploadFile" disabled="disabled" />
+                        <div class=" col-2 fileUpload btn btn-primary ml-0">
+                            <span>选择文件</span>
+                            <!-- <input id="uploadBtn" type="file" class="upload" /> -->
+                            {% render_field form.file class="form-control upload" %}
+                        </div>
+                    </div>
                     <div class="form-group">
                         <button type="submit" class="mt-2 btn btn-block btn-outline-primary">保存</button>
                     </div>
@@ -27,4 +41,12 @@
           </div>
     </div>
 </div>
+{% endblock %}
+
+{% block script %}
+<script>
+document.getElementById("id_file").onchange = function () {
+    document.getElementById("uploadFile").value = this.value;
+};
+</script>
 {% endblock %}

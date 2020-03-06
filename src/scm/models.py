@@ -376,7 +376,7 @@ def auto_delete_file_mainlabel(sender, instance, **kwargs):
 
 class Maintag(models.Model):
     name = models.CharField('挂牌编号', max_length=50)
-    file = models.FileField(upload_to='order/maintag/', blank=True)
+    file = models.FileField('图片', upload_to='order/maintag/', blank=True)
     brand = models.ForeignKey(Brand,
                               verbose_name='品牌',
                               related_name='maintags',
@@ -394,12 +394,12 @@ def auto_delete_file_maintag(sender, instance, **kwargs):
             os.remove(instance.file.path)
 
 
-class Addtiontag(models.Model):
+class Additiontag(models.Model):
     name = models.CharField('附加挂牌编号', max_length=50)
-    file = models.FileField(upload_to='order/additiontag/', blank=True)
+    file = models.FileField('图片', upload_to='order/additiontag/', blank=True)
     brand = models.ForeignKey(Brand,
                               verbose_name='品牌',
-                              related_name='addtiontags',
+                              related_name='additiontags',
                               on_delete=models.SET_NULL,
                               null=True)
 
@@ -407,8 +407,8 @@ class Addtiontag(models.Model):
         return self.name
 
 
-@receiver(models.signals.post_delete, sender=Addtiontag)
-def auto_delete_file_addtiontag(sender, instance, **kwargs):
+@receiver(models.signals.post_delete, sender=Additiontag)
+def auto_delete_file_additiontag(sender, instance, **kwargs):
     if instance.file:
         if os.path.isfile(instance.file.path):
             os.remove(instance.file.path)
@@ -563,7 +563,7 @@ class Order(models.Model):
                                  blank=True,
                                  on_delete=models.SET_NULL,
                                  null=True)
-    addition_tag = models.ForeignKey(Addtiontag,
+    addition_tag = models.ForeignKey(Additiontag,
                                      verbose_name='附加挂牌',
                                      blank=True,
                                      on_delete=models.SET_NULL,

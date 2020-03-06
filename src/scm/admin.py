@@ -4,7 +4,7 @@ from .models import (Sample, User, Style, Brand, Merchandiser, Designer,
                      Merchandiser_Manager, Post, PostAttachment,
                      Sample_os_avatar, Order, Order_color_ratio_qty,
                      Order_size_specs, Invoice, Order_fitting_sample,
-                     Mainlabel, Maintag, Addtiontag, Packingtype, Order_packing_ctn,
+                     Mainlabel, Maintag, Additiontag, Packingtype, Order_packing_ctn,
                      Order_packing_status)
 
 admin.site.register(User)
@@ -30,7 +30,7 @@ admin.site.register(Invoice)
 admin.site.register(Order_fitting_sample)
 admin.site.register(Mainlabel)
 admin.site.register(Maintag)
-admin.site.register(Addtiontag)
+admin.site.register(Additiontag)
 admin.site.register(Packingtype)
 admin.site.register(Order_packing_ctn)
 admin.site.register(Order_packing_status)

@@ -15,25 +15,25 @@
         <div class="row row-cols-1 row-cols-md-4">
             <div class="col mb-3">
                 <div class="card h-100 text-center">
-                  <i class="mt-2 fas fa-ribbon fa-5x"></i>
+                  <i class="mt-2 fas fa-ribbon fa-3x"></i>
                   <div class="card-body py-1">
-                    <p class="card-title"><strong><a href="{% url 'mainlabel'%}">主唛</a></strong></p>
+                    <p class="card-title"><strong><a href="{% url 'syssetting:mainlabel'%}">主唛</a></strong></p>
                   </div>
                 </div>
               </div>
             <div class="col mb-3">
                 <div class="card h-100 text-center">
-                  <i class=" mt-2 fas fa-tags fa-5x"></i>
+                  <i class=" mt-2 fas fa-tags fa-3x"></i>
                   <div class="card-body py-1">
-                    <p class="card-title"><strong>挂牌</strong></p>
+                    <p class="card-title"><strong><a href="{% url 'syssetting:maintag'%}">挂牌</a></strong></p>
                   </div>
                 </div>
             </div>
             <div class="col mb-3">
                 <div class="card h-100 text-center">
-                  <i class=" mt-2 fas fa-tags fa-5x"></i>
+                  <i class=" mt-2 fas fa-tags fa-3x"></i>
                   <div class="card-body py-1">
-                    <p class="card-title"><strong>附加挂牌</strong></p>
+                    <p class="card-title"><strong><a href="{% url 'syssetting:additiontag'%}">附加挂牌</a></strong></p>
                   </div>
                 </div>
             </div>
@@ -42,7 +42,12 @@
             <table class="table table-hover">
                 {% if request.user.is_office or request.user.is_merchandiser%}
                     {% if type == 'mainlabel' %}
-                    <a class="mb-2 btn btn-outline-primary" href="{% url 'mainlabeladd' %}" role="button">新建</a>
+                    <a class="mb-2 btn btn-outline-primary" href="{% url 'syssetting:mainlabeladd' %}" role="button">新建</a>
+                    {% elif type == 'maintag' %}
+                    <a class="mb-2 btn btn-outline-primary" href="{% url 'syssetting:maintagadd' %}" role="button">新建</a>
+                    {% elif type == 'additiontag' %}
+                    <a class="mb-2 btn btn-outline-primary" href="{% url 'syssetting:additiontagadd' %}" role="button">新建</a>
+                    {% else %}
                     {% endif %}
                 {% endif %}
                 <thead>
@@ -57,24 +62,63 @@
                   </tr>
                 </thead>
                 <tbody>
+                  {% if type == 'mainlabel' %}
                     {% for mainlabel in mainlabels%}
-                  <tr>
-                    <th scope="row">{{forloop.counter}}</th>
-                    <td>{{mainlabel.brand}}</td>
-                    <td>{{mainlabel.name}}</td>
-                    {% if mainlabel.file%}
-                        <td><a href="{{mainlabel.file.url}}"><img src="{{mainlabel.file.url}}" alt="" width=80px height=80px></a></td>
-                        {% else %}
-                        <td></td>
+                    <tr>
+                      <th scope="row">{{forloop.counter}}</th>
+                      <td>{{mainlabel.brand}}</td>
+                      <td>{{mainlabel.name}}</td>
+                      {% if mainlabel.file%}
+                          <td><a href="{{mainlabel.file.url}}"><img src="{{mainlabel.file.url}}" alt="" width=80px height=80px></a></td>
+                          {% else %}
+                          <td></td>
+                      {% endif %}
+                      {% if request.user.is_office or request.user.is_merchandiser%}
+                          <td><a href="{% url 'syssetting:mainlabelupdate' pk=mainlabel.pk %}"><i class="fas fa-edit fa-1x"></i></a>
+                          <a data-title="提示" class="delete" href="{% url 'syssetting:mainlabeldelete' pk=mainlabel.pk %}"><i class="fas fa-trash-alt fa-1x"></i></a>
+                          </td>
+                      {% endif %}
+                    </tr>
+                    {% endfor %}
+                  {% elif type == 'maintag' %}
+                    {% for maintag in maintags%}
+                    <tr>
+                      <th scope="row">{{forloop.counter}}</th>
+                      <td>{{maintag.brand}}</td>
+                      <td>{{maintag.name}}</td>
+                      {% if maintag.file%}
+                          <td><a href="{{maintag.file.url}}"><img src="{{maintag.file.url}}" alt="" width=80px height=80px></a></td>
+                          {% else %}
+                          <td></td>
+                      {% endif %}
+                      {% if request.user.is_office or request.user.is_merchandiser%}
+                          <td><a href="{% url 'syssetting:maintagupdate' pk=maintag.pk %}"><i class="fas fa-edit fa-1x"></i></a>
+                          <a data-title="提示" class="delete" href="{% url 'syssetting:maintagdelete' pk=maintag.pk %}"><i class="fas fa-trash-alt fa-1x"></i></a>
+                          </td>
+                      {% endif %}
+                    </tr>
+                    {% endfor %}
+                  {% else %}
+                    {% for additiontag in additiontags%}
+                    <tr>
+                      <th scope="row">{{forloop.counter}}</th>
+                      <td>{{additiontag.brand}}</td>
+                      <td>{{additiontag.name}}</td>
+                      {% if additiontag.file%}
+                          <td><a href="{{additiontag.file.url}}"><img src="{{additiontag.file.url}}" alt="" height=80px></a></td>
+                          {% else %}
+                          <td></td>
+                      {% endif %}
+                      {% if request.user.is_office or request.user.is_merchandiser%}
+                          <td><a href="{% url 'syssetting:additiontagupdate' pk=additiontag.pk %}"><i class="fas fa-edit fa-1x"></i></a>
+                          <a data-title="提示" class="delete" href="{% url 'syssetting:additiontagdelete' pk=additiontag.pk %}"><i class="fas fa-trash-alt fa-1x"></i></a>
+                          </td>
+                      {% endif %}
+                    </tr>
+                    {% endfor %}
                     {% endif %}
-                    {% if request.user.is_office or request.user.is_merchandiser%}
-                        <td><a href="{% url 'mainlabelupdate' pk=mainlabel.pk %}"><i class="fas fa-edit fa-2x"></i></a>
-                        <a data-title="提示" class="delete" href="{% url 'mainlabeldelete' pk=mainlabel.pk %}"><i class="fas fa-trash-alt fa-2x"></i></a>
-                        </td>
-                    {% endif %}
-                  </tr>
-                  {% endfor %}
-                  
+
+                    
                 </tbody>
             </table>
             {% include 'paginator.html' %}

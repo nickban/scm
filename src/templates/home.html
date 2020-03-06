@@ -78,13 +78,13 @@
             <div class="index card-body p-0">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><a href="{% url 'order:progessplist' type='fitting' %}">生产板</a>
-                        <span class="badge badge-dark badge-pill">{{orders_fitting_p_number}}</span>
+                        <span class="badge badge-primary badge-pill">{{orders_fitting_p_number}}</span>
                     </li>
                     <li class="list-group-item"><a href="{% url 'order:progessplist' type='bulkfabric' %}">大货布</a>
-                        <span class="badge badge-dark badge-pill">{{orders_bulk_fabric_p_number}}</span>
+                        <span class="badge badge-primary badge-pill">{{orders_bulk_fabric_p_number}}</span>
                     </li>
                     <li class="list-group-item"><a href="{% url 'order:progessplist' type='shipping' %}">船头板</a>
-                        <span class="badge badge-dark badge-pill">{{orders_shipping_p_number}}</span>
+                        <span class="badge badge-primary badge-pill">{{orders_shipping_p_number}}</span>
                     </li>
                   </ul>
             </div>
@@ -96,10 +96,10 @@
             <div class="index card-body p-0">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><a href="{% url 'sample:samplelistnew'%}">未完成样板</a>
-                        <span class="badge badge-dark badge-pill">{{samplesnumber}}</span>
+                        <span class="badge badge-primary badge-pill">{{samplesnumber}}</span>
                     </li>
                     <li class="list-group-item"><a href="{%url 'order:orderlistnew'%}">未确认订单</a>
-                        <span class="badge badge-dark badge-pill">{{ordernumbernotc}}</span>
+                        <span class="badge badge-primary badge-pill">{{ordernumbernotc}}</span>
                     </li>
                   </ul>
             </div>

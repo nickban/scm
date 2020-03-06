@@ -4,7 +4,7 @@ from django.views.generic import (TemplateView,
                                   DeleteView)
 from scm.models import (Order, Order_bulk_fabric, Order_fitting_sample,
                         Order_shipping_sample, User, Post, PostAttachment, Sample,
-                        Sample_os_pics, Mainlabel,
+                        Sample_os_pics, Mainlabel, Maintag, Additiontag,
                      Sample_size_specs, Sample_os_avatar,
                      Sample_swatches, Sample_quotation_form,
                      Sample_pics_factory, Sample_size_spec_factory)
@@ -12,7 +12,7 @@ from scm.forms import (SignUpForm, NewpostForm, PostAttachmentForm, FactoryForm,
                     NewsampleForm, SampleForm, SamplesizespecsForm,
                     SampleosavatarForm, SampleospicsForm,
                     SampleswatchForm, SamplefpicsForm,
-                    SampledetailForm, MainlabelForm)
+                    SampledetailForm, MainlabelForm, MaintagForm, AdditiontagForm)
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -128,6 +128,7 @@ class Syssetting(TemplateView):
     template_name = 'syssetting.html'
 
 
+@method_decorator([login_required], name='dispatch')
 class MainLabel(ListView):
     model = Mainlabel
     ordering = ('brand',)
@@ -140,6 +141,7 @@ class MainLabel(ListView):
         return super().get_context_data(**kwargs)
 
 
+@method_decorator([login_required, o_m_mg_or_required], name='dispatch')
 class MainLabelAdd(CreateView):
     model = Mainlabel
     form_class = MainlabelForm
@@ -147,11 +149,11 @@ class MainLabelAdd(CreateView):
 
     def form_valid(self, form):
         form.save()
-        return redirect('mainlabel')
+        return redirect('syssetting:mainlabel')
 
 
 # 修改主唛
-@method_decorator([login_required], name='dispatch')
+@method_decorator([login_required, o_m_mg_or_required], name='dispatch')
 class MainLabelUpdate(UpdateView):
     model = Mainlabel
     form_class = MainlabelForm
@@ -159,22 +161,107 @@ class MainLabelUpdate(UpdateView):
 
     def form_valid(self, form):
         form.save()
-        return redirect('mainlabel')
+        return redirect('syssetting:mainlabel')
 
 
 # 主唛删除
 @login_required
+@o_m_mg_or_required
 def mainlabeldelete(request, pk):
     mainlabel = get_object_or_404(Mainlabel, pk=pk)
     mainlabel.delete()
-    return redirect('mainlabel')
+    return redirect('syssetting:mainlabel')
 
 
-class Tag(ListView):
-    pass
+# 挂牌部分
+@method_decorator([login_required], name='dispatch')
+class MainTag(ListView):
+    model = Maintag
+    ordering = ('brand',)
+    context_object_name = 'maintags'
+    template_name = 'syssetting.html'
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        kwargs['type'] = 'maintag'
+        return super().get_context_data(**kwargs)
 
 
+@method_decorator([login_required, o_m_mg_or_required], name='dispatch')
+class MainTagAdd(CreateView):
+    model = Maintag
+    form_class = MaintagForm
+    template_name = 'mainlabel.html'
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('syssetting:maintag')
+
+
+# 修改挂牌
+@method_decorator([login_required, o_m_mg_or_required], name='dispatch')
+class MainTagUpdate(UpdateView):
+    model = Maintag
+    form_class = MaintagForm
+    template_name = 'mainlabel.html'
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('syssetting:maintag')
+
+
+# 挂牌删除
+@login_required
+@o_m_mg_or_required
+def maintagdelete(request, pk):
+    maintag = get_object_or_404(Maintag, pk=pk)
+    maintag.delete()
+    return redirect('syssetting:maintag')
+
+# 附加挂牌
+@method_decorator([login_required], name='dispatch')
 class AdditionTag(ListView):
-    pass
+    model = Additiontag
+    ordering = ('brand',)
+    context_object_name = 'additiontags'
+    template_name = 'syssetting.html'
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        kwargs['type'] = 'additiontag'
+        return super().get_context_data(**kwargs)
 
 
+@method_decorator([login_required, o_m_mg_or_required], name='dispatch')
+class AdditionTagAdd(CreateView):
+    model = Additiontag
+    form_class = AdditiontagForm
+    template_name = 'mainlabel.html'
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('syssetting:additiontag')
+
+
+@method_decorator([login_required, o_m_mg_or_required], name='dispatch')
+class AdditionTagUpdate(UpdateView):
+    model = Additiontag
+    form_class = AdditiontagForm
+    template_name = 'mainlabel.html'
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('syssetting:additiontag')
+
+
+@login_required
+@o_m_mg_or_required
+def additiontagdelete(request, pk):
+    print(111111)
+    print(request.GET)
+    print(pk)
+    # additiontag = get_object_or_404(Additiontag, pk=pk)
+    additiontag = Additiontag.objects.get(pk=pk)
+    print(222)
+    additiontag.delete()
+    return redirect('syssetting:additiontag')

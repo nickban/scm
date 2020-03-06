@@ -11,7 +11,7 @@ from .models import (User, Factory,
                      Order_swatches, Order_shipping_pics, Order_avatar,
                      Order_packing_ctn, Invoice, Order_fitting_sample,
                      Order_bulk_fabric, Order_shipping_sample, Order_packing_status,
-                     Mainlabel)
+                     Mainlabel, Maintag, Additiontag)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
@@ -421,6 +421,50 @@ class FactoryForm(forms.ModelForm):
 
 # 主唛表单
 class MainlabelForm(forms.ModelForm):
+    file = forms.FileField(widget=forms.FileInput)
+
     class Meta:
         model = Mainlabel
         fields = ('name', 'brand', 'file')
+        error_messages = {
+            'name': {
+                'required': "必填字段！",
+            },
+            'brand': {
+                'required': "必填字段！",
+            },
+        }
+
+
+# 挂牌
+class MaintagForm(forms.ModelForm):
+    file = forms.FileField(widget=forms.FileInput)
+
+    class Meta:
+        model = Maintag
+        fields = ('name', 'brand', 'file')
+        error_messages = {
+            'name': {
+                'required': "必填字段！",
+            },
+            'brand': {
+                'required': "必填字段！",
+            },
+        }
+
+
+# 附加挂牌
+class AdditiontagForm(forms.ModelForm):
+    file = forms.FileField(widget=forms.FileInput)
+
+    class Meta:
+        model = Additiontag
+        fields = ('name', 'brand', 'file')
+        error_messages = {
+            'name': {
+                'required': "必填字段！",
+            },
+            'brand': {
+                'required': "必填字段！",
+            },
+        }

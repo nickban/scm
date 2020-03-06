@@ -5,14 +5,6 @@ urlpatterns = [
     # 可以在这个地方做一个角色入口重定向, 但是本系统没有做，都定位到home
     path('', home.home, name='home'),
     path('setting/', home.setting, name='setting'),
-    path('syssetting/', home.Syssetting.as_view(), name='syssetting'),
-    path('syssetting/mainlabel/', home.MainLabel.as_view(), name='mainlabel'),
-    path('syssetting/mainlabel/add/', home.MainLabelAdd.as_view(), name='mainlabeladd'),
-    path('syssetting/mainlabel/<int:pk>/update/', home.MainLabelUpdate.as_view(), name='mainlabelupdate'),
-    path('syssetting/mainlabel/<int:pk>/delete/', home.mainlabeldelete, name='mainlabeldelete'),
-    path('syssetting/tags/', home.Tag.as_view(), name='tag'),
-    path('syssetting/addtiontags/', home.AdditionTag.as_view(), name='addtiontag'),
-
 
     # 样板地址导航
     path('sample/', include(([
@@ -115,6 +107,26 @@ urlpatterns = [
     path('admin/', include(([
         path('', order.FunctionList.as_view(), name='function_list'),
     ], 'scm'), namespace='admin')),
+
+    # systemsetting地址导航 主唛挂牌
+    path('syssetting/', include(([
+        path('', home.Syssetting.as_view(), name='syssetting'),
+        path('mainlabel/', home.MainLabel.as_view(), name='mainlabel'),
+        path('mainlabel/add/', home.MainLabelAdd.as_view(), name='mainlabeladd'),
+        path('mainlabel/<int:pk>/update/', home.MainLabelUpdate.as_view(), name='mainlabelupdate'),
+        path('mainlabel/<int:pk>/delete/', home.mainlabeldelete, name='mainlabeldelete'),
+        # 挂牌
+        path('maintag/', home.MainTag.as_view(), name='maintag'),
+        path('maintag/add/', home.MainTagAdd.as_view(), name='maintagadd'),
+        path('maintag/<int:pk>/update/', home.MainTagUpdate.as_view(), name='maintagupdate'),
+        path('maintag/<int:pk>/delete/', home.maintagdelete, name='maintagdelete'),
+        # 附加挂牌
+        path('additiontag/', home.AdditionTag.as_view(), name='additiontag'),
+        path('additiontag/add/', home.AdditionTagAdd.as_view(), name='additiontagadd'),
+        path('additiontag/<int:pk>/update/', home.AdditionTagUpdate.as_view(), name='additiontagupdate'),
+        path('additiontag/<int:pk>/delete/', home.additiontagdelete, name='additiontagdelete'),
+    ], 'scm'), namespace='syssetting')),
+
 
     # post地址导航
     path('post/', include(([
