@@ -16,24 +16,16 @@ body {
   align-items: center;
 }
 
-.card, .card-body, body {
-  background-color: #F5F5F5;
-}
-
 
 .logo {
   font-size: 1.6em;
   background-color: #007BFF;
   font-weight: bolder;
-  color: #F5F5F5;
+  color: #F7FAFC;
   border-radius: 10px;
   padding: 10px;
 }
 
 .fas {
   color: #007BFF !important;
-}
-
-.index {
-  background-color: white;
 }

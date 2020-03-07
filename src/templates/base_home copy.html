@@ -17,24 +17,24 @@
   </head>
 
   <body >
-    <div class="container-fluid p-0">
-      <div class="card h-100">
-        <!-- 导航栏 -->
-        <div class="card-header p-0">
+    <div class="container-fluid my-4 ">
+      <!-- 导航栏 -->
+      <div class="row mt-2">
+          <div class="col-12">
             {% include 'header.html'%}
-        </div>
-
-        <!-- 内容栏 -->
-        <div class="card-body" style="overflow-y: auto">
+          </div>
+      </div>
+      <!-- 内容栏 -->
+      <div class="card mb-3">
+        <div class="card-body mb-4">
+          <!-- 具体内容存放在这里 -->
           {% block content %}
           {% endblock %}
         </div>
-
-        <div class="card-footer">
-          <a href="{%url 'home'%}">©缘色服饰_2020</a>
-        </div>
-
       </div>
+      <footer class="mb-3">
+        <a href="{%url 'home'%}">©缘色服饰_2020</a>
+      </footer>
     </div>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>

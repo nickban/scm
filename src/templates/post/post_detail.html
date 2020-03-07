@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-12 col-md-7">
+    <div class="col-12 col-md-8">
         <div class="card">
             <!-- <div class="card-header text-center">
                 <h5>{{ post.title }}</h5>
@@ -18,18 +18,18 @@
                 <p class="text-right">{{ post.create_time|date:"SHORT_DATE_FORMAT"  }}</p>
                 <p class="text-right">{{ post.catagory }}</p>
             </div>
-            <div class="card-footer text-left py-1">
-                <div id="div_id_attachment" class="form-group attachment ">
-                    <label for="div_id_attachment">附件</label>
-                    <ul class="list-unstyled">
-                    {% for attach in attachments %}
-                        <li>
+            {% if post.postattachments.count %}
+            <div class="card-footer text-right">
+                <label class="card-text">附件</label>
+                <ul class="card-text justify-content-end list-unstyled  list-group list-group-horizontal">
+                    {% for attach in post.postattachments.all %}
+                        <li class="ml-3">
                             <a href="{{ attach.file.url }}">{{ attach.file.name |basename }}</a> 
                         </li>
                     {% endfor %}
-                    </ul>
-                </div>
+                </ul>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>

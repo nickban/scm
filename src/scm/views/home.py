@@ -32,7 +32,7 @@ from django.contrib import messages
 @login_required
 def home(request):
     loginuser = request.user
-    posts = Post.objects.all().order_by('-create_time')[0:3]
+    posts = Post.objects.all().order_by('-create_time')[0:5]
     posts = list(posts)
     # 有问题的大货布进度记录对应的订单列表['orderid']
     bulk_fabric_p = Order_bulk_fabric.objects.filter(status="WARNING").values_list('order', flat=True)

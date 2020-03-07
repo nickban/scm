@@ -10,20 +10,18 @@
 
 {% block content %}
 <div class="row">
-  <div class="ml-3 col-12 col-md-7 border border-1 rounded">
-    <div class="p-0 col-md-2 mt-1">
-      {% if request.user.is_office %}
-      <a class="btn btn-block btn-outline-primary" href="{% url 'post:postadd'%}" role="button">新建</a>
-      {% endif %}
-    </div>
+  <div class="ml-3 col-12 col-md-8 border border-1 rounded">
+    {% if request.user.is_office %}
+    <a class="my-2 btn btn-outline-primary" href="{% url 'post:postadd'%}" role="button">新建</a>
+    {% endif %}
     <div class="mt-3 table-responsive">
       <table class="table table-hover">
         <thead>
           <tr>
             <th>发布日期</th>
-            <th style="min-width: 200px;">标题</th>
-            <th>发布人</th>
-            <th>类别</th>
+            <th style="min-width: 500px;">标题</th>
+            <th style="min-width: 50px;">发布人</th>
+            <th style="min-width: 50px;">类别</th>
           </tr>
         </thead>
         <tbody>
