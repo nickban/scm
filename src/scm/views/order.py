@@ -23,7 +23,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.views import reverse_lazy
-from scm.filters import OrderFilter
 from django.db.models import F, Sum, IntegerField
 from datetime import timedelta
 from django.template.loader import render_to_string
