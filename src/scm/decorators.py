@@ -202,7 +202,6 @@ def sample_is_completed(function):
 def packinglist_is_sented(function):
     def wrap(request, *args, **kwargs):
         order = Order.objects.get(pk=kwargs['pk'])
-        print(order.packing_status.status)
         if order.packing_status.status == 'CLOSED' or order.packing_status.status == 'SUBMIT':
             return redirect('order:packinglistdetail', pk=order.pk)
         else:

@@ -780,18 +780,14 @@ def bulkfabric(request, pk):
     data = dict()
     order = get_object_or_404(Order, pk=pk)
     if request.method == 'POST':
-        print(11)
         form = OrderbulkfabricForm(request.POST)
         if form.is_valid():
-            print(12)
             bulkfabric = form.save(commit=False)
             bulkfabric.order = order
             bulkfabric.save()
-            print(13)
             data['form_is_valid'] = True
             qs = order.bulkfabrics.all().order_by('-created_date')
             data['html_bf_list'] = render_to_string('bf_list.html', {'qs': qs})
-            print(14)
         else:
             data['form_is_valid'] = False
     else:
@@ -806,7 +802,6 @@ def bulkfabric(request, pk):
 
 # 大货布进度删除
 def bfdelete(request, pk):
-    print(7)
     data = dict()
     bf = get_object_or_404(Order_bulk_fabric, pk=pk)
     order = bf.order
@@ -913,22 +908,16 @@ def progessplist(request, type):
     loginuser = request.user
     # 有问题的大货布进度记录对应的订单列表['orderid']
     bulk_fabric_p = Order_bulk_fabric.objects.filter(status="WARNING").values_list('order', flat=True)
-    print(bulk_fabric_p)
     # 有大货布问题的订单
     orders_bulk_fabric_p = Order.objects.filter(pk__in=bulk_fabric_p)
-    print(orders_bulk_fabric_p)
     # 有问题的生产办进度记录对应的订单列表['orderid']
     fitting_p = Order_fitting_sample.objects.filter(status="WARNING").values_list('order', flat=True)
-    print(fitting_p)
     # 有生产板问题的订单
     orders_fitting_p = Order.objects.filter(pk__in=fitting_p)
-    print(orders_fitting_p)
     # 有问题的船头板进度记录对应的订单列表['orderid']
     shipping_p = Order_shipping_sample.objects.filter(status="WARNING").values_list('order', flat=True)
-    print(shipping_p)
     # 有船头板问题的订单
     orders_shipping_p = Order.objects.filter(pk__in=shipping_p)
-    print(orders_shipping_p)
     if type == 'fitting':
         if loginuser.is_factory:
             orders = orders_fitting_p.filter(Q(factory=loginuser.factory), Q(status="SENT_FACTORY"))
