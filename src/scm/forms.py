@@ -11,7 +11,7 @@ from .models import (User, Factory,
                      Order_swatches, Order_shipping_pics, Order_avatar,
                      Order_packing_ctn, Invoice, Order_fitting_sample,
                      Order_bulk_fabric, Order_shipping_sample, Order_packing_status,
-                     Mainlabel, Maintag, Additiontag)
+                     Mainlabel, Maintag, Additiontag, Order_Barcode)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
@@ -311,6 +311,13 @@ class OrdersizespecsForm(forms.ModelForm):
 class OrderswatchForm(forms.ModelForm):
     class Meta:
         model = Order_swatches
+        fields = ('file',)
+
+
+# 订单条码
+class OrderbarcodeForm(forms.ModelForm):
+    class Meta:
+        model = Order_Barcode
         fields = ('file',)
 
 

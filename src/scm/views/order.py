@@ -4,14 +4,15 @@ from scm.models import (Order, Order_color_ratio_qty, Order_avatar,
                         Order_swatches, Order_size_specs,
                         Order_shipping_pics, Order_packing_ctn, Invoice,
                         Order_fitting_sample, Order_bulk_fabric, Order_shipping_sample,
-                        Order_packing_status)
+                        Order_packing_status, Order_Barcode)
 from scm.forms import (
                        OrderForm, Order_color_ratio_qty_Form,
                        OrderavatarForm, OrdersizespecsForm,
                        OrderswatchForm, OrdershippingpicsForm,
                        OrderpackingctnForm, InvoiceSearchForm, InvoiceForm,
                        OrderfittingsampleForm, OrderbulkfabricForm,
-                       OrdershippingsampleForm, OrderpackingstatusForm)
+                       OrdershippingsampleForm, OrderpackingstatusForm,
+                       OrderbarcodeForm)
 from django.contrib.auth.decorators import login_required
 from scm.decorators import (m_mg_or_required, factory_required, office_required,
                             order_is_shipped, packinglist_is_sented)
@@ -132,6 +133,10 @@ class OrderEdit(UpdateView):
             kwargs['colorqtys'] = self.get_object().colorqtys.all().order_by('-created_date')
         except ObjectDoesNotExist:
             pass
+        try:
+            kwargs['barcode'] = self.get_object().barcode
+        except ObjectDoesNotExist:
+            pass
         return super().get_context_data(**kwargs)
 
 
@@ -143,9 +148,13 @@ def orderdetail(request, pk):
     sizespecs = order.sizespecs.all()
     shippingpics = order.shippingpics.all()
     colorqtys = order.colorqtys.all().order_by('-created_date')
+    try:
+        barcode = order.barcode
+    except ObjectDoesNotExist:
+        pass
     return render(request, 'order_detail.html', {'order': order, 'swatches': swatches,
                                                  'sizespecs': sizespecs, 'shippingpics': shippingpics,
-                                                 'colorqtys': colorqtys})
+                                                 'colorqtys': colorqtys, 'barcode': barcode})
 
 
 # 订单颜色数量新增
@@ -270,6 +279,13 @@ def orderattachadd(request, pk, attachtype):
             except ObjectDoesNotExist:
                 pass
             form = OrderavatarForm(request.POST, request.FILES)
+    elif attachtype == 'barcode':
+        if request.FILES:
+            try:
+                order.barcode.delete()
+            except ObjectDoesNotExist:
+                pass
+            form = OrderbarcodeForm(request.POST, request.FILES)
     elif attachtype == 'sizespecs':
         form = OrdersizespecsForm(request.POST, request.FILES)
     elif attachtype == 'swatch':
@@ -323,6 +339,10 @@ def orderattachdelete(request, pk, attachtype, attach_pk):
     attachtype = attachtype
     if attachtype == 'avatar':
         attach = get_object_or_404(Order_avatar, pk=attach_pk)
+        attach.delete()
+        return redirect('order:orderedit', pk=order.pk)
+    elif attachtype == 'barcode':
+        attach = get_object_or_404(Order_Barcode, pk=attach_pk)
         attach.delete()
         return redirect('order:orderedit', pk=order.pk)
     elif attachtype == 'swatch':

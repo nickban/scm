@@ -644,6 +644,20 @@ def auto_delete_file_order_swatches(sender, instance, **kwargs):
             os.remove(instance.file.path)
 
 
+class Order_Barcode(models.Model):
+    file = models.FileField(upload_to='order/barcodes/', blank=True)
+    order = models.OneToOneField(Order,
+                                 on_delete=models.CASCADE,
+                                 related_name='barcode')
+
+
+@receiver(models.signals.post_delete, sender=Order_Barcode)
+def auto_delete_file_order_barcode(sender, instance, **kwargs):
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
+
+
 class Order_color_ratio_qty(models.Model):
     order = models.ForeignKey(Order,
                               on_delete=models.CASCADE,

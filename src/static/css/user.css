@@ -17,15 +17,6 @@ body {
 }
 
 
-.logo {
-  font-size: 1.6em;
-  background-color: #007BFF;
-  font-weight: bolder;
-  color: #F7FAFC;
-  border-radius: 10px;
-  padding: 10px;
-}
-
 .fas {
   color: #007BFF !important;
 }
