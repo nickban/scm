@@ -8,7 +8,14 @@
     <form  method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form| crispy }}
-        <button class="mb-3 btn btn-outline-primary" type="submit">添加</button>
+        <div class="row mb-3">
+            <div class="col-sm">
+                <button class="btn btn-block btn-outline-primary" type="submit">添加</button>
+            </div>
+            <div class="col-sm">
+                <a class="btn btn-block btn-outline-primary" href="{% url 'post:postlist' %}" role="button">返回</a>
+            </div>
+        </div>
     </form>
     </div>
 </div>

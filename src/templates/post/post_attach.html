@@ -11,9 +11,8 @@
     <form  method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div id="div_id_attachment" class="form-group attachment ">
-            <label for="div_id_attachment">附件</label>
             <input id="fileupload" type="file" name="file" class="inputfile" data-url="{% url 'post:postattach' post.pk %}" multiple>
-            <label for="fileupload">选择文件..</label>
+            <label for="fileupload">请点击选择文件...</label>
         </div>
         <a class="btn btn-outline-primary" href="{% url 'post:postedit' post.pk %}" role="button">返回</a>
     </form>

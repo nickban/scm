@@ -5,7 +5,6 @@
 
 
 {% block css%}
-<link rel="stylesheet" href="{% static 'css/form.css' %}">
 <!-- 删除项目控件的CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 {% endblock%}
@@ -14,12 +13,12 @@
 <div class="row">
     <div class="col-12 col-md-10">
         {% include 'message.html'%}
-        <form  class="border border-1 p-3 rounded" method="post" novalidate>
+        <form  class="border border-1 px-3 pt-3 rounded" method="post" novalidate>
             {% csrf_token %}
             <div class="row">
                 <div class="col-12 col-md-3">
-                    <div class="form-group p-2 border border-1 rounded text-center">
-                        <span>第一步</span>
+                    <div class="step form-group p-2 border border-1 rounded text-center">
+                        <span><strong>第一步</strong></span>
                     </div>
                     <div class="form-group">
                         {{ form.sample_no | as_crispy_field}}
@@ -38,8 +37,8 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-9">
-                    <div class="form-group p-2 border border-1 rounded text-center">
-                        <span>第二步</span>
+                    <div class="step åform-group p-2 border border-1 rounded text-center">
+                        <span><strong>第二步</strong></span>
                     </div>
                     <div class="row">
                         <div class="col-12 col-md-4">
@@ -47,11 +46,11 @@
                                 <div class="form-group">
                                     <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='osavatar'%}" role="button">
                                     <i class="fas fa-file-upload fa-2x"></i></a>
-                                    <span>款式图</span>
+                                    <p>款式图</p>
                                     {% if os_avatar %}
+                                        <a href="{{os_avatar.file.url}}"><img  src="{{os_avatar.file.url}}" width=200 height=200></a>
                                         <a data-title="提示" class="delete" href="{% url 'sample:sampleattachdelete' pk=sample.pk attachtype='osavatar'  attach_pk=os_avatar.pk %}">
                                         <i class="mx-2 far fa-trash-alt fa-1x"></i></a>
-                                        <a href="{{os_avatar.file.url}}"><img  src="{{os_avatar.file.url}}" width=200 height=200></a>
                                     {% endif %}
                                 </div>
                             {% endif %}

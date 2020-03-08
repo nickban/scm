@@ -45,9 +45,9 @@
     </ul>
   </div>
 
-  <div>
+  <div class="d-flex align-items-center">
     {% if user.is_authenticated %}
-      <p class="pt-1">欢迎你！<strong>{{ user.username }}</strong> <a href="{% url 'logout' %}">登出</a></p>
+      <p class="m-0">欢迎你！<strong>{{ user.username }}</strong> <a href="{% url 'logout' %}">登出</a></p>
     {% else %}
       <!-- 此处没有意义,只是暂时保留此写法，因为所有页面必须登录才能访问 -->
       <a href="{% url 'login' %}" class="btn btn-light" role="button">登录</a>

@@ -136,7 +136,7 @@ def samplesentfactory(request, pk):
     else:
         sample.status = "SENT_F"
         sample.save()
-        messages.success(request, '样板已经安排给工厂，并已邮件通知!')
+        messages.success(request, '样板已经安排给工厂!')
     return redirect('sample:sampleedit', pk=sample.pk)
 
 
@@ -146,7 +146,7 @@ def samplecompleted(request, pk):
     sample = get_object_or_404(Sample, pk=pk)
     sample.status = "COMPLETED"
     sample.save()
-    messages.success(request, '样板已完成, 请在已完成列表查找!')
+    messages.success(request, '样板已完成!')
     return redirect('sample:sampledetail', pk=sample.pk)
 
 # 重置样板状态到新建状态
@@ -155,7 +155,7 @@ def samplereset(request, pk):
     sample = get_object_or_404(Sample, pk=pk)
     sample.status = "NEW"
     sample.save()
-    messages.success(request, '样板已重置到新建状态, 请在未完成样板列表查找!')
+    messages.success(request, '样板已重置到新建状态!')
     return redirect('sample:sampleedit', pk=sample.pk)
 
 # 样板详情页

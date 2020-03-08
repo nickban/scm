@@ -4,8 +4,13 @@
 
 {% block content %}
     <form class="my-3" method="post">{% csrf_token %}
-        <p>确定要删除此消息吗?</p>
-        <p>标题：{{ post.title }}</p>
-        <input class="btn btn-outline-primary" type="submit" value="确认删除">
+        <div class="card w-50">
+            <h6 class="card-header"><strong>确定要删除此消息吗?</strong></h6>
+            <div class="card-body">
+              <h6 class="card-title">标题</h6>
+              <p class="card-text">{{ post.title }}</p>
+              <input class="btn btn-block col-12 col-md-2 btn-outline-primary" type="submit" value="确认">
+            </div>
+        </div>
     </form>
 {% endblock %}

@@ -5,7 +5,6 @@
 
 
 {% block css%}
-<link rel="stylesheet" href="{% static 'css/form.css' %}">
 <link rel="stylesheet" href="{% static 'css/user.css' %}">
 <link rel="stylesheet" href="{% static 'css/inputfile.css' %}">
 
@@ -27,14 +26,19 @@
                     <div class="form-group">
                         <label >图片</label>
                         <input class="form-control" id="uploadFile" disabled="disabled" />
-                        <div class=" col-2 fileUpload btn btn-primary ml-0">
-                            <span>选择文件</span>
+                        <div class="fileUpload">
+                            <span><strong>请选择文件...</strong></span>
                             <!-- <input id="uploadBtn" type="file" class="upload" /> -->
                             {% render_field form.file class="form-control upload" %}
                         </div>
                     </div>
-                    <div class="form-group">
-                        <button type="submit" class="mt-2 btn btn-block btn-outline-primary">保存</button>
+                    <div class="row  mt-3">
+                        <div class="col-3">
+                            <button type="submit" class="btn btn-block btn-outline-primary">保存</button>
+                        </div>
+                        <div class="col-3">
+                            <a class="btn btn-block btn-outline-primary" href="{% url 'syssetting:syssetting'%}" role="button">返回</a>
+                        </div>
                     </div>
                 </form>
             </div>

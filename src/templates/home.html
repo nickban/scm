@@ -39,9 +39,9 @@
             <div class="card-header">
                 <strong>历史消息</strong>
             </div>
-            <div class="card-body">
+            <div class="card-body pb-0">
                 <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover mb-0">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -74,7 +74,7 @@
              <strong>订单进度问题</strong> 
             </div>
             <div class="index card-body">
-                <ul class="list-group list-group-flush">
+                <ul  class="list-group list-group-flush">
                     <li class="list-group-item"><a href="{% url 'order:progessplist' type='fitting' %}">生产板</a>
                         <span class="badge badge-primary badge-pill">{{orders_fitting_p_number}}</span>
                     </li>
@@ -92,7 +92,7 @@
                 <strong>统计信息</strong>
             </div>
             <div class="index card-body">
-                <ul class="list-group list-group-flush">
+                <ul  class="list-group list-group-flush">
                     <li class="list-group-item"><a href="{% url 'sample:samplelistnew'%}">未完成样板</a>
                         <span class="badge badge-primary badge-pill">{{samplesnumber}}</span>
                     </li>
