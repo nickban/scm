@@ -8,8 +8,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'p!b5xe5qpvz!za0=%!q3@9uc6u1^+w&+8q-&0&u^bf9z$%!89m'
 
 DEBUG = True
-
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.31.149', ]
+if DEBUG:
+    ALLOWED_HOSTS = ['127.0.0.1', '192.168.31.149', ]
+else:
+    ALLOWED_HOSTS = ['198.211.112.89', ]
 
 # Application definition
 INSTALLED_APPS = [
@@ -60,11 +62,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-
-DATABASES = {
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+else:
+    DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'scm',
+        'USER': 'nickban',
+        'PASSWORD': 'maxzhu268213',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -101,10 +114,10 @@ USE_TZ = True
 
 # 静态文件设置
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # 用户登录授权模块
 AUTH_USER_MODEL = 'scm.User'
