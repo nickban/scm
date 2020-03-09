@@ -74,7 +74,7 @@ else:
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'scm',
-        'USER': 'scmdb',
+        'USER': 'nickban',
         'PASSWORD': 'maxzhu268213',
         'HOST': 'localhost',
         'PORT': '',
