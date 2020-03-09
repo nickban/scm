@@ -43,7 +43,7 @@
                     <div class="row">
                         <div class="col-12 col-md-4">
                             {% if sample.pk %}
-                                <div class="form-group">
+                                <div class="form-group mt-2">
                                     <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='osavatar'%}" role="button">
                                     <i class="fas fa-file-upload fa-2x"></i></a>
                                     <p>款式图</p>
@@ -57,7 +57,7 @@
                         </div>
                         <div class="col-12 col-md-4">
                             {% if sample.pk %}
-                                <div class="form-group">
+                                <div class="form-group mt-2">
                                     <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='sizespecs'%}" role="button">
                                     <i class="fas fa-file-upload fa-2x"></i></a>
                                     <span>评语附件</span>
@@ -75,7 +75,7 @@
                         </div>
                         <div class="col-12 col-md-4">
                             {% if sample.pk %}
-                                <div class="form-group">
+                                <div class="form-group mt-2">
                                     <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='os_pics'%}" role="button">
                                     <i class="fas fa-file-upload fa-2x"></i></a>
                                     <span>更多原板图片</span>
