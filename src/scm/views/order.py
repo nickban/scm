@@ -241,7 +241,7 @@ def ordersentfactory(request, pk):
     else:
         order.status = "SENT_FACTORY"
         order.save()
-        messages.success(request, '订单已经安排给工厂，并已邮件通知!')
+        messages.success(request, '订单已经安排给工厂!')
     return redirect('order:orderedit', pk=order.pk)
 
 
