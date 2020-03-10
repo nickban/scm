@@ -91,7 +91,7 @@
                         <span>评语附件</span>
                         <div class="form-group">
                         {% if size_specs %}
-                            <ul class="list-unstyled">
+                            <ul class="list-group list-group-horizontal d-flex flex-wrap">
                             {% for size_spec in size_specs %}
                                 <li class="">
                                     <a href="{{ size_spec.file.url }}">{{ size_spec.file.name |basename }}</a> 
