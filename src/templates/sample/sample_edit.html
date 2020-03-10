@@ -93,7 +93,7 @@
                         {% if size_specs %}
                             <ul class="list-group list-group-horizontal d-flex flex-wrap">
                             {% for size_spec in size_specs %}
-                                <li class="">
+                                <li class="list-group-item flex-fill">
                                     <a href="{{ size_spec.file.url }}">{{ size_spec.file.name |basename }}</a> 
                                     <a data-title="提示" class="delete" href="{% url 'sample:sampleattachdelete' pk=sample.pk  attachtype='sizespecs' attach_pk=size_spec.pk %}">
                                     <i class="far fa-trash-alt fa-1x"></i></a> 
