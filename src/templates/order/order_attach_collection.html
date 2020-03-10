@@ -10,15 +10,11 @@
 <div>
   <div class="form-group d-flex flex-wrap align-items-end">
     {% for attach in attaches %}
-      <div class="col-3">
         <a href="{{attach.file.url}}">
         <img src="{{ attach.file.url}}" width=300 height=300 class="img-thumbnail"></a>    
-      </div>
       {% if order.status == 'NEW' or order.status == 'SENT_FACTORY' or order.status == 'CONFIRMED' %}
-        <div >
             <a data-title="提示" class="delete" href="{% url 'order:orderattachdelete' pk=order.pk attachtype=attachtype attach_pk=attach.pk %}">
             <i class="mx-2 far fa-trash-alt fa-1x"></i></a> 
-        </div>
       {% endif %}
     {% endfor %}
   </div>

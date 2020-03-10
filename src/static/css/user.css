@@ -24,3 +24,20 @@ body {
 .step {
   background-color: #F7F7F7;
 }
+
+body {
+  /* default is 1rem or 16px */
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.5;
+  }
+   
+  /* Increase all font sizes on mobile */
+  @media (max-width: 767px) { 
+   
+  body {
+  /* default is 1rem or 16px */
+  font-size: 25px;
+  }
+   
+  }
