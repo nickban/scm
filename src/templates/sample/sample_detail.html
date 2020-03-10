@@ -103,22 +103,21 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 ">
+                    <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='sizespecs'%}" role="button">
+                    <i class="fas fa-file-upload fa-2x"></i></a>
+                    <span>评语附件</span>
                     <div class="form-group">
-                        <i class="fas fa-file-upload fa-2x"></i>
-                        <span>评语附件</span>
-                        <div class="form-group">
                         {% if size_specs %}
-                            <ul class="list-unstyled">
+                            <ul class="p-0 list-group list-group-horizontal-lg d-flex flex-wrap">
                             {% for size_spec in size_specs %}
-                                <li class="">
+                                <li class="bord border-0 p-0 list-group-item mr-3">
                                     <a href="{{ size_spec.file.url }}">{{ size_spec.file.name |basename }}</a> 
                                 </li>
                             {% endfor %}
+                            </ul>
                         {% else %}
                             <h6><span class="badge badge-warning">未上传</span></h6>
                         {% endif %}
-                        </ul>
-                        </div>
                     </div>
                 </div>
             </div>

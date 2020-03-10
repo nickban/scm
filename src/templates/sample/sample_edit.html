@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{% static 'css/form.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <!-- 日期选择器，必须在本页面加装js和bootstrap，否则无效 -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 {{ form.media }}
 <!-- 上面的bootstrap把样式改回来了,所以还要再加载一次 -->
@@ -70,40 +70,36 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-3">
+                    <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='os_pics'%}" role="button">
+                    <i class="fas fa-file-upload fa-2x"></i></a>
+                    <span>更多原版照</span>
                     <div class="form-group">
-                        <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='os_pics'%}" role="button">
-                        <i class="fas fa-file-upload fa-2x"></i></a>
-                        <span>更多原版照</span>
-                        <div class="form-group">
-                            {% if os_pics %}
-                            <a href="{% url 'sample:sampleattachcollection' pk=sample.pk attachtype='os_pics' %}">
-                            <h6><span class="badge badge-success">查看</span></a></h6>
-                            {% else %}
-                            <h6><span class="badge badge-warning">未上传</span></h6>
-                            {% endif %}
-                        </div>
+                        {% if os_pics %}
+                        <a href="{% url 'sample:sampleattachcollection' pk=sample.pk attachtype='os_pics' %}">
+                        <h6><span class="badge badge-success">查看</span></a></h6>
+                        {% else %}
+                        <h6><span class="badge badge-warning">未上传</span></h6>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="col-12 col-md-6 ">
+                    <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='sizespecs'%}" role="button">
+                    <i class="fas fa-file-upload fa-2x"></i></a>
+                    <span>评语附件</span>
                     <div class="form-group">
-                        <a href="{% url 'sample:sampleattachadd' pk=sample.pk attachtype='sizespecs'%}" role="button">
-                        <i class="fas fa-file-upload fa-2x"></i></a>
-                        <span>评语附件</span>
-                        <div class="form-group">
                         {% if size_specs %}
-                            <ul class="list-group list-group-horizontal d-flex flex-wrap">
+                            <ul class="p-0 list-group list-group-horizontal-lg d-flex flex-wrap">
                             {% for size_spec in size_specs %}
-                                <li class="list-group-item flex-fill">
+                                <li class="bord border-0 p-0 list-group-item mr-3">
                                     <a href="{{ size_spec.file.url }}">{{ size_spec.file.name |basename }}</a> 
                                     <a data-title="提示" class="delete" href="{% url 'sample:sampleattachdelete' pk=sample.pk  attachtype='sizespecs' attach_pk=size_spec.pk %}">
                                     <i class="far fa-trash-alt fa-1x"></i></a> 
                                 </li>
                             {% endfor %}
+                            </ul>
                         {% else %}
                             <h6><span class="badge badge-warning">未上传</span></h6>
                         {% endif %}
-                        </ul>
-                        </div>
                     </div>
                 </div>
             </div>
