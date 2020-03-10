@@ -231,8 +231,6 @@
                                 <a data-title="提示" class="delete" href="{% url 'sample:sampleattachdelete' pk=sample.pk  attachtype='quotation' attach_pk=quotation.pk %}">
                                 <i class="far fa-trash-alt fa-1x"></i></a>
                             {% endif %}
-                            {% else %}
-                            <i class="fas fa-file-upload fa-2x"></i>
                         {% else %}
                         <h6><span class="badge badge-warning">未上传</span></h6>
                         {% endif %}
