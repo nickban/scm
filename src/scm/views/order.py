@@ -523,7 +523,7 @@ def packinglistdetail(request, pk):
 
 # 确认装箱单
 @login_required
-@office_required
+@o_m_mg_or_required
 def packinglistclose(request, pk):
     order = get_object_or_404(Order, pk=pk)
     packing_status = order.packing_status
