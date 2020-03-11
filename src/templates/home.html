@@ -15,7 +15,7 @@
                 <div class="text-center">
                     <h5 class="card-title">{{first.title}}</h5>
                 </div>
-                    <p class="card-text">{{first.content}}</p>
+                    <p class="card-text">{{first.content | linebreaks}}</p>
                  <div class="text-right">
                     <p class="card-text">{{first.create_time |date:"SHORT_DATE_FORMAT"}}</p>
                     <p class="card-text">{{first.catagory}}</p>
