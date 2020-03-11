@@ -326,7 +326,7 @@
                     <span >条码</span>
                     <div class="form-group">
                         {% if barcode %}
-                            <a href="{{ barcode.file.url }}">{{ barcode.file.name |basename }}</a>
+                            <a href="{{ barcode.file.url }}"><span class="badge badge-success">下载</span></a>
                             {% if request.user.is_merchandiser %} 
                             <a data-title="提示" class="delete" href="{% url 'order:orderattachdelete' pk=order.pk  attachtype='barcode' attach_pk=barcode.pk %}">
                             <i class="far fa-trash-alt fa-1x"></i></a> 
