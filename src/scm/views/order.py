@@ -150,7 +150,7 @@ def orderdetail(request, pk):
     try:
         barcode = order.barcode
     except ObjectDoesNotExist:
-        pass
+        barcode = None
     return render(request, 'order_detail.html', {'order': order, 'swatches': swatches,
                                                  'sizespecs': sizespecs, 'shippingpics': shippingpics,
                                                  'colorqtys': colorqtys, 'barcode': barcode})

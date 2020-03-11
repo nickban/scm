@@ -330,6 +330,8 @@
                     <div class="form-group">
                         {% if barcode %}
                             <a href="{{ barcode.file.url }}"><span class="badge badge-success">下载</span></a>
+                            {% else %}
+                            <h6><span class="badge badge-warning">未上传</span></h6>
                         {% endif %}
                     </div>
                 </div>
