@@ -121,7 +121,7 @@
                                 <div class="form-group">
                                     {% if swatches %}
                                     <a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='swatch'%}">
-                                    <h6><span class="badge badge-success">查看</span></a></h6>
+                                    <span class="badge badge-success">查看</span></a>
                                     {% else %}
                                     <h6><span class="badge badge-warning">未上传</span></h6>
                                     {% endif %}
@@ -136,7 +136,7 @@
                                 <div class="form-group">
                                     {% if shippingpics %}
                                     <a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='shipppingpics'%}">
-                                    <h6><span class="badge badge-success">查看</span></a></h6>
+                                    <span class="badge badge-success">查看</span></a>
                                     {% else %}
                                     <h6><span class="badge badge-warning">未上传</span></h6>
                                     {% endif %}
@@ -160,7 +160,7 @@
                         <span >条码</span>
                         <div class="form-group">
                             {% if barcode %}
-                                <a href="{{ barcode.file.url }}">{{ barcode.file.name |basename }}</a> 
+                                <a href="{{ barcode.file.url }}"><span class="badge badge-success">下载</span></a> 
                                 <a data-title="提示" class="delete" href="{% url 'order:orderattachdelete' pk=order.pk  attachtype='barcode' attach_pk=barcode.pk %}">
                                 <i class="far fa-trash-alt fa-1x"></i></a>
                             {% else %}
