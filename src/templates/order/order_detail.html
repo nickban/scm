@@ -265,9 +265,9 @@
                             <div class="form-group">
                                 {% if swatches %}
                                 <a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='swatch'%}">
-                                <h6><span class="badge badge-success">查看</span></a></h6>
+                                <span class="badge badge-success">查看</span></a>
                                 {% else %}
-                                <h6><span class="badge badge-warning">未上传</span></h6>
+                                <span class="badge badge-warning">未上传</span>
                                 {% endif %}
                             </div>
                         </div>
@@ -280,7 +280,7 @@
                             <div class="form-group">
                                 {% if shippingpics %}
                                 <a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='shipppingpics'%}">
-                                <h6><span class="badge badge-success">查看</span></a></h6>
+                                <span class="badge badge-success">查看</span></a>
                                 {% else %}
                                 <h6><span class="badge badge-warning">未上传</span></h6>
                                 {% endif %}
