@@ -414,7 +414,6 @@ def getacutalcolorqty(pk):
 
 # 创建装箱单----创建前检查状态，如果已经提交回到详情页
 @login_required
-@factory_required
 @packinglist_is_sented
 def packinglistadd(request, pk):
     order = get_object_or_404(Order, pk=pk)
