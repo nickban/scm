@@ -154,6 +154,10 @@ class MainLabelUpdate(UpdateView):
     template_name = 'mainlabel.html'
 
     def form_valid(self, form):
+        try:
+            self.get_object().file.delete()
+        except ObjectDoesNotExist:
+            pass
         form.save()
         return redirect('syssetting:mainlabel')
 
@@ -200,6 +204,10 @@ class MainTagUpdate(UpdateView):
     template_name = 'mainlabel.html'
 
     def form_valid(self, form):
+        try:
+            self.get_object().file.delete()
+        except ObjectDoesNotExist:
+            pass
         form.save()
         return redirect('syssetting:maintag')
 
@@ -244,6 +252,10 @@ class AdditionTagUpdate(UpdateView):
     template_name = 'mainlabel.html'
 
     def form_valid(self, form):
+        try:
+            self.get_object().file.delete()
+        except ObjectDoesNotExist:
+            pass
         form.save()
         return redirect('syssetting:additiontag')
 
