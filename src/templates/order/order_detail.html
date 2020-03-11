@@ -258,8 +258,11 @@
                     <div class="row">
                         <div class="col-sm">
                             {% if order.pk%}
+                            {% if not order.status == 'SHIPPED'%}
                             <a href="{% url 'order:orderattachadd' pk=order.pk attachtype='swatch'%}" role="button">
                             <i class="fas fa-file-upload fa-2x"></i></a>
+                            {% else %}
+                            <i class="fas fa-file-upload fa-2x"></i>
                             {% endif %}
                             <span >色卡</span>
                             <div class="form-group">
@@ -273,8 +276,11 @@
                         </div>
                         <div class="col-sm">
                             {% if order.pk %}
+                            {% if not order.status == 'SHIPPED'%}
                             <a href="{% url 'order:orderattachadd' pk=order.pk attachtype='shipppingpics'%}" role="button">
                             <i class="fas fa-file-upload fa-2x"></i></a>
+                            {% else %}
+                            <i class="fas fa-file-upload fa-2x"></i>
                             {% endif %}
                             <span>船样</span>
                             <div class="form-group">
@@ -315,13 +321,8 @@
                     </div>
                 </div>
                 <div class="mt-3 form-group">
-                    {% if order.pk%}
-                        {% if request.user.is_merchandiser%}
-                        <a href="{% url 'order:orderattachadd' pk=order.pk attachtype='barcode'%}" role="button">
-                        <i class="fas fa-file-upload fa-2x"></i></a>
-                        {% else %}
+                    {% if order.pk %}
                         <i class="fas fa-file-upload fa-2x"></i>
-                        {% endif %}
                     {% endif %}
                     <span >条码</span>
                     <div class="form-group">
