@@ -66,7 +66,9 @@
             <td>{{ invoice.factory}}</td>
             <td>{{ invoice.get_status_display}}</td>
             {% if request.user.is_factory%}
-            <td><a href="{% url 'order:invoicedelete' invoice.pk%}">删除</a></td>
+              {% if not invoice.status == 'PAID'%}
+              <td><a href="{% url 'order:invoicedelete' invoice.pk%}">删除</a></td>
+              {% endif %}
             {% endif %}
             {% if request.user.is_merchandiser%}
               {% if invoice.status == 'PAID' %}
