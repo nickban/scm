@@ -93,6 +93,7 @@ urlpatterns = [
         path('invoice/<int:pk>/detail/', order.invoicedetail, name='invoicedetail'),
         path('invoice/<int:pk>/delete/', order.invoicedelete, name='invoicedelete'),
         path('invoice/<int:pk>/pay/', order.invoicepay, name='invoicepay'),
+        path('invoice/<int:pk>/reset/', order.invoicereset, name='invoicereset'),
         path('invoice/list/', order.invoicelist, name='invoicelist'),
         path('invoice/<int:pk>/attachadd/', order.invoiceattachadd, name='invoiceattachadd'),
 

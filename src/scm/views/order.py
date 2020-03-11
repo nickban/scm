@@ -708,6 +708,13 @@ def invoicepay(request, pk):
     return redirect('order:invoicelist')
 
 
+# 发票重置
+def invoicereset(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+    invoice.status = 'NEW'
+    invoice.save()
+    return redirect('order:invoicelist')
+
 # 生产板进度增加
 def fittingsample(request, pk):
     pk = pk
