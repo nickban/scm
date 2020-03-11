@@ -15,7 +15,7 @@ from scm.forms import (
                        OrderbarcodeForm)
 from django.contrib.auth.decorators import login_required
 from scm.decorators import (m_mg_or_required, factory_required, office_required,
-                            order_is_shipped, packinglist_is_sented)
+                            order_is_shipped, packinglist_is_sented, o_m_mg_or_required)
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 from django.db import transaction
@@ -535,7 +535,8 @@ def packinglistclose(request, pk):
 
 # 重置装箱单
 @login_required
-@office_required
+@o_m_mg_or_required
+
 def packinglistreset(request, pk):
     order = get_object_or_404(Order, pk=pk)
     packing_status = order.packing_status
