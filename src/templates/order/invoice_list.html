@@ -12,6 +12,8 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 {{ form.media }}
 <!-- 样式被更改，需要重新加载一次用户样式 -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+
 <link rel="stylesheet" href="{% static 'css/user.css' %}">
 {% endblock%}
 
@@ -49,7 +51,7 @@
   <div class="col-sm-6">
     <p style="font-weight: bolder; margin-bottom: 3px;" class="text-left">发票列表</p>
     <div class="table-responsive">
-      <table class="table">
+      <table  class="table">
         <thead>
           <tr>
             <th scope="col">序号</th>
@@ -146,7 +148,7 @@
 $(document).ready( function () {
   var table =$('.table').DataTable({
         "searching": false,
-        "paging": false,
+        // "paging": false,
         "language": {
           "processing": "处理中...",
           "loadingRecords": "载入中...",
