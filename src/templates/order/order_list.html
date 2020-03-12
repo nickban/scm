@@ -167,9 +167,9 @@
               <!-- 通过class:js-create-fs激活js -->
               {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
               <i class="fas fa-plus-circle fa-1x js-create-fs"></i>
-              {% endif %}
               <i class="fas fa-list-ul js-list-fsall"></i>
               <i class="fas fa-list-ol js-list-fs3"></i>
+              {% endif %}
               <!-- 设置唯一id, 传值给js, 因为页面有多个进度种类,前面加类别fs -->
               <ul id=fs{{order.pk}} class="list-unstyled">
                   {% if order.fittingsamples.count > 0 %}
