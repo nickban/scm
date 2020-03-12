@@ -16,9 +16,10 @@
 {% endblock%}
 
 {% block content %}
-
 <div class="row">
   {% include 'message.html'%}
+</div>
+<div class="row">
   <div class="col-sm-12">
     {% if request.user.is_merchandiser %}
     <form method="POST" novalidate>
