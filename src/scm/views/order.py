@@ -763,7 +763,6 @@ def fsall(request, pk):
     data['form_is_valid'] = True
     data['html_fs_list'] = render_to_string('fs_list_all.html', {'qs': qs})
     data['pk'] = pk
-    print(data)
     return JsonResponse(data)
 
 
