@@ -15,6 +15,7 @@ from .models import (User, Factory,
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
+from django.core.validators import EmailValidator
 
 
 # 登录表单
@@ -394,6 +395,9 @@ class OrderpackingstatusForm(forms.ModelForm):
 
 # 工厂信息表单
 class FactoryForm(forms.ModelForm):
+    email = forms.EmailField(validators=[EmailValidator(
+        message=f'邮件格式不正确！'
+    )])
     class Meta:
         model = Factory
         fields = ('name', 'contactperson', 'address', 'email', 'phone', 'bank',
