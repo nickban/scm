@@ -395,9 +395,7 @@ class OrderpackingstatusForm(forms.ModelForm):
 
 # 工厂信息表单
 class FactoryForm(forms.ModelForm):
-    email = forms.EmailField(validators=[EmailValidator(
-        message=f'邮件格式不正确！'
-    )])
+
     class Meta:
         model = Factory
         fields = ('name', 'contactperson', 'address', 'email', 'phone', 'bank',
@@ -414,6 +412,7 @@ class FactoryForm(forms.ModelForm):
             },
             'email': {
                 'required': "必填字段！",
+                'invalid': "邮件格式不正确！"
             },
             'phone': {
                 'required': "必填字段！",
