@@ -79,23 +79,17 @@
         }
 
         $(".colorqty").change(function(){
-            console.log(1)
             var eachbagpcses = 0;
             var ratio = [];
             var id_ratio = $('#id_ratio').val();
             var id_bags = parseInt($("#id_bags").val(), 10) || 0;
             var re = /^([\d]):([\d]):([\d]):([\d]):([\d])$/;
             var id = this.id;
-            console.log(id)
-            console.log(2)
 
             if(id=='id_ratio'){
-                console.log(3)
                 if(re.test(id_ratio)){
                     ratio = id_ratio.split(":");
                     ratio.forEach(function(num){eachbagpcses+=parseInt(num) || 0;});
-                    console.log(ratio)
-                    console.log(eachbagpcses)
                 }
                 else{
                     $.alert({
@@ -114,9 +108,6 @@
                 else{
                     ratio = id_ratio.split(":");
                     ratio.forEach(function(num){eachbagpcses+=parseInt(num) || 0;});
-                    console.log(ratio)
-                    console.log(ratio[0])
-                    console.log(eachbagpcses)
                     $("#id_size1").val(ratio[0]*id_bags);
                     $("#id_size2").val(ratio[1]*id_bags);
                     $("#id_size3").val(ratio[2]*id_bags);

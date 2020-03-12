@@ -1,5 +1,48 @@
 
 $(function () {
+    // 显示全部fs记录
+    $('.js-list-fsall').click(function () {
+      var parent = $(this).parent()
+      var ul = parent.find('.list-unstyled')
+      var id = ul.attr("id");
+      var idno = id.slice(2)
+      url = '/order/' + idno + '/progress/fs/all/'
+      $.ajax({
+        url: url,
+        type: 'get',
+        dataType: 'json',
+        success: function (data) {
+          pk = data['pk']
+          id = 'fs' + pk
+          element = $('#' + id);
+          if (data.form_is_valid) {
+            element.html(data.html_fs_list);
+          }
+        }
+      });
+    });
+        // 显示3条fs记录
+        $('.js-list-fs3').click(function () {
+          console.log(3)
+          var parent = $(this).parent()
+          var ul = parent.find('.list-unstyled')
+          var id = ul.attr("id");
+          var idno = id.slice(2)
+          url = '/order/' + idno + '/progress/fs/3/'
+          $.ajax({
+            url: url,
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+              pk = data['pk']
+              id = 'fs' + pk
+              element = $('#' + id);
+              if (data.form_is_valid) {
+                element.html(data.html_fs_list);
+              }
+            }
+          });
+        });
   // 生产板进度弹出页面
     $('.js-create-fs').click(function () {
       var parent = $(this).parent()

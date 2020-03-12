@@ -460,11 +460,9 @@
             success: function (data) {
                 colorratio = data['ratio'];
                 colorratio.forEach(function(num){eachbagpcses+=parseInt(num) || 0;});
-                console.log(eachbagpcses)
                 packing_type = data['packing_type'];
                 // 单件包装是1
                 if (packing_type == 1){
-                    console.log(1)
                     $("#id_bags").prop( "disabled", true );
                 }
             }

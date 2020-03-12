@@ -755,6 +755,30 @@ def fsdelete(request, pk):
     return JsonResponse(data)
 
 
+# 显示全部生产办进度
+def fsall(request, pk):
+    data = dict()
+    order = get_object_or_404(Order, pk=pk)
+    qs = order.fittingsamples.all().order_by('-created_date')
+    data['form_is_valid'] = True
+    data['html_fs_list'] = render_to_string('fs_list_all.html', {'qs': qs})
+    data['pk'] = pk
+    print(data)
+    return JsonResponse(data)
+
+
+# 只显示最近3个生产办进度
+def fsthree(request, pk):
+    data = dict()
+    order = get_object_or_404(Order, pk=pk)
+    qs = order.fittingsamples.all().order_by('-created_date')
+    data['form_is_valid'] = True
+    data['html_fs_list'] = render_to_string('fs_list.html', {'qs': qs})
+    data['pk'] = pk
+    return JsonResponse(data)
+
+
+
 # 生产板进度修改
 def fsedit(request, pk):
     data = dict()

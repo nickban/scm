@@ -34,7 +34,6 @@ $(function () {
           id = 'bf' + pk
           //找到ul
           element = $('#' + id);
-          console.log(element)
           if (data.form_is_valid) {
             element.html(data.html_bf_list);
             $("#modal-bf").modal("hide");

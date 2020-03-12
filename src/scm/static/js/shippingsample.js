@@ -34,7 +34,6 @@ $(function () {
           id = 'ss' + pk
           //找到ul
           element = $('#' + id);
-          console.log(element)
           if (data.form_is_valid) {
             element.html(data.html_ss_list);
             $("#modal-ss").modal("hide");

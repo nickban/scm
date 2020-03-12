@@ -58,6 +58,8 @@ urlpatterns = [
         path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
         # 生产板进度增删改
         path('<int:pk>/progress/fs/', order.fittingsample, name='fittingsample'),
+        path('<int:pk>/progress/fs/all/', order.fsall, name='fsall'),
+        path('<int:pk>/progress/fs/3/', order.fsthree, name='fsthree'),
         path('fs/<int:pk>/delete/', order.fsdelete, name='fsdelete'),
         path('fs/<int:pk>/edit/', order.fsedit, name='fsedit'),
         # 大货布进度增删改
