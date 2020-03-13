@@ -29,9 +29,9 @@ class Factory(models.Model):
     address = models.CharField('地址', max_length=200)
     email = models.EmailField('邮箱')
     phone = models.CharField('手机', max_length=100)
-    bank = models.CharField('开户银行', max_length=100)
-    bankaccount = models.CharField('银行账户', max_length=100)
-    bankaccountnumber = models.CharField('银行账号', max_length=100)
+    bank = models.CharField('开户银行', null=True, max_length=100)
+    bankaccount = models.CharField('银行账户', null=True, max_length=100)
+    bankaccountnumber = models.CharField('银行账号', null=True, max_length=100)
 
     def __str__(self):
         return self.user.username
