@@ -12,7 +12,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = False
 
 if DEBUG:
-    ALLOWED_HOSTS = ['127.0.0.1', '192.168.31.149', ]
+    ALLOWED_HOSTS = ['127.0.0.1' ]
 else:
     ALLOWED_HOSTS = ['scm.monayoung.com.au', ]
 
@@ -65,15 +65,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
-else:
-    DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': config('DB_NAME'),
