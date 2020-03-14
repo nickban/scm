@@ -9,11 +9,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
-DEBUG = False
+DEBUG = True
 
-if DEBUG:
-    ALLOWED_HOSTS = ['127.0.0.1' ]
-else:
+# if DEBUG:
+#     ALLOWED_HOSTS = ['127.0.0.1' ]
+# else:
     ALLOWED_HOSTS = ['scm.monayoung.com.au', ]
 
 # Application definition
