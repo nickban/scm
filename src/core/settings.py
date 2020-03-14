@@ -1,13 +1,16 @@
-from django.contrib.messages import constants as messages
 import os
+from decouple import config
+from django.contrib.messages import constants as messages
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'p!b5xe5qpvz!za0=%!q3@9uc6u1^+w&+8q-&0&u^bf9z$%!89m'
+SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = False
+
 if DEBUG:
     ALLOWED_HOSTS = ['127.0.0.1', '192.168.31.149', ]
 else:
@@ -73,9 +76,9 @@ else:
     DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'scm',
-        'USER': 'scmdbuser',
-        'PASSWORD': 'maxzhu268213',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
         'HOST': 'localhost',
         'PORT': '',
     }
