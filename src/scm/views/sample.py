@@ -17,6 +17,7 @@ from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.contrib import messages
+from django.core.mail import send_mail
 
 # 样板列表-未完成(新建，已送工厂状态)
 @method_decorator([login_required], name='dispatch')
@@ -137,6 +138,8 @@ def samplesentfactory(request, pk):
         sample.status = "SENT_F"
         sample.save()
         messages.success(request, '样板已经安排给工厂!')
+        send_mail('Subject here', 'Here is the message.', 'from@example.com', ['banfuqiang@gmail.com'], fail_silently=False)
+
     return redirect('sample:sampleedit', pk=sample.pk)
 
 
