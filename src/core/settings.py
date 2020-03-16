@@ -121,10 +121,9 @@ MESSAGE_TAGS = {
 FILTERS_EMPTY_CHOICE_LABEL = '请选择'
 
 
-PROJECT_DIR = Path(__file__).parent
 
-EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
-EMAIL_FILE_PATH = PROJECT_DIR.parent.child('maildumps')
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')

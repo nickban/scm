@@ -18,6 +18,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import base64
+import smtplib
+from decouple import config
 
 # 样板列表-未完成(新建，已送工厂状态)
 @method_decorator([login_required], name='dispatch')
@@ -138,7 +144,37 @@ def samplesentfactory(request, pk):
         sample.status = "SENT_F"
         sample.save()
         messages.success(request, '样板已经安排给工厂!')
-        send_mail('Subject here', 'Here is the message.', 'from@example.com', ['banfuqiang@gmail.com'], fail_silently=False)
+        factoryemail = str(sample.factory.email)
+        os_avatar_file = sample.os_avatar.file
+        sender_email = 'YS-SCM@monayoung.com.au'
+        receiver_email = factoryemail
+        message = MIMEMultipart("alternative")
+        message["Subject"] = "缘色SCM-新样板通知"
+        message["From"] = sender_email
+        message["To"] = receiver_email
+        encoded = base64.b64encode(open(os_avatar_file.path, "rb").read()).decode()
+        sampleno =  sample.sample_no
+        brand = sample.brand.name
+        merchandiser = sample.merchandiser.user.username
+        html = f"""\
+            <html>
+            <body>
+            <h1>新样板已安排给工厂,详细信息请看SCM, 尽快联系公司拿原版！</h1>
+            <h3>样板号:{sampleno}</h3>
+            <h3>品牌:{brand}</h3>
+            <h3>跟单:{merchandiser}</h3>
+            <h3>图片:</h3>
+            <img src="data:image/jpg;base64,{encoded}" width=200px height=200px>
+            </body>
+            </html>
+            """
+        part = MIMEText(html, "html")
+        message.attach(part)
+        with smtplib.SMTP(config('EMAIL_HOST'), config('EMAIL_PORT', cast=int)) as server:
+            server.login(config('EMAIL_HOST_USER'), config('EMAIL_HOST_PASSWORD'))
+            server.sendmail(
+                sender_email, receiver_email, message.as_string()
+            )
 
     return redirect('sample:sampleedit', pk=sample.pk)
 
