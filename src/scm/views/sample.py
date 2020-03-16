@@ -25,6 +25,7 @@ import base64
 import smtplib
 from decouple import config
 
+
 # 样板列表-未完成(新建，已送工厂状态)
 @method_decorator([login_required], name='dispatch')
 class SampleListNew(ListView):
@@ -146,7 +147,7 @@ def samplesentfactory(request, pk):
         messages.success(request, '样板已经安排给工厂!')
         factoryemail = str(sample.factory.email)
         os_avatar_file = sample.os_avatar.file
-        sender_email = 'SCMAdmin@monayoung.com.au'
+        sender_email = 'SCMAdmin<scm@monayoung.com.au>'
         receiver_email = factoryemail
         message = MIMEMultipart("alternative")
         message["Subject"] = "缘色SCM-新样板通知"
@@ -176,6 +177,7 @@ def samplesentfactory(request, pk):
                 sender_email, receiver_email, message.as_string()
             )
 
+ 
     return redirect('sample:sampleedit', pk=sample.pk)
 
 
