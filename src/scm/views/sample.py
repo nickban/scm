@@ -146,14 +146,17 @@ def samplesentfactory(request, pk):
         sample.save()
         messages.success(request, '样板已经安排给工厂!')
         factoryemail = str(sample.factory.email)
-        os_avatar_file = sample.os_avatar.file
+        try:
+            os_avatar_file = sample.os_avatar.file
+            encoded = base64.b64encode(open(os_avatar_file.path, "rb").read()).decode()
+        except ObjectDoesNotExist:
+            encoded = ''
         sender_email = 'SCMAdmin<scm@monayoung.com.au>'
         receiver_email = factoryemail
         message = MIMEMultipart("alternative")
         message["Subject"] = "缘色SCM-新样板通知"
         message["From"] = sender_email
         message["To"] = receiver_email
-        encoded = base64.b64encode(open(os_avatar_file.path, "rb").read()).decode()
         sampleno =  sample.sample_no
         brand = sample.brand.name
         merchandiser = sample.merchandiser.user.username

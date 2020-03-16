@@ -263,7 +263,6 @@ def ordersentfactory(request, pk):
         orderstyleno =  order.style_no
         brand = order.brand.name
         merchandiser = order.merchandiser.user.username
-        print(11)
         html = f"""\
             <html>
             <body>
@@ -279,7 +278,6 @@ def ordersentfactory(request, pk):
             """
         part = MIMEText(html, "html")
         message.attach(part)
-        print(22)
         with smtplib.SMTP(config('EMAIL_HOST'), config('EMAIL_PORT', cast=int)) as server:
             server.login(config('EMAIL_HOST_USER'), config('EMAIL_HOST_PASSWORD'))
             server.sendmail(

@@ -4,13 +4,15 @@
 {% load crispy_forms_tags %}
 
 {% block css%}
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
+<link rel="stylesheet" href="{% static 'css/user.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <!-- 需要重新加载一次，否则页面颜色显示有点问题 -->
 {% endblock%}
 
 {% block content %}
 <div class="row ">
-    <div class="col-12 col-md-8 pt-3 border border-1 rounded">
+    <div class="formdiv col-12 col-md-8 pt-3 border border-1 rounded">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form |crispy }}

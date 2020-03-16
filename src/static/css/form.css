@@ -11,3 +11,10 @@ label {
     padding-top: 6px;
     padding-bottom: 6px;
 }
+form {
+    background-color: #F7F7F7;
+}
+
+.formdiv {
+    background-color: #F7F7F7;
+}
