@@ -146,7 +146,7 @@ def samplesentfactory(request, pk):
         messages.success(request, '样板已经安排给工厂!')
         factoryemail = str(sample.factory.email)
         os_avatar_file = sample.os_avatar.file
-        sender_email = 'YS-SCM@monayoung.com.au'
+        sender_email = 'SCMAdmin@monayoung.com.au'
         receiver_email = factoryemail
         message = MIMEMultipart("alternative")
         message["Subject"] = "缘色SCM-新样板通知"
@@ -159,7 +159,7 @@ def samplesentfactory(request, pk):
         html = f"""\
             <html>
             <body>
-            <h1>新样板已安排给工厂,详细信息请看SCM, 尽快联系公司拿原版！</h1>
+            <h3>新样板已安排给工厂,详细信息请看SCM, 尽快联系公司拿原版！</h3>
             <h3>样板号:{sampleno}</h3>
             <h3>品牌:{brand}</h3>
             <h3>跟单:{merchandiser}</h3>

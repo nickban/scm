@@ -1,0 +1,11 @@
+SECRET_KEY=p!b5xe5qpvz!za0=%!q3@9uc6u1^+w&+8q-&0&u^bf9z$%!89m
+DB_NAME=scm
+DB_USER=scmdbuser
+DB_PASSWORD=maxzhu268213
+
+EMAIL_HOST = smtp.sendgrid.net
+EMAIL_HOST_USER = apikey
+EMAIL_HOST_PASSWORD = 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
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
