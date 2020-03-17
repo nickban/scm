@@ -527,6 +527,45 @@ def packinglistsubmit(request, pk):
             return redirect('order:packinglistadd', pk=order.pk)
     packing_status.status = 'SUBMIT'
     packing_status.save()
+    # 发邮件，发跟单和行政
+    office_emails = User.objects.filter(is_office=True).values_list('email')
+    try:
+        avatar_file = order.avatar.file
+        encoded = base64.b64encode(open(avatar_file.path, "rb").read()).decode()
+    except ObjectDoesNotExist:
+        encoded = ''
+    sender_email = 'SCM@monayoung.com.au'
+    receiver_email = office_emails
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "缘色SCM-装箱单提交！"
+    message["From"] = sender_email
+    message["To"] = receiver_email
+    orderpo =  order.po
+    orderstyleno =  order.style_no
+    brand = order.brand.name
+    factory = order.factory.user.username
+    html = f"""\
+        <html>
+        <body>
+        <h3>订单装箱单已提交！</h3>
+        <h3>订单号:{orderpo}</h3>
+        <h3>款号:{orderstyleno}</h3>
+        <h3>品牌:{brand}</h3>
+        <h3>工厂:{factory}</h3>
+        <h3>图片:</h3>
+        <img src="data:image/jpg;base64,{encoded}" width=200px height=200px>
+        </body>
+        </html>
+        """
+    part = MIMEText(html, "html")
+    message.attach(part)
+    with smtplib.SMTP(config('EMAIL_HOST'), config('EMAIL_PORT', cast=int)) as server:
+        server.login(config('EMAIL_HOST_USER'), config('EMAIL_HOST_PASSWORD'))
+        for email in office_emails:
+        server.sendmail(
+            sender_email, email, message.as_string()
+        )
+
 
     return redirect('order:packinglistdetail', pk=order.pk)
 
