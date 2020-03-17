@@ -151,7 +151,7 @@ def samplesentfactory(request, pk):
             encoded = base64.b64encode(open(os_avatar_file.path, "rb").read()).decode()
         except ObjectDoesNotExist:
             encoded = ''
-        sender_email = 'SCMAdmin<scm@monayoung.com.au>'
+        sender_email = 'SCM<scm@monayoung.com.au>'
         receiver_email = factoryemail
         message = MIMEMultipart("alternative")
         message["Subject"] = "缘色SCM-新样板通知"

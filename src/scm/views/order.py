@@ -253,7 +253,7 @@ def ordersentfactory(request, pk):
             encoded = base64.b64encode(open(avatar_file.path, "rb").read()).decode()
         except ObjectDoesNotExist:
             encoded = ''
-        sender_email = 'SCMAdmin@monayoung.com.au'
+        sender_email = 'SCM@monayoung.com.au'
         receiver_email = factoryemail
         message = MIMEMultipart("alternative")
         message["Subject"] = "缘色SCM-新订单通知"
@@ -527,6 +527,7 @@ def packinglistsubmit(request, pk):
             return redirect('order:packinglistadd', pk=order.pk)
     packing_status.status = 'SUBMIT'
     packing_status.save()
+
     return redirect('order:packinglistdetail', pk=order.pk)
 
 

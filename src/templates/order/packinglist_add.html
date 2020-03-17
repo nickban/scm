@@ -6,6 +6,7 @@
 
 
 {% block css%}
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 {% endblock%}
 
@@ -24,8 +25,8 @@
 <hr>
 <div class="row">
     <div class="col-12 col-md-12">
-        <div class="table-responsive">
-            <table class="table table-sm table-bordered">
+        <div class=" table-responsive">
+            <table class="formdiv table table-sm table-bordered">
                 <p style="font-weight: bolder; margin-bottom: 3px;">纸箱规格、体积、重量</p>
                 <thead>
                     <tr class="text-center">
@@ -52,7 +53,7 @@
 <div class="row">
     <div class="col-12 col-md-12">
         <div class="table-responsive">
-            <table class="table table-sm table-bordered">
+            <table class="formdiv table table-sm table-bordered">
                 <p style="font-weight: bolder; margin-bottom: 3px;">订单数量</p>
                     <thead>
                         <tr class="text-center">
@@ -120,7 +121,7 @@
 <div class="row">
     <div class="col-12 col-md-12">
         <div class="table-responsive">
-            <table class="table table-sm table-bordered">
+            <table class="formdiv table table-sm table-bordered">
                 <p style="font-weight: bolder; margin-bottom: 3px;">实际出货</p>
                 <thead>
                     <tr class="text-center">
@@ -204,14 +205,15 @@
         </div>
     </div>
 </div>
-<form  method="post" data-getratio-url="{% url 'order:getratio' %}" novalidate>
-{% csrf_token %}
+
 <div class="row">
     <div class="col-12 col-md-12">
         <div class="form-group">
             <p style="font-weight: bolder; margin-bottom: 3px;">装箱单</p>
             <div class="table-responsive">
-                <table class="table table-sm table-bordered">
+                <table class="formdiv table table-sm table-bordered">
+                    <form  method="post" data-getratio-url="{% url 'order:getratio' %}" novalidate>
+                    {% csrf_token %}
                     <thead>
                         <tr class="text-center">
                             <th style="width: 10%" scope="col">颜色</th>
@@ -238,7 +240,6 @@
                             <th style="width: 5%" cope="col">操作</th>
                         </tr>
                     </thead>
-
                     <tr class="text-center">
                         <td scope="col">{% render_field form.color class="form-control"%}</td>
                         <td scope="col">{% render_field form.ctn_start_no class="form-control boxnumber"%}</td>
@@ -452,7 +453,8 @@
         });
 
         $("#id_color").change(function () {
-        var form = $(this).closest("form");
+        var form = $(this).closest(".formdiv").find("form");
+        console.log(form)
         $.ajax({
             url: form.attr("data-getratio-url"),
             data: form.serialize(),
