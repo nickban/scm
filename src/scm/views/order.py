@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import CreateView, ListView, UpdateView, TemplateView, DeleteView
-from scm.models import (Order, Order_color_ratio_qty, Order_avatar,
+from scm.models import (User, Order, Order_color_ratio_qty, Order_avatar,
                         Order_swatches, Order_size_specs,
                         Order_shipping_pics, Order_packing_ctn, Invoice,
                         Order_fitting_sample, Order_bulk_fabric, Order_shipping_sample,
@@ -528,18 +528,17 @@ def packinglistsubmit(request, pk):
     packing_status.status = 'SUBMIT'
     packing_status.save()
     # 发邮件，发跟单和行政
-    office_emails = User.objects.filter(is_office=True).values_list('email')
+    office_emails = User.objects.filter(is_office=True).values_list('email', flat=True)
+    office_emails = list(office_emails)
     try:
         avatar_file = order.avatar.file
         encoded = base64.b64encode(open(avatar_file.path, "rb").read()).decode()
     except ObjectDoesNotExist:
         encoded = ''
     sender_email = 'SCM@monayoung.com.au'
-    receiver_email = office_emails
     message = MIMEMultipart("alternative")
     message["Subject"] = "缘色SCM-装箱单提交！"
     message["From"] = sender_email
-    message["To"] = receiver_email
     orderpo =  order.po
     orderstyleno =  order.style_no
     brand = order.brand.name
@@ -562,10 +561,10 @@ def packinglistsubmit(request, pk):
     with smtplib.SMTP(config('EMAIL_HOST'), config('EMAIL_PORT', cast=int)) as server:
         server.login(config('EMAIL_HOST_USER'), config('EMAIL_HOST_PASSWORD'))
         for email in office_emails:
-        server.sendmail(
-            sender_email, email, message.as_string()
-        )
-
+            message["To"] = email
+            server.sendmail(
+                sender_email, email, message.as_string()
+            )
 
     return redirect('order:packinglistdetail', pk=order.pk)
 

@@ -9,7 +9,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
-DEBUG = True
+DEBUG = False
 
 if DEBUG:
     ALLOWED_HOSTS = ['127.0.0.1' ]
@@ -129,6 +129,6 @@ EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
-DEFAULT_FROM_EMAIL = '缘色SCM <noreply@monayoung.com.au>'
+DEFAULT_FROM_EMAIL = '缘色SCM <SCM@monayoung.com.au>'
 EMAIL_SUBJECT_PREFIX = '[缘色SCM] '
-SERVER_EMAIL = 'admin@monayoung.com.au'
+SERVER_EMAIL = 'SCM@monayoung.com.au'
