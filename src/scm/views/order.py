@@ -583,16 +583,19 @@ def packinglistdelete(request, pk, plpk):
 @login_required
 def packinglistdetail(request, pk):
     order = get_object_or_404(Order, pk=pk)
+    # form = OrderpackingctnForm(request.POST, order=order)
     colorqtys = order.colorqtys.all()
+    gross_weight = order.packing_status.gross_weight
     packing_ctns = order.packing_ctns.all()
-    actualqty = getacutalcolorqty(order.pk)
-    packing_ctns_exclude_share = order.packing_ctns.filter(sharebox=False)
-    totalboxes = packing_ctns_exclude_share.aggregate(totalboxes=Sum('totalboxes'))
-    totalboxes = totalboxes['totalboxes']
+    packing_ctns = packing_ctns.annotate(gross_weight=F('totalboxes')*gross_weight)
     orderctnsum = order.packing_ctns.annotate(eachitemtotalbags=F('bags')*F('totalboxes'))
     orderctnsum = orderctnsum.aggregate(totalbags=Sum('eachitemtotalbags'), size1=Sum('size1'),
                                         size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
                                         totalqty=Sum('totalqty'))
+    packing_ctns_exclude_share = order.packing_ctns.filter(sharebox=False)
+    totalboxes = packing_ctns_exclude_share.aggregate(totalboxes=Sum('totalboxes'))
+    totalboxes = totalboxes['totalboxes']
+    actualqty = getacutalcolorqty(order.pk)
 
     return render(request, 'packinglist_detail.html', {'order': order,
                                                        'colorqtys': colorqtys,

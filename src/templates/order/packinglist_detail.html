@@ -235,6 +235,7 @@
                                 <th scope="col">XL</th>
                             {% endif %}
                             <th style="width: 8%" cope="col">件数</th>
+                            <th style="width: 5%" cope="col">毛重</th>
                         </tr>
                     </thead>
 
@@ -261,6 +262,11 @@
                         <td>{{packing_ctn.size4}}</td>
                         <td>{{packing_ctn.size5}}</td>
                         <td>{{packing_ctn.totalqty}}</td>
+                        {% if packing_ctn.sharebox == True %}
+                        <td></td>
+                        {% else %}
+                        <td>{{packing_ctn.gross_weight}}</td>
+                        {% endif %}
                     {% endfor %}
                     </tr>
                     {% endif %}
@@ -305,6 +311,7 @@
                         {% else %}
                         <th>{{orderctnsum.totalqty}}</th>
                         {% endif %}
+                        <th></th>
 
                     </tr>
                 </table>
