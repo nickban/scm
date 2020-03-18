@@ -107,9 +107,9 @@
                     <span>评语附件</span>
                     <div class="form-group">
                         {% if size_specs %}
-                            <ul class="p-0 list-group list-group-horizontal-lg d-flex flex-wrap">
+                            <ul class="list-unstyled p-0 list-group list-group-horizontal-lg d-flex flex-wrap">
                             {% for size_spec in size_specs %}
-                                <li class="bord border-0 p-0 list-group-item mr-3">
+                                <li class="bord border-0 mr-3">
                                     <a href="{{ size_spec.file.url }}">{{ size_spec.file.name |basename }}</a> 
                                 </li>
                             {% endfor %}
