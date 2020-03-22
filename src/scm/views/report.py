@@ -4,11 +4,18 @@ from django.views import View
 from django.shortcuts import render
 from django.db.models import F, Sum, DecimalField, ExpressionWrapper,  Q
 from scm.models import Order
+from django.utils.decorators import method_decorator
+from scm.decorators import m_mg_or_required
+from django.contrib.auth.decorators import login_required
 
+
+@method_decorator([login_required, m_mg_or_required], name='dispatch')
 class ProfitView(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'chart.html')
 
+
+@method_decorator([login_required, m_mg_or_required], name='dispatch')
 class ProfitViewData(APIView):
     authentication_classes = []
     permission_classes = []
