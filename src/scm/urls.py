@@ -1,10 +1,17 @@
 from django.urls import path, include
-from .views import order, sample, post, home
+from .views import order, sample, post, home, report
 
 urlpatterns = [
     # 可以在这个地方做一个角色入口重定向, 但是本系统没有做，都定位到home
     path('', home.home, name='home'),
     path('setting/', home.setting, name='setting'),
+
+    # 统计导航
+    path('report/', include(([
+        path('profit/', report.ProfitView.as_view()),
+        path('api/profit/data/', report.ProfitViewData.as_view()),
+    ], 'scm'), namespace='report')),
+
 
     # 样板地址导航
     path('sample/', include(([

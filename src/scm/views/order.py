@@ -302,6 +302,9 @@ def orderconfirm(request, pk):
 @office_required
 def ordershipped(request, pk):
     order = get_object_or_404(Order, pk=pk)
+    totalqty = order.packing_ctns.aggregate(totalqty=Sum('totalqty', output_field=IntegerField()))
+    totalqty = totalqty.get('totalqty') or 0
+    order.actual_ship_qty = totalqty
     order.status = "SHIPPED"
     order.save()
     messages.success(request, '订单已出货, 请在出货订单列表查找!')

@@ -452,11 +452,13 @@ class Order(models.Model):
     AU = 'AU'
     NZ = 'NZ'
     SG = 'SG'
+    KR = 'KR'
     DESTINATION = [
         (None, '请选择'),
         (AU, '澳洲'),
         (NZ, '新西兰'),
         (SG, '新加坡'),
+        (KR, '韩国'),
     ]
 
     CNZ = 'CNZ'
@@ -577,6 +579,10 @@ class Order(models.Model):
                                  choices=LABELTYPE,
                                  blank=True,
                                  default=NUMBER)
+    season_code = models.CharField('SEASON', max_length=100, null=True)
+    pgr_code = models.CharField('PGR', max_length=100, null=True)
+    itemgroup_code = models.CharField('ITEM GROUP', max_length=100, null=True)
+    actual_ship_qty = models.PositiveSmallIntegerField(null=True)
 
     def __str__(self):
         ordername = '订单号' + self.po + '/' + '款号' + self.style_no
