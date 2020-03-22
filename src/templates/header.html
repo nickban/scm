@@ -39,7 +39,7 @@
       {% endif %}
       {% if request.user.is_merchandiser or request.user.is_merchandiser_manager  %}
       <li class="nav-item">
-        <a class="nav-link " href="{% url 'home' %}">统计</a>
+        <a class="nav-link " href="{% url 'report:profit' %}">统计</a>
       </li>
       {% endif %}
     </ul>
