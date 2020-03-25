@@ -52,11 +52,11 @@ def home(request):
         samplesnumber = samples.count()
         ordersnotc = Order.objects.filter(Q(factory=loginuser.factory), Q(status='SENT_FACTORY'))
         ordernumbernotc = ordersnotc.count()
-        orders_bulk_fabric_p = orders_bulk_fabric_p.filter(Q(factory=loginuser.factory), Q(status="SENT_FACTORY"))
+        orders_bulk_fabric_p = orders_bulk_fabric_p.filter(factory=loginuser.factory)
         orders_bulk_fabric_p_number = orders_bulk_fabric_p.count()
-        orders_fitting_p = orders_fitting_p.filter(Q(factory=loginuser.factory), Q(status="SENT_FACTORY"))
+        orders_fitting_p = orders_fitting_p.filter(factory=loginuser.factory)
         orders_fitting_p_number = orders_fitting_p.count()
-        orders_shipping_p = orders_shipping_p.filter(Q(factory=loginuser.factory), Q(status="SENT_FACTORY"))
+        orders_shipping_p = orders_shipping_p.filter(factory=loginuser.factory)
         orders_shipping_p_number = orders_shipping_p.count()
 
     elif loginuser.is_merchandiser:
