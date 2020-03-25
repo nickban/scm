@@ -12,7 +12,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = False
 
 if DEBUG:
-    ALLOWED_HOSTS = ['127.0.0.1' ]
+    ALLOWED_HOSTS = ['127.0.0.1']
 else:
     ALLOWED_HOSTS = ['scm.monayoung.com.au']
 

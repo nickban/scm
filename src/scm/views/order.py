@@ -1035,7 +1035,7 @@ def progessplist(request, type):
     orders_shipping_p = Order.objects.filter(pk__in=shipping_p)
     if type == 'fitting':
         if loginuser.is_factory:
-            orders = orders_fitting_p.filter(Q(factory=loginuser.factory), Q(status="SENT_FACTORY"))
+            orders = orders_fitting_p.filter(factory=loginuser.factory)
         elif loginuser.is_merchandiser:
             orders = orders_fitting_p.filter(merchandiser=loginuser.merchandiser)
         else:
@@ -1044,7 +1044,7 @@ def progessplist(request, type):
 
     elif type == 'bulkfabric':
         if loginuser.is_factory:
-            orders = orders_bulk_fabric_p.filter(Q(factory=loginuser.factory), Q(status="SENT_FACTORY"))
+            orders = orders_bulk_fabric_p.filter(factory=loginuser.factory)
         elif loginuser.is_merchandiser:
             orders = orders_bulk_fabric_p.filter(merchandiser=loginuser.merchandiser)
         else:
@@ -1053,7 +1053,7 @@ def progessplist(request, type):
 
     else:
         if loginuser.is_factory:
-            orders = orders_shipping_p.filter(Q(factory=loginuser.factory), Q(status="SENT_FACTORY"))
+            orders = orders_shipping_p.filter(factory=loginuser.factory)
         elif loginuser.is_merchandiser:
             orders = orders_shipping_p.filter(merchandiser=loginuser.merchandiser)
         else:
