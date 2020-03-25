@@ -3,7 +3,6 @@ from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
 import os
-from django.db.models.signals import post_save
 
 
 # 系统登录用户模块，用于分配用户角色
@@ -579,10 +578,10 @@ class Order(models.Model):
                                  choices=LABELTYPE,
                                  blank=True,
                                  default=NUMBER)
-    season_code = models.CharField('SEASON', max_length=100, null=True)
-    pgr_code = models.CharField('PGR', max_length=100, null=True)
-    itemgroup_code = models.CharField('ITEM GROUP', max_length=100, null=True)
-    actual_ship_qty = models.PositiveSmallIntegerField(null=True)
+    season_code = models.CharField('SEASON', max_length=100, null=True, blank=True)
+    pgr_code = models.CharField('PGR', max_length=100, null=True, blank=True)
+    itemgroup_code = models.CharField('ITEM GROUP', max_length=100, null=True, blank=True)
+    actual_ship_qty = models.PositiveSmallIntegerField(null=True, blank=True)
 
     def __str__(self):
         ordername = '订单号' + self.po + '/' + '款号' + self.style_no

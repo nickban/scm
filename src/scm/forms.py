@@ -15,7 +15,6 @@ from .models import (User, Factory,
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
-from django.core.validators import EmailValidator
 
 
 # 登录表单
@@ -268,7 +267,7 @@ class OrderForm(forms.ModelForm):
                   'factory', 'sample', 'factory_price', 'disigner_price',
                   'handover_date_f', 'handover_date_d', 'comments',
                   'parent', 'invoice', 'main_label', 'main_tag', 'addition_tag',
-                  'packing_type', 'destination', 'labeltype', 'childorder')
+                  'packing_type', 'destination', 'labeltype', 'childorder', 'season_code', 'pgr_code', 'itemgroup_code')
         widgets = {
                   'comments': forms.Textarea(attrs={'rows': 5}),
                   }

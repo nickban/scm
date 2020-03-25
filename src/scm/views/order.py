@@ -259,8 +259,8 @@ def ordersentfactory(request, pk):
         message["Subject"] = "缘色SCM-新订单通知"
         message["From"] = sender_email
         message["To"] = receiver_email
-        orderpo =  order.po
-        orderstyleno =  order.style_no
+        orderpo = order.po
+        orderstyleno = order.style_no
         brand = order.brand.name
         merchandiser = order.merchandiser.user.username
         html = f"""\
