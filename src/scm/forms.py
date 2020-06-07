@@ -103,7 +103,7 @@ class SignUpForm(UserCreationForm):
 
 # 新消息表单
 class NewpostForm(forms.ModelForm):
-        def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(NewpostForm, self).__init__(*args, **kwargs)
         self.fields['created_by'].empty_label = '请选择'
         self.fields['catagory'].empty_label = '请选择'
