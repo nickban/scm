@@ -107,6 +107,7 @@ class NewpostForm(forms.ModelForm):
         super(NewpostForm, self).__init__(*args, **kwargs)
         self.fields['created_by'].empty_label = '请选择'
         self.fields['catagory'].empty_label = '请选择'
+        
     class Meta:
         model = Post
         fields = ('title', 'content', 'created_by', 'catagory')

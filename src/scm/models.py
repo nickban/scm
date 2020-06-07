@@ -291,6 +291,7 @@ def auto_delete_file_sample_size_specs(sender, instance, **kwargs):
 N = '通知'
 M = '手册'
 NOTIFICATION_CATAGORY = [
+    (None, '请选择'),
     (N, '通知'),
     (M, '手册'),
 ]
