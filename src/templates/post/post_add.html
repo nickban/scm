@@ -15,10 +15,10 @@
         {% csrf_token %}
         {{ form| crispy }}
         <div class="row mt-3 mb-4">
-            <div class="col-sm">
+            <div class="col-sm col-md-2">
                 <button class="btn btn-block btn-outline-primary" type="submit">添加</button>
             </div>
-            <div class="col-sm">
+            <div class="col-sm col-md-2">
                 <a class="btn btn-block btn-outline-primary" href="{% url 'post:postlist' %}" role="button">返回</a>
             </div>
         </div>
