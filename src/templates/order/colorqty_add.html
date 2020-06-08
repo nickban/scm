@@ -44,11 +44,11 @@
                             <th scope="col">{% render_field form.color class="form-control"%}</th>
                             <th scope="col">{% render_field form.color_no class="form-control"%}</th>
                             <th scope="col">{% render_field form.ratio class="form-control colorqty"%}</th>
-                            <th scope="col">{% render_field form.size1 class="form-control"%}</th>
-                            <th scope="col">{% render_field form.size2 class="form-control"%}</th>
-                            <th scope="col">{% render_field form.size3 class="form-control"%}</th>
-                            <th scope="col">{% render_field form.size4 class="form-control"%}</th>
-                            <th scope="col">{% render_field form.size5 class="form-control"%}</th>
+                            <th scope="col">{% render_field form.size1 class="form-control foronepiece"%}</th>
+                            <th scope="col">{% render_field form.size2 class="form-control foronepiece"%}</th>
+                            <th scope="col">{% render_field form.size3 class="form-control foronepiece"%}</th>
+                            <th scope="col">{% render_field form.size4 class="form-control foronepiece"%}</th>
+                            <th scope="col">{% render_field form.size5 class="form-control foronepiece"%}</th>
                             <th scope="col">{% render_field form.bags class="form-control colorqty"%}</th>
                             <th scope="col">{% render_field form.qty class="form-control"%}</th>
                             <th style="width: 12%" scope="col">
@@ -74,12 +74,18 @@
         if(packingtype=='单件包装'){
             $("#id_ratio").prop( "disabled", true );
             $("#id_bags").prop( "disabled", true );
+            $(".foronepiece").change(function(){
+                var size1 = parseInt($("#id_size1").val(), 10) || 0;
+                var size2 = parseInt($("#id_size2").val(), 10) || 0;
+                var size3 = parseInt($("#id_size3").val(), 10) || 0;
+                var size4 = parseInt($("#id_size4").val(), 10) || 0;
+                var size5 = parseInt($("#id_size5").val(), 10) || 0;
+                $("#id_qty").val(size1+size2+size3+size4+size5);
+            })
         }else{
             $("#id_ratio").prop( "disabled", false );
             $("#id_bags").prop( "disabled", false );
-        }
-
-        $(".colorqty").change(function(){
+            $(".colorqty").change(function(){
             var eachbagpcses = 0;
             var ratio = [];
             var id_ratio = $('#id_ratio').val();
@@ -119,8 +125,9 @@
                 }
             }
         })
-
-        })
+        }
+        }
+        )
 
 </script>
 

@@ -217,11 +217,11 @@
                     <thead>
                         <tr class="text-center">
                             <th style="width: 10%" scope="col">颜色</th>
-                            <th style="width: 10%" scope="col">开始箱号</th>
-                            <th style="width: 10%" scope="col">结束箱号</th>
-                            <th style="width: 10%" scope="col">箱数</th>
-                            <th style="width: 4%" scope="col">尾箱</th>
-                            <th style="width: 10%" cope="col">每箱中包数</th>
+                            <th style="width: 8%" scope="col">开始箱号</th>
+                            <th style="width: 8%" scope="col">结束箱号</th>
+                            <th style="width: 5%" scope="col">箱数</th>
+                            <th style="width: 5%" scope="col">尾箱</th>
+                            <th style="width: 8%" cope="col">每箱中包数</th>
                             {% if order.labeltype == 'NUMBER'%}
                                 <th scope="col">6</th>
                                 <th scope="col">8</th>
@@ -235,7 +235,8 @@
                                 <th scope="col">L</th>
                                 <th scope="col">XL</th>
                             {% endif %}
-                            <th style="width: 8%" cope="col">件数</th>
+                            <th style="width: 8%" cope="col">每箱件数</th>
+                            <th style="width: 8%" cope="col">累计件数</th>
                             <th style="width: 5%" cope="col">毛重</th>
                             <th style="width: 5%" cope="col">操作</th>
                         </tr>
@@ -253,6 +254,7 @@
                         <td scope="col">{% render_field form.size4 class="form-control boxnumber"%}</td>
                         <td scope="col">{% render_field form.size5 class="form-control boxnumber"%}</td>
                         <td scope="col">{% render_field form.totalqty class="form-control"%}</td>
+                        <td></td>
                         <td></td>
                         <td><input  type="submit" value="添加" class="btn  btn-outline-primary"></td>
                     </tr>
@@ -279,6 +281,7 @@
                         <td>{{packing_ctn.size4}}</td>
                         <td>{{packing_ctn.size5}}</td>
                         <td>{{packing_ctn.totalqty}}</td>
+                        <td>{{packing_ctn.sumtotalqty}}</td>
                         {% if packing_ctn.sharebox == True %}
                         <td></td>
                         {% else %}
@@ -328,10 +331,16 @@
                         {% else %}
                         <th>{{orderctnsum.size5}}</th>
                         {% endif %}
+                        <th></th>
                         {% if orderctnsum.totalqty == None %}
                         <th></th>
                         {% else %}
                         <th>{{orderctnsum.totalqty}}</th>
+                        {% endif %}
+                        {% if totalgrossweight == None %}
+                        <th></th>
+                        {% else %}
+                        <th>{{totalgrossweight}}</th>
                         {% endif %}
                         <th></th>
                         <th></th>
@@ -414,12 +423,12 @@
                 }
                 else{
                     $("#id_totalboxes").val(totalboxes);
-                    $("#id_size1").val(colorratio[0]*total_bags);
-                    $("#id_size2").val(colorratio[1]*total_bags);
-                    $("#id_size3").val(colorratio[2]*total_bags);
-                    $("#id_size4").val(colorratio[3]*total_bags);
-                    $("#id_size5").val(colorratio[4]*total_bags);
-                    $("#id_totalqty").val(eachbagpcses*id_bags*totalboxes);
+                    $("#id_size1").val(colorratio[0]*id_bags);
+                    $("#id_size2").val(colorratio[1]*id_bags);
+                    $("#id_size3").val(colorratio[2]*id_bags);
+                    $("#id_size4").val(colorratio[3]*id_bags);
+                    $("#id_size5").val(colorratio[4]*id_bags);
+                    $("#id_totalqty").val(eachbagpcses*id_bags);
                 }
             }
             }
@@ -454,7 +463,7 @@
 
         $("#id_color").change(function () {
         var form = $(this).closest(".formdiv").find("form");
-        console.log(form)
+
         $.ajax({
             url: form.attr("data-getratio-url"),
             data: form.serialize(),
