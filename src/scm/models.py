@@ -26,7 +26,7 @@ class Factory(models.Model):
     name = models.CharField('工厂名称', max_length=100)
     contactperson = models.CharField('联系人', max_length=100)
     address = models.CharField('地址', max_length=200)
-    email = models.EmailField('邮箱')
+    email = models.EmailField('邮箱',null=True)
     phone = models.CharField('手机', max_length=100)
     bank = models.CharField('开户银行', null=True, max_length=100)
     bankaccount = models.CharField('银行账户', null=True, max_length=100)
@@ -42,6 +42,7 @@ class Merchandiser(models.Model):
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
 
+
     def __str__(self):
         return self.user.username
 
@@ -51,6 +52,7 @@ class Designer(models.Model):
     user = models.OneToOneField(User, verbose_name='设计师',
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
+
 
     def __str__(self):
         return self.user.username
@@ -62,6 +64,7 @@ class Finance(models.Model):
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
 
+
     def __str__(self):
         return self.user.username
 
@@ -71,6 +74,7 @@ class Shipping(models.Model):
     user = models.OneToOneField(User, verbose_name='船务',
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
+
 
     def __str__(self):
         return self.user.username
@@ -82,6 +86,7 @@ class Qc(models.Model):
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
 
+
     def __str__(self):
         return self.user.username
 
@@ -91,6 +96,7 @@ class Admin(models.Model):
     user = models.OneToOneField(User, verbose_name='管理员',
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
+
 
     def __str__(self):
         return self.user.username
@@ -102,6 +108,7 @@ class Office(models.Model):
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
 
+
     def __str__(self):
         return self.user.username
 
@@ -111,6 +118,7 @@ class Merchandiser_Manager(models.Model):
     user = models.OneToOneField(User, verbose_name='跟单主管',
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
+
 
     def __str__(self):
         return self.user.username

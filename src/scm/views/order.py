@@ -511,9 +511,9 @@ def packinglistsubmit(request, pk):
         colorboxqs = Order_packing_ctn.objects.filter(color=color)
         if colorboxqs.exists():
             # 每个对象加汇总字段
-            colorboxqs = colorboxqs.annotate(totalpcs=F('size1') + F('size2') + F('size3') + F('size4') + F('size5'))
+            colorboxqs = colorboxqs.annotate(sumtotalqty=F('totalboxes')*F('totalqty'))
             # 汇总所有对象总件数等于实际颜色的件数
-            actualqty = colorboxqs.aggregate(colortotalpcs=Sum('totalpcs', output_field=IntegerField()))
+            actualqty = colorboxqs.aggregate(colortotalpcs=Sum('sumtotalqty', output_field=IntegerField()))
             # 取值
             actualqty = actualqty['colortotalpcs']
             if colorqty in range(401):
@@ -538,6 +538,7 @@ def packinglistsubmit(request, pk):
     # 发邮件，发跟单和行政
     office_emails = User.objects.filter(is_office=True).values_list('email', flat=True)
     office_emails = list(office_emails)
+    print(office_emails)
     try:
         avatar_file = order.avatar.file
         encoded = base64.b64encode(open(avatar_file.path, "rb").read()).decode()
