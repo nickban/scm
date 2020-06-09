@@ -437,6 +437,10 @@ class FactoryForm(forms.ModelForm):
 class MainlabelForm(forms.ModelForm):
     file = forms.FileField(widget=forms.FileInput)
 
+    def __init__(self, *args, **kwargs):
+        super(MainlabelForm, self).__init__(*args, **kwargs)
+        self.fields['brand'].empty_label = '请选择'
+
     class Meta:
         model = Mainlabel
         fields = ('name', 'brand', 'file')
@@ -454,6 +458,10 @@ class MainlabelForm(forms.ModelForm):
 class MaintagForm(forms.ModelForm):
     file = forms.FileField(widget=forms.FileInput)
 
+    def __init__(self, *args, **kwargs):
+        super(MaintagForm, self).__init__(*args, **kwargs)
+        self.fields['brand'].empty_label = '请选择'
+
     class Meta:
         model = Maintag
         fields = ('name', 'brand', 'file')
@@ -470,6 +478,10 @@ class MaintagForm(forms.ModelForm):
 # 附加挂牌
 class AdditiontagForm(forms.ModelForm):
     file = forms.FileField(widget=forms.FileInput)
+
+    def __init__(self, *args, **kwargs):
+        super(AdditiontagForm, self).__init__(*args, **kwargs)
+        self.fields['brand'].empty_label = '请选择'
 
     class Meta:
         model = Additiontag
