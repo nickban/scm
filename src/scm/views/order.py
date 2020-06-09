@@ -439,18 +439,31 @@ def getacutalcolorqty(pk):
     if order.packing_type.shortname == '单件包装':
         for color in colors:
             # 单件包装不用中包,但是可以放到模板里做判断，这样不用写2套模板
-            qty = color.packing_ctns.annotate(sumtotalqty=F('totalboxes')*F('totalqty'))
-            qty = qty.aggregate(totalbags=Sum('bags'), size1=Sum('size1'),
-                                               size2=Sum('size2'), size3=Sum('size3'),
-                                               size4=Sum('size4'), size5=Sum('size5'),
+            qty = color.packing_ctns.annotate(sumtotalqty=F('totalboxes')*F('totalqty'),
+                                              sumsize1=F('totalboxes')*F('size1'),
+                                              sumsize2=F('totalboxes')*F('size2'),
+                                              sumsize3=F('totalboxes')*F('size3'),
+                                              sumsize4=F('totalboxes')*F('size4'),
+                                              sumsize5=F('totalboxes')*F('size5'),
+                                              )
+            qty = qty.aggregate(totalbags=Sum('bags'), size1=Sum('sumsize1'),
+                                               size2=Sum('sumsize2'), size3=Sum('sumsize3'),
+                                               size4=Sum('sumsize4'), size5=Sum('sumsize5'),
                                                totalqty=Sum('sumtotalqty'))
             colorobject = {'color': color, 'qty': qty}
             actualorderqty.append(colorobject)
     else:
         for color in colors:
-            qty = color.packing_ctns.annotate(sumtotalqty=F('totalboxes')*F('totalqty'), eachitemtotalbags=F('bags')*F('totalboxes'))
-            qty = qty.aggregate(totalbags=Sum('eachitemtotalbags'), size1=Sum('size1'),
-                                size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
+            qty = color.packing_ctns.annotate(sumtotalqty=F('totalboxes')*F('totalqty'),
+                                              eachitemtotalbags=F('bags')*F('totalboxes'),
+                                              sumsize1=F('totalboxes')*F('size1'),
+                                              sumsize2=F('totalboxes')*F('size2'),
+                                              sumsize3=F('totalboxes')*F('size3'),
+                                              sumsize4=F('totalboxes')*F('size4'),
+                                              sumsize5=F('totalboxes')*F('size5'),
+                                              )
+            qty = qty.aggregate(totalbags=Sum('eachitemtotalbags'), size1=Sum('sumsize1'),
+                                size2=Sum('sumsize2'), size3=Sum('sumsize3'), size4=Sum('sumsize4'), size5=Sum('sumsize5'),
                                 totalqty=Sum('sumtotalqty'))
             colorobject = {'color': color, 'qty': qty}
             actualorderqty.append(colorobject)
@@ -467,7 +480,9 @@ def packinglistadd(request, pk):
     gross_weight = order.packing_status.gross_weight
     packing_ctns = order.packing_ctns.all()
     packing_ctns = packing_ctns.annotate(gross_weight=F('totalboxes')*gross_weight, sumtotalqty=F('totalboxes')*F('totalqty'))
-    orderctnsum = order.packing_ctns.annotate(eachitemtotalbags=F('bags')*F('totalboxes'), sumtotalqty=F('totalboxes')*F('totalqty'), gross_weight=F('totalboxes')*gross_weight)
+    orderctnsum = order.packing_ctns.annotate(eachitemtotalbags=F('bags')*F('totalboxes'),
+                                              sumtotalqty=F('totalboxes')*F('totalqty'),
+                                              gross_weight=F('totalboxes')*gross_weight)
     orderctnsum = orderctnsum.aggregate(totalbags=Sum('eachitemtotalbags'), size1=Sum('size1'),
                                         size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
                                         totalqty=Sum('sumtotalqty'))
