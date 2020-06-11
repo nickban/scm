@@ -335,7 +335,11 @@
                     </div>
                 </div>
                 <div class="form-group mt-1">
-                    <img class="img-fluid" src="{{ order.main_label.file.url}}" alt="主唛照片" >
+                    {% if not order.main_label %}
+                        
+                    {% else %}
+                        <img class="img-fluid" src="{{ order.main_label.file.url}}" alt="主唛照片" >
+                    {% endif %}
                 </div>
             </div>
             <div class="col-sm">
@@ -352,7 +356,12 @@
                     </div>
                 </div>
                 <div class="form-group mt-1">
-                    <img class="img-fluid" src="{{ order.main_tag.file.url}}" alt="挂牌照片" >
+                    {% if not order.main_tag %}
+                        
+                    {% else %}
+                        <img class="img-fluid" src="{{ order.main_tag.file.url}}" alt="挂牌照片" >
+                    {% endif %}
+                    
                 </div>
             </div>
             <div class="col-sm">
@@ -369,7 +378,12 @@
                     </div>
                 </div>
                 <div class="form-group mt-1">
-                    <img class="img-fluid" src="{{ order.addition_tag.file.url}}" alt="附件挂牌照片" >
+                    {% if not order.addition_tag %}
+                        
+                    {% else %}
+                        <img class="img-fluid" src="{{ order.addition_tag.file.url}}" alt="附件挂牌照片" >
+                    {% endif %}
+                    
                 </div>
             </div>
             <div class="col-sm">
