@@ -631,7 +631,7 @@ class Order(models.Model):
     
     PHangingtape = models.ForeignKey(PHangingtape,
                                verbose_name='挂衣绳',
-                               blank=True,
+                               blank=False,
                                on_delete=models.SET_NULL,
                                null=True)
 
