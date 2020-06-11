@@ -51,6 +51,8 @@ urlpatterns = [
         path('<int:pk>/', order.OrderEdit.as_view(), name='orderedit'),
         path('<int:pk>/delete/', order.OrderDelete.as_view(), name='orderdelete'),
         path('<int:pk>/detail/', order.orderdetail, name='orderdetail'),
+        #订单包装方式选择
+        path('<int:pk>/packingway/add/', order.packingwayadd, name='packingwayadd'),
         # 订单颜色数量增删改
         path('<int:pk>/colorqty/add/', order.colorqtyadd, name='colorqtyadd'),
         path('<int:pk>/colorqty/<int:colorqtypk>/', order.colorqtyedit, name='colorqtyedit'),

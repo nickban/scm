@@ -4,7 +4,7 @@ from scm.models import (User, Order, Order_color_ratio_qty, Order_avatar,
                         Order_swatches, Order_size_specs,
                         Order_shipping_pics, Order_packing_ctn, Invoice,
                         Order_fitting_sample, Order_bulk_fabric, Order_shipping_sample,
-                        Order_packing_status, Order_Barcode)
+                        Order_packing_status, Order_Barcode, PPackingway)
 from scm.forms import (
                        OrderForm, Order_color_ratio_qty_Form,
                        OrderavatarForm, OrdersizespecsForm,
@@ -133,6 +133,7 @@ class OrderEdit(UpdateView):
         kwargs['swatches'] = self.get_object().swatches.all()
         kwargs['shippingpics'] = self.get_object().shippingpics.all()
         kwargs['sizespecs'] = self.get_object().sizespecs.all()
+        kwargs['packingways'] = self.get_object().PPackingways.all()
         try:
             kwargs['colorqtys'] = self.get_object().colorqtys.all().order_by('-created_date')
         except ObjectDoesNotExist:
@@ -151,6 +152,7 @@ def orderdetail(request, pk):
     swatches = order.swatches.all()
     sizespecs = order.sizespecs.all()
     shippingpics = order.shippingpics.all()
+    packingways = order.PPackingways.all()
     colorqtys = order.colorqtys.all().order_by('-created_date')
     try:
         barcode = order.barcode
@@ -158,7 +160,26 @@ def orderdetail(request, pk):
         barcode = None
     return render(request, 'order_detail.html', {'order': order, 'swatches': swatches,
                                                  'sizespecs': sizespecs, 'shippingpics': shippingpics,
-                                                 'colorqtys': colorqtys, 'barcode': barcode})
+                                                 'colorqtys': colorqtys, 'barcode': barcode, 'packingways': packingways})
+
+#订单包装方式增加
+@login_required
+@m_mg_or_required
+def packingwayadd(request, pk):
+    packingwayselected = {}
+    order = get_object_or_404(Order, pk=pk)
+    orderpackingways = order.PPackingways.all()
+    orderpackingways = orderpackingways.values_list('pk', flat=True)
+    packingways = PPackingway.objects.all()
+    if request.method == 'POST':
+            packingwayselected = request.POST.getlist('packingwaypk')
+            packingwaylist = PPackingway.objects.in_bulk(packingwayselected)
+            order.PPackingways.clear()
+            for packingway in packingwaylist:
+                order.PPackingways.add(packingway)
+                order.save()
+            return redirect('order:orderedit', pk=order.pk)
+    return render(request, 'packingway_add.html', {'packingways': packingways, 'order': order, 'orderpackingways': orderpackingways})
 
 
 # 订单颜色数量新增

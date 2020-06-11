@@ -264,6 +264,10 @@ class OrderForm(forms.ModelForm):
         self.fields['main_tag'].empty_label = '请选择'
         self.fields['addition_tag'].empty_label = '请选择'
         self.fields['packing_type'].empty_label = '请选择'
+        self.fields['PShippingsample'].empty_label = '请选择'
+        self.fields['PHangingtape'].empty_label = '请选择'
+        self.fields['PSparebutton'].empty_label = '请选择'
+        self.fields['PWashinglabel'].empty_label = '请选择'
 
     class Meta:
         model = Order
@@ -272,9 +276,12 @@ class OrderForm(forms.ModelForm):
                   'factory', 'sample', 'factory_price', 'disigner_price',
                   'handover_date_f', 'handover_date_d', 'comments',
                   'parent', 'invoice', 'main_label', 'main_tag', 'addition_tag',
-                  'packing_type', 'destination', 'labeltype', 'childorder', 'season_code', 'pgr_code', 'itemgroup_code')
+                  'packing_type', 'destination', 'labeltype', 'childorder', 'season_code', 'pgr_code',
+                  'itemgroup_code', 'PShippingsample', 'PHangingtape', 'PSparebutton',
+                  'PWashinglabel', 'matchcolor')
         widgets = {
-                  'comments': forms.Textarea(attrs={'rows': 5}),
+                  'comments': forms.Textarea(attrs={'rows': 1}),
+                  'matchcolor': forms.Textarea(attrs={'rows': 1}),
                   }
         error_messages = {
             'po': {
