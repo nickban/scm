@@ -26,7 +26,7 @@ class Factory(models.Model):
     name = models.CharField('工厂名称', max_length=100)
     contactperson = models.CharField('联系人', max_length=100)
     address = models.CharField('地址', max_length=200)
-    email = models.EmailField('邮箱')
+    email = models.EmailField('邮箱',null=True)
     phone = models.CharField('手机', max_length=100)
     bank = models.CharField('开户银行', null=True, max_length=100)
     bankaccount = models.CharField('银行账户', null=True, max_length=100)
@@ -42,6 +42,7 @@ class Merchandiser(models.Model):
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
 
+
     def __str__(self):
         return self.user.username
 
@@ -51,6 +52,7 @@ class Designer(models.Model):
     user = models.OneToOneField(User, verbose_name='设计师',
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
+
 
     def __str__(self):
         return self.user.username
@@ -62,6 +64,7 @@ class Finance(models.Model):
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
 
+
     def __str__(self):
         return self.user.username
 
@@ -71,6 +74,7 @@ class Shipping(models.Model):
     user = models.OneToOneField(User, verbose_name='船务',
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
+
 
     def __str__(self):
         return self.user.username
@@ -82,6 +86,7 @@ class Qc(models.Model):
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
 
+
     def __str__(self):
         return self.user.username
 
@@ -91,6 +96,7 @@ class Admin(models.Model):
     user = models.OneToOneField(User, verbose_name='管理员',
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
+
 
     def __str__(self):
         return self.user.username
@@ -102,6 +108,7 @@ class Office(models.Model):
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
 
+
     def __str__(self):
         return self.user.username
 
@@ -111,6 +118,7 @@ class Merchandiser_Manager(models.Model):
     user = models.OneToOneField(User, verbose_name='跟单主管',
                                 on_delete=models.CASCADE, primary_key=True)
     show = models.BooleanField(default=True)
+
 
     def __str__(self):
         return self.user.username
@@ -413,6 +421,36 @@ def auto_delete_file_additiontag(sender, instance, **kwargs):
         if os.path.isfile(instance.file.path):
             os.remove(instance.file.path)
 
+#大货生产包装部分字段定义
+class PShippingsample(models.Model):
+    description = models.CharField('船头板', max_length=100)
+
+    def __str__(self):
+        return self.description
+
+class PHangingtape(models.Model):
+    description = models.CharField('挂衣绳', max_length=100)
+
+    def __str__(self):
+        return self.description
+
+class PSparebutton(models.Model):
+    description = models.CharField('备用扣', max_length=100)
+
+    def __str__(self):
+        return self.description
+
+class PWashinglabel(models.Model):
+    description = models.CharField('洗水唛', max_length=400)
+
+    def __str__(self):
+        return self.description
+
+class PPackingway(models.Model):
+    description = models.CharField('包装要求', max_length=300)
+
+    def __str__(self):
+        return self.description
 
 class Packingtype(models.Model):
     shortname = models.CharField('包装方式', max_length=50)
@@ -542,7 +580,8 @@ class Order(models.Model):
                                          null=True, blank=True)
     handover_date_f = models.DateField('工厂交期', null=True, blank=True)
     handover_date_d = models.DateField('客人交期', null=True, blank=True)
-    comments = models.TextField('大货要求', blank=True)
+    comments = models.TextField('生产办评语', blank=True)
+    matchcolor = models.TextField('配色要求', blank=True)
     parent = models.ForeignKey('self',
                                verbose_name='父订单',
                                related_name='suborders',
@@ -583,6 +622,36 @@ class Order(models.Model):
     pgr_code = models.CharField('PGR', max_length=100, null=True, blank=True)
     itemgroup_code = models.CharField('ITEM GROUP', max_length=100, null=True, blank=True)
     actual_ship_qty = models.PositiveSmallIntegerField(null=True, blank=True)
+    #大货包装部分
+    PShippingsample = models.ForeignKey(PShippingsample,
+                               verbose_name='船头板',
+                               blank=True,
+                               on_delete=models.SET_NULL,
+                               null=True)
+    
+    PHangingtape = models.ForeignKey(PHangingtape,
+                               verbose_name='挂衣绳',
+                               blank=True,
+                               on_delete=models.SET_NULL,
+                               null=True)
+
+    PSparebutton = models.ForeignKey(PSparebutton,
+                               verbose_name='备用扣',
+                               blank=True,
+                               on_delete=models.SET_NULL,
+                               null=True)
+
+    PWashinglabel = models.ForeignKey(PWashinglabel,
+                               verbose_name='洗水唛',
+                               blank=True,
+                               on_delete=models.SET_NULL,
+                               null=True)
+
+    PPackingways = models.ManyToManyField(PPackingway,
+                               verbose_name='包装要求',
+                               blank=True,
+                               null=True)
+
 
     def __str__(self):
         ordername = '订单号' + self.po + '/' + '款号' + self.style_no
