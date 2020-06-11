@@ -190,25 +190,31 @@
                     <div class="form-group">
                         {{ form.main_label |as_crispy_field }}
                     </div>
+                    {% if order.pk and order.main_label%}
                     <div class="form-group mt-1">
                         <img class="img-fluid" src="{{ order.main_label.file.url}}"  alt="主唛照片">
                     </div>
+                    {% endif %}
                 </div>
                 <div class="col-sm ">
                     <div class="form-group">
                         {{ form.main_tag |as_crispy_field }}
                     </div>
+                    {% if order.pk and order.main_label%}
                     <div class="form-group mt-1">
                         <img class="img-fluid" src="{{ order.main_tag.file.url}}" alt="挂牌照片" >
                     </div>
+                    {% endif %}
                 </div>
                 <div class="col-sm ">
                     <div class="form-group">
                         {{ form.addition_tag |as_crispy_field }}
                     </div>
+                    {% if order.pk and order.main_label%}
                     <div class="form-group mt-1">
                         <img class="img-fluid" src="{{ order.addition_tag.file.url}}" alt="附加挂牌照片" >
                     </div>
+                    {% endif %}
                 </div>
                 <div class="col-sm ">
                     <div class="form-group">
