@@ -234,7 +234,8 @@
                                 <th scope="col">L</th>
                                 <th scope="col">XL</th>
                             {% endif %}
-                            <th style="width: 8%" cope="col">件数</th>
+                            <th style="width: 8%" cope="col">每箱件数</th>
+                            <th style="width: 8%" cope="col">累计件数</th>
                             <th style="width: 5%" cope="col">毛重</th>
                         </tr>
                     </thead>
@@ -262,6 +263,7 @@
                         <td>{{packing_ctn.size4}}</td>
                         <td>{{packing_ctn.size5}}</td>
                         <td>{{packing_ctn.totalqty}}</td>
+                        <td>{{packing_ctn.sumtotalqty}}</td>
                         {% if packing_ctn.sharebox == True %}
                         <td></td>
                         {% else %}
@@ -281,37 +283,22 @@
                         {% else %}
                         <th>(总中包){{orderctnsum.totalbags}}</th>
                         {% endif %}
-                        {% if orderctnsum.size1 == None %}
                         <th></th>
-                        {% else %}
-                        <th>{{orderctnsum.size1}}</th>
-                        {% endif %}
-                        {% if orderctnsum.size2 == None %}
                         <th></th>
-                        {% else %}
-                        <th>{{orderctnsum.size2}}</th>
-                        {% endif %}
-                        {% if orderctnsum.size3 == None %}
                         <th></th>
-                        {% else %}
-                        <th>{{orderctnsum.size3}}</th>
-                        {% endif %}
-                        {% if orderctnsum.size4 == None %}
                         <th></th>
-                        {% else %}
-                        <th>{{orderctnsum.size4}}</th>
-                        {% endif %}
-                        {% if orderctnsum.size5 == None %}
                         <th></th>
-                        {% else %}
-                        <th>{{orderctnsum.size5}}</th>
-                        {% endif %}
+                        <th></th>
                         {% if orderctnsum.totalqty == None %}
                         <th></th>
                         {% else %}
                         <th>{{orderctnsum.totalqty}}</th>
                         {% endif %}
+                        {% if totalgrossweight == None %}
                         <th></th>
+                        {% else %}
+                        <th>{{totalgrossweight}}</th>
+                        {% endif %}
 
                     </tr>
                 </table>
