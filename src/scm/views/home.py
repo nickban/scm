@@ -115,7 +115,7 @@ class SignUpView(CreateView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        return redirect('login')
+        return redirect('signup')
 
 
 @method_decorator([login_required], name='dispatch')
