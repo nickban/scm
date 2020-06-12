@@ -15,7 +15,8 @@ from scm.forms import (
                        OrderbarcodeForm)
 from django.contrib.auth.decorators import login_required
 from scm.decorators import (m_mg_or_required, factory_required, office_required,
-                            order_is_shipped, packinglist_is_sented, o_m_mg_or_required)
+                            order_is_shipped, packinglist_is_sented, o_m_mg_or_required,
+                            finance_required, merchandiser_manager_required)
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 from django.db import transaction
@@ -789,6 +790,10 @@ def invoicedelete(request, pk):
 
 
 # 发票详情页
+@login_required
+@factory_required
+@finance_required
+@merchandiser_manager_required
 def invoicedetail(request, pk):
     qs = []
     totalpaidamount = 0
@@ -807,6 +812,10 @@ def invoicedetail(request, pk):
 
 
 # 发票列表
+@login_required
+@factory_required
+@finance_required
+@merchandiser_manager_required
 def invoicelist(request):
     loginuser = request.user
     if loginuser.is_factory:
