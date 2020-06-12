@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.views import reverse_lazy
 from scm.decorators import (office_required, merchandiser_required, factory_required,
-                            o_m_mg_or_required)
+                            o_m_mg_or_required, m_mg_or_required)
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.views import View
@@ -105,6 +105,7 @@ def setting(request):
     return render(request, 'setting.html', {'form': form})
 
 
+@method_decorator([login_required, m_mg_or_required], name='dispatch')
 class SignUpView(CreateView):
     model = User
     form_class = SignUpForm
