@@ -33,8 +33,12 @@
     <p class="my-1">状态:{{invoice.get_status_display}}</p>
   </div>
   <div class="text-right col-sm-6">
+    {% if invoice.status == 'PAID'%}
+    <i class="fas fa-file-upload fa-2x"></i>
+    {% else%}
     <a href="{% url 'order:invoiceattachadd' pk=invoice.pk%}" role="button">
-    <i class="fas fa-file-upload fa-2x"></i></a>
+      <i class="fas fa-file-upload fa-2x"></i></a>
+    {% endif %}
     <p class="my-1">上传发票</p>
     {% if invoice.file %}
     <a href="{{ invoice.file.url }}">{{ invoice.file.name |basename }}</a>
