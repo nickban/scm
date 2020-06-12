@@ -46,6 +46,8 @@
                         {% if order.pk %}
                         <a href="{% url 'order:orderattachadd' pk=order.pk attachtype='sizespecs' %}" role="button">
                         <i class="fas fa-file-upload fa-2x"></i></a>
+                        {% else %}
+                        <i class="fas fa-file-upload fa-2x"></i>
                         {% endif %}
                         <span>批改意见</span>
                     </div>
@@ -65,6 +67,8 @@
                         {% if order.pk %}
                         <a href="{% url 'order:orderattachadd' pk=order.pk attachtype='shipppingpics'%}" role="button">
                         <i class="fas fa-file-upload fa-2x"></i></a>
+                        {% else %}
+                        <i class="fas fa-file-upload fa-2x"></i>
                         {% endif %}
                         <span>船样</span>
                         {% if shippingpics %}
@@ -90,6 +94,8 @@
                         {% if order.pk%}
                         <a href="{% url 'order:orderattachadd' pk=order.pk attachtype='swatch'%}" role="button">
                         <i class="fas fa-file-upload fa-2x"></i></a>
+                        {% else %}
+                        <i class="fas fa-file-upload fa-2x"></i>
                         {% endif %}
                         <span >色卡</span>
                         {% if swatches %}
