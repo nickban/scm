@@ -327,7 +327,7 @@
             <a href="" class="btn btn-block btn-outline-primary" onclick="window.print()" role="button">打印</a>
         </div>
     </div>
-    {% if request.user.is_office or request.user.is_merchandiser%}
+    <!-- {% if request.user.is_office or request.user.is_merchandiser%}
         {% if order.packing_status.status == 'SUBMIT'%}
         <div class=" col-sm">
             <div class="form-group">
@@ -335,7 +335,7 @@
             </div>
         </div>
         {% endif %}
-    {% endif %}
+    {% endif %} -->
     {% if not order.status == 'SHIPPED' %}
     {% if request.user.is_office or request.user.is_merchandiser%}
     <div class=" col-sm">
