@@ -323,7 +323,8 @@ def orderconfirm(request, pk):
 @o_m_mg_or_required
 def ordershipped(request, pk):
     order = get_object_or_404(Order, pk=pk)
-    totalqty = order.packing_ctns.aggregate(totalqty=Sum('totalqty', output_field=IntegerField()))
+    packing_ctns = order.packing_ctns.annotate(sumtotalqty=F('totalboxes')*F('totalqty'))
+    totalqty = packing_ctns.aggregate(totalqty=Sum('sumtotalqty', output_field=IntegerField()))
     totalqty = totalqty.get('totalqty') or 0
     order.actual_ship_qty = totalqty
     order.status = "SHIPPED"
