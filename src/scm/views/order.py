@@ -320,7 +320,7 @@ def orderconfirm(request, pk):
 
 # 订单出货
 @login_required
-@office_required
+@o_m_mg_or_required
 def ordershipped(request, pk):
     order = get_object_or_404(Order, pk=pk)
     totalqty = order.packing_ctns.aggregate(totalqty=Sum('totalqty', output_field=IntegerField()))
@@ -329,6 +329,16 @@ def ordershipped(request, pk):
     order.status = "SHIPPED"
     order.save()
     messages.success(request, '订单已出货, 请在出货订单列表查找!')
+    return redirect('order:orderedit', pk=order.pk)
+
+# 订单重置
+@login_required
+@m_mg_or_required
+def orderreset(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    order.status = "NEW"
+    order.save()
+    messages.success(request, '订单已重置到新建状态!')
     return redirect('order:orderedit', pk=order.pk)
 
 

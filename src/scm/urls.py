@@ -63,6 +63,8 @@ urlpatterns = [
         path('<int:pk>/confirm/', order.orderconfirm, name='orderconfirm'),
         # 订单出货
         path('<int:pk>/shipped/', order.ordershipped, name='ordershipped'),
+        # 订单重置
+        path('<int:pk>/reset/', order.orderreset, name='orderreset'),
         # 测试用
         path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
         # 生产板进度增删改

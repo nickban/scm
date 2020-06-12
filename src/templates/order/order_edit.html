@@ -411,6 +411,13 @@
                     </div>
                 </div> 
                 {% endif %}
+                {% if order.status == 'CONFIRMED'%}
+                <div class=" col-sm">
+                    <div class="form-group">
+                        <a class="btn btn-block btn-outline-primary" href="{% url 'order:ordershipped' pk=order.pk %}" role="button">订单出货</a>
+                    </div>
+                </div> 
+                {% endif %}
                 <!-- 测试用 -->
                 <!-- {% if order.pk%}
                 <div class=" col-sm">

@@ -607,10 +607,17 @@
                 </div>
             </div> 
             {% endif %}
-            {% if order.status == 'CONFIRMED' and request.user.is_office %}
+            {% if order.status == 'CONFIRMED' and request.user.is_office%}
             <div class=" col-sm">
                 <div class="form-group">
                     <a class="btn btn-block btn-outline-primary" href="{% url 'order:ordershipped' pk=order.pk %}" role="button">订单出货</a>
+                </div>
+            </div> 
+            {% endif %}
+            {% if order.status == 'SHIPPED' and request.user.is_merchandiser%}
+            <div class=" col-sm">
+                <div class="form-group">
+                    <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderreset' pk=order.pk %}" role="button">订单重置</a>
                 </div>
             </div> 
             {% endif %}
