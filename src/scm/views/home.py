@@ -114,7 +114,7 @@ class SignUpView(CreateView):
     # 保存的逻辑写在form的save里
     def form_valid(self, form):
         user = form.save()
-        login(self.request, user)
+        # login(self.request, user)
         return redirect('signup')
 
 
