@@ -762,12 +762,12 @@ def invoiceadd(request):
                                              handoverdate=mindate, start_of_week=start_of_week,
                                              end_of_week=end_of_week)
             for order in orderlist:
-                totalqty = order.packing_ctns.aggregate(totalqty=Sum('totalqty', output_field=IntegerField()))
-                totalqty = totalqty.get('totalqty') or 0
+                # totalqty = order.packing_ctns.aggregate(totalqty=Sum('totalqty', output_field=IntegerField()))
+                # totalqty = totalqty.get('totalqty') or 0
                 factory_price = order.factory_price or 0
-                paidamount = totalqty * factory_price
+                paidamount = order.actual_ship_qty * factory_price
                 totalpaidamount = totalpaidamount + paidamount
-                orderobject = {'order': order, 'totalqty': totalqty, 'paidamount': paidamount}
+                orderobject = {'order': order, 'paidamount': paidamount}
                 qs.append(orderobject)
                 order.invoice = invoice
                 order.save()
@@ -796,12 +796,12 @@ def invoicedetail(request, pk):
     orderqs = Order.objects.filter(invoice=invoice)
     factory = invoice.factory
     for order in orderqs:
-        totalqty = order.packing_ctns.aggregate(totalqty=Sum('totalqty', output_field=IntegerField()))
-        totalqty = totalqty.get('totalqty') or 0
+        # totalqty = order.packing_ctns.aggregate(totalqty=Sum('totalqty', output_field=IntegerField()))
+        # totalqty = totalqty.get('totalqty') or 0
         factory_price = order.factory_price or 0
-        paidamount = totalqty * factory_price
+        paidamount = order.actual_ship_qty * factory_price
         totalpaidamount = totalpaidamount + paidamount
-        orderobject = {'order': order, 'totalqty': totalqty, 'paidamount': paidamount}
+        orderobject = {'order': order, 'paidamount': paidamount}
         qs.append(orderobject)
     return render(request, 'invoice_detail.html', {'qs': qs, 'invoice': invoice, 'factory': factory, 'totalpaidamount': totalpaidamount})
 

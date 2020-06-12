@@ -96,7 +96,7 @@
             <td>{{each.order.brand}}</td>
             <td >{{ each.order.handover_date_f |date:"SHORT_DATE_FORMAT"}}</td>
             <td >{{ each.order.factory_price}}</td>
-            <td >{{ each.totalqty}}</td>
+            <td >{{ each.order.actual_ship_qty}}</td>
             <td >{{ each.paidamount}}</td>
           </tr>
         {% endfor %}
