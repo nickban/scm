@@ -428,11 +428,6 @@ class PShippingsample(models.Model):
     def __str__(self):
         return self.description
 
-class PHangingtape(models.Model):
-    description = models.CharField('挂衣绳', max_length=100)
-
-    def __str__(self):
-        return self.description
 
 class PSparebutton(models.Model):
     description = models.CharField('备用扣', max_length=100)
@@ -629,11 +624,7 @@ class Order(models.Model):
                                on_delete=models.SET_NULL,
                                null=True)
     
-    PHangingtape = models.ForeignKey(PHangingtape,
-                               verbose_name='挂衣绳',
-                               blank=True,
-                               on_delete=models.SET_NULL,
-                               null=True)
+    PHangingtape = models.CharField('挂衣绳', max_length=100, null=True, blank=True)
 
     PSparebutton = models.ForeignKey(PSparebutton,
                                verbose_name='备用扣',
