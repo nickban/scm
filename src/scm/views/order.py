@@ -740,6 +740,8 @@ def increment_invoice_number():
 # 创建发票
 @login_required
 @factory_required
+@finance_required
+@merchandiser_manager_required
 def invoiceadd(request):
     qs = []
     orderlist = {}
