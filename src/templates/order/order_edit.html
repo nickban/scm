@@ -121,6 +121,8 @@
                         {% if order.pk%}
                         <a href="{% url 'order:orderattachadd' pk=order.pk attachtype='barcode'%}" role="button">
                         <i class="fas fa-file-upload fa-2x"></i></a>
+                        {% else %}
+                        <i class="fas fa-file-upload fa-2x"></i>
                         {% endif %}
                         <span >条码</span>
                         {% if barcode %}
