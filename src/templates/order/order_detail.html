@@ -338,7 +338,7 @@
                     {% if not order.main_label %}
                         
                     {% else %}
-                        <img class="img-fluid" src="{{ order.main_label.file.url}}" alt="主唛照片" >
+                        <img height='40' src="{{ order.main_label.file.url}}" alt="主唛照片" >
                     {% endif %}
                 </div>
             </div>
@@ -359,7 +359,7 @@
                     {% if not order.main_tag %}
                         
                     {% else %}
-                        <img class="img-fluid" src="{{ order.main_tag.file.url}}" alt="挂牌照片" >
+                        <img height='40' src="{{ order.main_tag.file.url}}" alt="挂牌照片" >
                     {% endif %}
                     
                 </div>
@@ -381,7 +381,7 @@
                     {% if not order.addition_tag %}
                         
                     {% else %}
-                        <img class="img-fluid" src="{{ order.addition_tag.file.url}}" alt="附件挂牌照片" >
+                        <img height='40' src="{{ order.addition_tag.file.url}}" alt="附件挂牌照片" >
                     {% endif %}
                     
                 </div>
