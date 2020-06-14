@@ -15,6 +15,7 @@ from .models import (User, Factory,
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 # 登录表单
@@ -22,6 +23,16 @@ class MyAuthenticationForm(AuthenticationForm):
     error_messages = {
         'invalid_login': _("用户名和密码不匹配"),
         'inactive': _("该账号已被冻结"),
+    }
+
+#修改密码
+class MyPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(label=_('旧密码'), error_messages={'required': "此字段必须填写！"})
+    new_password1 = forms.CharField(label=_('新密码'), error_messages={'required': "此字段必须填写！"})
+    new_password2 = forms.CharField(label=_('重新输入新密码'), error_messages={'required': "此字段必须填写！"})
+    error_messages = {
+        'password_incorrect': _("旧密码输入不正确，请重新输入！"),
+        'password_mismatch': _("两次输入的密码不一致，请重新输入！"),
     }
 
 

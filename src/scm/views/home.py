@@ -12,8 +12,8 @@ from scm.forms import (SignUpForm, NewpostForm, PostAttachmentForm, FactoryForm,
                     NewsampleForm, SampleForm, SamplesizespecsForm,
                     SampleosavatarForm, SampleospicsForm,
                     SampleswatchForm, SamplefpicsForm,
-                    SampledetailForm, MainlabelForm, MaintagForm, AdditiontagForm)
-from django.contrib.auth import login
+                    SampledetailForm, MainlabelForm, MaintagForm, AdditiontagForm, MyPasswordChangeForm)
+from django.contrib.auth import login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.views import reverse_lazy
@@ -267,3 +267,19 @@ def additiontagdelete(request, pk):
     additiontag = Additiontag.objects.get(pk=pk)
     additiontag.delete()
     return redirect('syssetting:additiontag')
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = MyPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, '密码修改成功，请用新密码登录!')
+            return redirect('change_password')
+    else:
+        form = MyPasswordChangeForm(request.user)
+    return render(request, 'accounts/change_password.html', {
+        'form': form
+    })
