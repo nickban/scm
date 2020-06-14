@@ -28,7 +28,7 @@
           {% if request.user.is_factory or request.user.is_finance or request.user.is_merchandiser_manager%}
           <a class="dropdown-item" href="{% url 'order:invoicelist' %}">对账单</a>
           {% endif %}
-          <a class="dropdown-item" href="{% url 'syssetting:syssetting' %}">主唛挂牌</a>
+          <a class="dropdown-item" href="{% url 'syssetting:mainlabel' %}">主唛挂牌</a>
         </div>
       </li>
       <li class="nav-item">
