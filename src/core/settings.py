@@ -16,7 +16,7 @@ DEBUG = False
 if DEBUG:
     ALLOWED_HOSTS = ['127.0.0.1']
 else:
-    ALLOWED_HOSTS = ['47.97.208.188']
+    ALLOWED_HOSTS = ['47.97.208.188', 'scm.yuansefashion.com']
 
 # Application definition
 INSTALLED_APPS = [
