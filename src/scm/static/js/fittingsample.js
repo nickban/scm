@@ -77,7 +77,6 @@ $(function () {
           id = 'fs' + pk
           //找到ul
           element = $('#' + id);
-          console.log(element)
           if (data.form_is_valid) {
             element.html(data.html_fs_list);
             $("#modal-fs").modal("hide");
