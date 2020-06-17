@@ -11,6 +11,7 @@ urlpatterns = [
     path('accounts/login/', auth_views.LoginView.as_view(authentication_form=MyAuthenticationForm), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/changepassword/', home.change_password, name='change_password'),
+    path('accounts/setpassword/', home.setpassword, name='setpassword'),
     path('accounts/signup/', home.SignUpView.as_view(), name='signup'),
     path('', include('scm.urls')),
 

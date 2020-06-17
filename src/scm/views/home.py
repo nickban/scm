@@ -12,7 +12,8 @@ from scm.forms import (SignUpForm, NewpostForm, PostAttachmentForm, FactoryForm,
                     NewsampleForm, SampleForm, SamplesizespecsForm,
                     SampleosavatarForm, SampleospicsForm,
                     SampleswatchForm, SamplefpicsForm,
-                    SampledetailForm, MainlabelForm, MaintagForm, AdditiontagForm, MyPasswordChangeForm)
+                    SampledetailForm, MainlabelForm, MaintagForm,
+                    AdditiontagForm, MyPasswordChangeForm, SetPasswordForm)
 from django.contrib.auth import login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -283,3 +284,25 @@ def change_password(request):
     return render(request, 'accounts/change_password.html', {
         'form': form
     })
+
+
+@login_required
+@m_mg_or_required
+def setpassword(request):
+    if request.method=='POST':
+        form = SetPasswordForm(request.POST)
+        if form.is_valid():
+             user = form.cleaned_data.get('user')
+             new_password1 = form.cleaned_data.get('new_password1')
+             new_password2 = form.cleaned_data.get('new_password2')
+             if new_password1 and new_password2:
+                if new_password1 != new_password2:
+                    messages.warning(request, '两次输入的密码不一致!')
+                else:
+                    user.set_password(new_password2)
+                    user.save()
+                    messages.success(request, '密码修改成功!')
+        return redirect('setpassword')
+    else:
+        form = SetPasswordForm()
+        return render(request, 'accounts/set_password.html', {'form': form})

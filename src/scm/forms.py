@@ -512,3 +512,21 @@ class AdditiontagForm(forms.ModelForm):
                 'required': "必填字段！",
             },
         }
+
+
+#修改密码
+class SetPasswordForm(forms.Form):
+
+    error_messages = {
+        'password_mismatch': _("两次输入的密码不一致！"),
+    }
+    user = forms.ModelChoiceField(queryset=User.objects.all(), label='用户', empty_label="请选择", required=False)
+    new_password1 = forms.CharField(label=_("新密码"),
+                                    widget=forms.PasswordInput)
+    new_password2 = forms.CharField(label=_("重新输入新密码"),
+                                    widget=forms.PasswordInput)
+
+    def __init__(self, *args, **kwargs):
+        super(SetPasswordForm, self).__init__(*args, **kwargs)
+
+
