@@ -194,7 +194,7 @@ def colorqtyadd(request, pk):
             colorqty = form.save(commit=False)
             colorqty.order = order
             colorqty.save()
-            return redirect('order:orderedit', pk=order.pk)
+            return redirect('order:colorqtyadd', pk=order.pk)
     else:
         form = Order_color_ratio_qty_Form()
     return render(request, 'colorqty_add.html', {'form': form, 'order': order})
