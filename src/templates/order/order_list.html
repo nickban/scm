@@ -61,7 +61,7 @@
           {% for order in orders %}
             <tr>
               <td>{{ order.created_date |date:"SHORT_DATE_FORMAT"  }}</td>
-              <td><img src="{{ order.avatar.file.url }}" width=100px, height=100px></td>
+              <td><a href="{{order.avatar.file.url}}"><img src="{{ order.avatar.file.url }}" width=100px, height=100px></td></a>
               {% if order.status == 'SHIPPED' %}
                 <td><a href="{% url 'order:orderdetail'  order.pk %}">{{ order.po }}</a></td>
               {% else %}
