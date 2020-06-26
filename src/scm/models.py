@@ -624,7 +624,7 @@ class Order(models.Model):
                                on_delete=models.SET_NULL,
                                null=True)
     
-    PHangingtape = models.CharField('挂衣绳', max_length=100, null=True, blank=True)
+    PHangingtape = models.CharField('挂衣绳', max_length=100, null=True, blank=True, default='无')
 
     PSparebutton = models.ForeignKey(PSparebutton,
                                verbose_name='备用扣',
