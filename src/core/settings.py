@@ -16,7 +16,7 @@ DEBUG = False
 if DEBUG:
     ALLOWED_HOSTS = ['127.0.0.1']
 else:
-    ALLOWED_HOSTS = ['scm.monayoung.com.au']
+    ALLOWED_HOSTS = ['198.211.112.89']
 
 # Application definition
 INSTALLED_APPS = [
