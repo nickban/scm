@@ -521,6 +521,7 @@
                                         <th colspan="5" scope="col">尺码</th>
                                         <th colspan="2" scope="col">数量</th>
                                     </tr>
+                                    {% if order.labeltype == 'NUMBER'%}
                                     <tr class="text-center">
                                         <th scope="col">中文</th>
                                         <th scope="col">英文</th>
@@ -533,6 +534,20 @@
                                         <th scope="col">中包</th>
                                         <th scope="col">件数</th>
                                     </tr>
+                                    {% else %}
+                                    <tr class="text-center">
+                                        <th scope="col">中文</th>
+                                        <th scope="col">英文</th>
+                                        <th scope="col">色号</th>
+                                        <th scope="col">XS</th>
+                                        <th scope="col">S</th>
+                                        <th scope="col">M</th>
+                                        <th scope="col">L</th>
+                                        <th scope="col">XL</th>
+                                        <th scope="col">中包</th>
+                                        <th scope="col">件数</th>
+                                    </tr>
+                                    {% endif %}
                                 </thead>
                                 {% if colorqtys %}
                                     {%for colorqty in colorqtys%}
