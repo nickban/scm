@@ -810,6 +810,10 @@ class Order_packing_status(models.Model):
                                        null=True,
                                        blank=True,
                                        default=14)
+    
+    def __str__(self):
+        
+        return self.order.po
 
 
 class Order_bulk_fabric(models.Model):
