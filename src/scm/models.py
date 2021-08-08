@@ -469,10 +469,13 @@ class Order(models.Model):
 
     NEWORDER = 'NEWORDER'
     REPEATORDER = 'REPEATORDER'
+    WEBORDER = 'WEBORDER'
     ORDER_TYPE = [
         (None, '请选择'),
         (NEWORDER, '新单'),
         (REPEATORDER, '翻单'),
+        (WEBORDER, '网单'),
+
     ]
 
     SEA = 'SEA'
