@@ -320,7 +320,7 @@ class OrderForm(forms.ModelForm):
 class Order_color_ratio_qty_Form(forms.ModelForm):
     class Meta:
         model = Order_color_ratio_qty
-        fields = ('color', 'color_cn', 'color_no', 'ratio', 'size1', 'size2', 'size3', 'size4', 'size5', 'bags', 'qty')
+        fields = ('color', 'color_cn', 'color_no', 'ratio', 'size1', 'size2', 'size3', 'size4', 'size5', 'size6','bags', 'qty')
 
 
 # 订单尺寸表
@@ -377,7 +377,7 @@ class OrderpackingctnForm(forms.ModelForm):
         model = Order_packing_ctn
         fields = ('color', 'ctn_start_no',
                   'ctn_end_no', 'totalboxes', 'sharebox', 'bags', 'size1',
-                  'size2', 'size3', 'size4', 'size5', 'totalqty')
+                  'size2', 'size3', 'size4', 'size5', 'size6','totalqty')
 
 
 # 发票搜索表单

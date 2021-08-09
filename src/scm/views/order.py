@@ -478,10 +478,12 @@ def getacutalcolorqty(pk):
                                               sumsize3=F('totalboxes')*F('size3'),
                                               sumsize4=F('totalboxes')*F('size4'),
                                               sumsize5=F('totalboxes')*F('size5'),
+                                              sumsize6=F('totalboxes')*F('size6'),
                                               )
             qty = qty.aggregate(totalbags=Sum('bags'), size1=Sum('sumsize1'),
                                                size2=Sum('sumsize2'), size3=Sum('sumsize3'),
                                                size4=Sum('sumsize4'), size5=Sum('sumsize5'),
+                                               size6=Sum('sumsize6'),
                                                totalqty=Sum('sumtotalqty'))
             colorobject = {'color': color, 'qty': qty}
             actualorderqty.append(colorobject)
@@ -494,9 +496,10 @@ def getacutalcolorqty(pk):
                                               sumsize3=F('totalboxes')*F('size3'),
                                               sumsize4=F('totalboxes')*F('size4'),
                                               sumsize5=F('totalboxes')*F('size5'),
+                                              sumsize6=F('totalboxes')*F('size6'),
                                               )
             qty = qty.aggregate(totalbags=Sum('eachitemtotalbags'), size1=Sum('sumsize1'),
-                                size2=Sum('sumsize2'), size3=Sum('sumsize3'), size4=Sum('sumsize4'), size5=Sum('sumsize5'),
+                                size2=Sum('sumsize2'), size3=Sum('sumsize3'), size4=Sum('sumsize4'), size5=Sum('sumsize5'), size6=Sum('sumsize6'),
                                 totalqty=Sum('sumtotalqty'))
             colorobject = {'color': color, 'qty': qty}
             actualorderqty.append(colorobject)
@@ -517,7 +520,7 @@ def packinglistadd(request, pk):
                                               sumtotalqty=F('totalboxes')*F('totalqty'),
                                               gross_weight=F('totalboxes')*gross_weight)
     orderctnsum = orderctnsum.aggregate(totalbags=Sum('eachitemtotalbags'), size1=Sum('size1'),
-                                        size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
+                                        size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'), size6=Sum('size6'),
                                         totalqty=Sum('sumtotalqty'))
     packing_ctns_exclude_share = order.packing_ctns.filter(sharebox=False)
     packing_ctns_exclude_share_grossweight = packing_ctns_exclude_share.annotate(gross_weight=F('totalboxes')*gross_weight)
@@ -648,7 +651,7 @@ def packinglistdetail(request, pk):
                                               sumtotalqty=F('totalboxes')*F('totalqty'),
                                               gross_weight=F('totalboxes')*gross_weight)
     orderctnsum = orderctnsum.aggregate(totalbags=Sum('eachitemtotalbags'), size1=Sum('size1'),
-                                        size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'),
+                                        size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'), size6=Sum('size6'),
                                         totalqty=Sum('sumtotalqty'))
     packing_ctns_exclude_share = order.packing_ctns.filter(sharebox=False)
     packing_ctns_exclude_share_grossweight = packing_ctns_exclude_share.annotate(gross_weight=F('totalboxes')*gross_weight)

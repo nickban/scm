@@ -519,7 +519,7 @@
                                     <tr class="text-center">
                                         <th colspan="3" scope="col">颜色</th>
                                         <th class="align-middle" rowspan="2" scope="col">比列</th>
-                                        <th colspan="5" scope="col">尺码</th>
+                                        <th colspan="6" scope="col">尺码</th>
                                         <th colspan="2" scope="col">数量</th>
                                     </tr>
                                     {% if order.labeltype == 'NUMBER'%}
@@ -532,6 +532,7 @@
                                         <th scope="col">10</th>
                                         <th scope="col">12</th>
                                         <th scope="col">14</th>
+                                        <th scope="col">16</th>
                                         <th scope="col">中包</th>
                                         <th scope="col">件数</th>
                                     </tr>
@@ -540,6 +541,7 @@
                                         <th scope="col">中文</th>
                                         <th scope="col">英文</th>
                                         <th scope="col">色号</th>
+                                        <th scope="col">XXS</th>
                                         <th scope="col">XS</th>
                                         <th scope="col">S</th>
                                         <th scope="col">M</th>
@@ -581,6 +583,11 @@
                                         <td></td>
                                         {% else %}
                                         <td>{{colorqty.size5}}</td>
+                                        {% endif %}
+                                        {% if colorqty.size6 == 0 %}
+                                        <td></td>
+                                        {% else %}
+                                        <td>{{colorqty.size6}}</td>
                                         {% endif %}
                                         {% if colorqty.bags == None %}
                                         <td></td>

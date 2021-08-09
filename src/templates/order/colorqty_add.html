@@ -20,10 +20,11 @@
                         <tr class="text-center">
                             <th colspan="3" scope="col">颜色</th>
                             <th class="align-middle" rowspan="2" scope="col">比列</th>
-                            <th colspan="5" scope="col">尺码</th>
+                            <th colspan="6" scope="col">尺码</th>
                             <th colspan="2" scope="col">数量</th>
                             <th class="align-middle" rowspan="2" scope="col">操作</th>
                         </tr>
+                        {% if order.labeltype == 'NUMBER'%}
                         <tr class="text-center">
                             <th scope="col">中文</th>
                             <th scope="col">英文</th>
@@ -33,9 +34,26 @@
                             <th scope="col">10</th>
                             <th scope="col">12</th>
                             <th scope="col">14</th>
+                            <th scope="col">16</th>
                             <th scope="col">中包</th>
-                            <th scope="col">数量</th>
+                            <th scope="col">件数</th>
                         </tr>
+                        {% else %}
+                        <tr class="text-center">
+                            <th scope="col">中文</th>
+                            <th scope="col">英文</th>
+                            <th scope="col">色号</th>
+                            <th scope="col">XXS</th>
+                            <th scope="col">XS</th>
+                            <th scope="col">S</th>
+                            <th scope="col">M</th>
+                            <th scope="col">L</th>
+                            <th scope="col">XL</th>
+                            <th scope="col">中包</th>
+                            <th scope="col">件数</th>
+                        </tr>
+                        {% endif %}
+
                     <thead>
                     <form method="post" novalidate packingtype={{order.packing_type}}>
                     {% csrf_token %}
@@ -49,6 +67,7 @@
                             <th scope="col">{% render_field form.size3 class="form-control foronepiece"%}</th>
                             <th scope="col">{% render_field form.size4 class="form-control foronepiece"%}</th>
                             <th scope="col">{% render_field form.size5 class="form-control foronepiece"%}</th>
+                            <th scope="col">{% render_field form.size6 class="form-control foronepiece"%}</th>
                             <th scope="col">{% render_field form.bags class="form-control colorqty"%}</th>
                             <th scope="col">{% render_field form.qty class="form-control"%}</th>
                             <th style="width: 12%" scope="col">
@@ -80,7 +99,8 @@
                 var size3 = parseInt($("#id_size3").val(), 10) || 0;
                 var size4 = parseInt($("#id_size4").val(), 10) || 0;
                 var size5 = parseInt($("#id_size5").val(), 10) || 0;
-                $("#id_qty").val(size1+size2+size3+size4+size5);
+                var size6 = parseInt($("#id_size6").val(), 10) || 0;
+                $("#id_qty").val(size1+size2+size3+size4+size5+size6);
             })
         }else{
             $("#id_ratio").prop( "disabled", false );
@@ -90,7 +110,7 @@
             var ratio = [];
             var id_ratio = $('#id_ratio').val();
             var id_bags = parseInt($("#id_bags").val(), 10) || 0;
-            var re = /^([\d]):([\d]):([\d]):([\d]):([\d])$/;
+            var re = /^([\d]):([\d]):([\d]):([\d]):([\d]):([\d])$/;
             var id = this.id;
 
             if(id=='id_ratio'){
@@ -120,6 +140,7 @@
                     $("#id_size3").val(ratio[2]*id_bags);
                     $("#id_size4").val(ratio[3]*id_bags);
                     $("#id_size5").val(ratio[4]*id_bags);
+                    $("#id_size6").val(ratio[5]*id_bags);
                     $("#id_qty").val(eachbagpcses*id_bags);
 
                 }

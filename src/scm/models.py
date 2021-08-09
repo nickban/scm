@@ -741,6 +741,7 @@ class Order_color_ratio_qty(models.Model):
     size3 = models.PositiveSmallIntegerField()
     size4 = models.PositiveSmallIntegerField()
     size5 = models.PositiveSmallIntegerField()
+    size6 = models.PositiveSmallIntegerField()
     bags = models.PositiveSmallIntegerField(null=True, blank=True)
     qty = models.PositiveSmallIntegerField()
 
@@ -766,6 +767,7 @@ class Order_packing_ctn(models.Model):
     size3 = models.PositiveSmallIntegerField()
     size4 = models.PositiveSmallIntegerField()
     size5 = models.PositiveSmallIntegerField()
+    size6 = models.PositiveSmallIntegerField(default=0)
     totalqty = models.PositiveSmallIntegerField()
 
 
