@@ -76,19 +76,35 @@
                             <th scope="col">件数</th>
                         </tr>
                         {% else %}
-                        <tr class="text-center">
-                            <th scope="col">中文</th>
-                            <th scope="col">英文</th>
-                            <th scope="col">色号</th>
-                            <th scope="col">XXS</th>
-                            <th scope="col">XS</th>
-                            <th scope="col">S</th>
-                            <th scope="col">M</th>
-                            <th scope="col">L</th>
-                            <th scope="col">XL</th>
-                            <th scope="col">中包</th>
-                            <th scope="col">件数</th>
-                        </tr>
+                            {% if order.created_date.date < date_allysize.date %}
+                            <tr class="text-center">
+                                <th scope="col">中文</th>
+                                <th scope="col">英文</th>
+                                <th scope="col">色号</th>
+                                <th scope="col">XS</th>
+                                <th scope="col">S</th>
+                                <th scope="col">M</th>
+                                <th scope="col">L</th>
+                                <th scope="col">XL</th>
+                                <th scope="col">XXL</th>
+                                <th scope="col">中包</th>
+                                <th scope="col">件数</th>
+                            </tr>
+                            {% else %}
+                            <tr class="text-center">
+                                <th scope="col">中文</th>
+                                <th scope="col">英文</th>
+                                <th scope="col">色号</th>
+                                <th scope="col">XXS</th>
+                                <th scope="col">XS</th>
+                                <th scope="col">S</th>
+                                <th scope="col">M</th>
+                                <th scope="col">L</th>
+                                <th scope="col">XL</th>
+                                <th scope="col">中包</th>
+                                <th scope="col">件数</th>
+                            </tr>
+                            {% endif %}
                         {% endif %}
                     </thead>
                     {% if colorqtys %}
@@ -148,19 +164,35 @@
                         <th scope="col">件数</th>
                     </tr>
                     {% else %}
-                    <tr class="text-center">
-                        <th scope="col">中文</th>
-                        <th scope="col">英文</th>
-                        <th scope="col">色号</th>
-                        <th scope="col">XXS</th>
-                        <th scope="col">XS</th>
-                        <th scope="col">S</th>
-                        <th scope="col">M</th>
-                        <th scope="col">L</th>
-                        <th scope="col">XL</th>
-                        <th scope="col">中包</th>
-                        <th scope="col">件数</th>
-                    </tr>
+                        {% if order.created_date.date < date_allysize.date %}
+                        <tr class="text-center">
+                            <th scope="col">中文</th>
+                            <th scope="col">英文</th>
+                            <th scope="col">色号</th>
+                            <th scope="col">XS</th>
+                            <th scope="col">S</th>
+                            <th scope="col">M</th>
+                            <th scope="col">L</th>
+                            <th scope="col">XL</th>
+                            <th scope="col">XXL</th>
+                            <th scope="col">中包</th>
+                            <th scope="col">件数</th>
+                        </tr>
+                        {% else %}
+                        <tr class="text-center">
+                            <th scope="col">中文</th>
+                            <th scope="col">英文</th>
+                            <th scope="col">色号</th>
+                            <th scope="col">XXS</th>
+                            <th scope="col">XS</th>
+                            <th scope="col">S</th>
+                            <th scope="col">M</th>
+                            <th scope="col">L</th>
+                            <th scope="col">XL</th>
+                            <th scope="col">中包</th>
+                            <th scope="col">件数</th>
+                        </tr>
+                        {% endif %}
                     {% endif %}
                 </thead>
                     {%for colorobject in actualqty%}
@@ -239,12 +271,22 @@
                                 <th scope="col">14</th>
                                 <th scope="col">16</th>
                             {% else %}
+                                {% if order.created_date.date < date_allysize.date %}
+                                <th scope="col">XS</th>
+                                <th scope="col">S</th>
+                                <th scope="col">M</th>
+                                <th scope="col">L</th>
+                                <th scope="col">XL</th>
+                                <th scope="col">XXL</th>
+                                {% endif %}
+                                {% if order.created_date.date > date_allysize.date %}
                                 <th scope="col">XXS</th>
                                 <th scope="col">XS</th>
                                 <th scope="col">S</th>
                                 <th scope="col">M</th>
                                 <th scope="col">L</th>
                                 <th scope="col">XL</th>
+                                {% endif %}
                             {% endif %}
                             <th style="width: 8%" cope="col">每箱件数</th>
                             <th style="width: 8%" cope="col">累计件数</th>

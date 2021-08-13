@@ -31,6 +31,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import base64
 import smtplib
+import datetime
 from decouple import config
 
 
@@ -131,6 +132,7 @@ class OrderEdit(UpdateView):
         return redirect('order:orderedit', pk=order.pk)
 
     def get_context_data(self, **kwargs):
+        kwargs['date_allysize'] = datetime.datetime(2021, 8, 12)
         kwargs['swatches'] = self.get_object().swatches.all()
         kwargs['shippingpics'] = self.get_object().shippingpics.all()
         kwargs['sizespecs'] = self.get_object().sizespecs.all()
@@ -150,6 +152,7 @@ class OrderEdit(UpdateView):
 @login_required
 def orderdetail(request, pk):
     order = get_object_or_404(Order, pk=pk)
+    date_allysize = datetime.datetime(2021, 8, 12)
     swatches = order.swatches.all()
     sizespecs = order.sizespecs.all()
     shippingpics = order.shippingpics.all()
@@ -159,7 +162,7 @@ def orderdetail(request, pk):
         barcode = order.barcode
     except ObjectDoesNotExist:
         barcode = None
-    return render(request, 'order_detail.html', {'order': order, 'swatches': swatches,
+    return render(request, 'order_detail.html', {'order': order, 'date_allysize':date_allysize, 'swatches': swatches,
                                                  'sizespecs': sizespecs, 'shippingpics': shippingpics,
                                                  'colorqtys': colorqtys, 'barcode': barcode, 'packingways': packingways})
 
@@ -187,6 +190,7 @@ def packingwayadd(request, pk):
 @login_required
 @m_mg_or_required
 def colorqtyadd(request, pk):
+    date_allysize = datetime.datetime(2021, 8, 12)
     order = get_object_or_404(Order, pk=pk)
     if request.method == 'POST':
         form = Order_color_ratio_qty_Form(request.POST)
@@ -197,7 +201,7 @@ def colorqtyadd(request, pk):
             return redirect('order:colorqtyadd', pk=order.pk)
     else:
         form = Order_color_ratio_qty_Form()
-    return render(request, 'colorqty_add.html', {'form': form, 'order': order})
+    return render(request, 'colorqty_add.html', {'form': form, 'order': order, 'date_allysize': date_allysize})
 
 
 # 订单颜色数量更改
@@ -205,6 +209,7 @@ def colorqtyadd(request, pk):
 @m_mg_or_required
 def colorqtyedit(request, pk, colorqtypk):
     order = get_object_or_404(Order, pk=pk)
+    date_allysize = datetime.datetime(2021, 8, 12)
     colorqty = get_object_or_404(Order_color_ratio_qty, pk=colorqtypk)
     if request.method == 'POST':
         form = Order_color_ratio_qty_Form(request.POST, instance=colorqty)
@@ -215,7 +220,7 @@ def colorqtyedit(request, pk, colorqtypk):
             return redirect('order:orderedit', pk=order.pk)
     else:
         form = Order_color_ratio_qty_Form(instance=colorqty)
-    return render(request, 'colorqty_add.html', {'form': form, 'order': order})
+    return render(request, 'colorqty_add.html', {'form': form, 'order': order, 'date_allysize': date_allysize})
 
 
 # 订单颜色数量删除
@@ -511,6 +516,7 @@ def getacutalcolorqty(pk):
 @packinglist_is_sented
 def packinglistadd(request, pk):
     order = get_object_or_404(Order, pk=pk)
+    date_allysize = datetime.datetime(2021, 8, 12)
     form = OrderpackingctnForm(request.POST, order=order)
     colorqtys = order.colorqtys.all()
     gross_weight = order.packing_status.gross_weight
@@ -540,6 +546,7 @@ def packinglistadd(request, pk):
     return render(request, 'packinglist_add.html', {'form': form,
                                                     'colorqtys': colorqtys,
                                                     'order': order,
+                                                    'date_allysize': date_allysize,
                                                     'packing_ctns': packing_ctns,
                                                     'orderctnsum': orderctnsum,
                                                     'actualqty': actualqty,
@@ -643,6 +650,7 @@ def packinglistdelete(request, pk, plpk):
 @login_required
 def packinglistdetail(request, pk):
     order = get_object_or_404(Order, pk=pk)
+    date_allysize = datetime.datetime(2021, 8, 12)
     colorqtys = order.colorqtys.all()
     gross_weight = order.packing_status.gross_weight
     packing_ctns = order.packing_ctns.all()
@@ -662,6 +670,7 @@ def packinglistdetail(request, pk):
     actualqty = getacutalcolorqty(order.pk)
 
     return render(request, 'packinglist_detail.html', {'order': order,
+                                                       'date_allysize': date_allysize,
                                                        'colorqtys': colorqtys,
                                                        'packing_ctns': packing_ctns,
                                                        'actualqty': actualqty,
