@@ -511,6 +511,7 @@
             dataType: 'json',
             success: function (data) {
                 colorratio = data['ratio'];
+                // console.log(data)
                 colorratio.forEach(function(num){eachbagpcses+=parseInt(num) || 0;});
                 packing_type = data['packing_type'];
                 // 单件包装是1

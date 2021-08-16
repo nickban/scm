@@ -720,6 +720,7 @@ class Update_packingstatus(UpdateView):
 
 # 查订单比列
 def getratio(request):
+    date_allysize = datetime.datetime(2021, 8, 12)
     colorratio_pk = request.GET.get('color', None)
     colorratio = get_object_or_404(Order_color_ratio_qty, pk=colorratio_pk)
     order = colorratio.order
@@ -731,6 +732,9 @@ def getratio(request):
         ratio = colorratio.ratio
         ratiolist = ratio.split(":")
         ratiolist = list(map(int, ratiolist))
+        if (order.created_date.replace(tzinfo=None)  -  date_allysize.replace(tzinfo=None)).days < 1:
+            ratiolist = ratiolist + [0]
+            # print(ratiolist)
     data = {
         'ratio': ratiolist
     }
