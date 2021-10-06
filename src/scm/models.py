@@ -489,12 +489,14 @@ class Order(models.Model):
     NZ = 'NZ'
     SG = 'SG'
     KR = 'KR'
+    US = 'US'
     DESTINATION = [
         (None, '请选择'),
         (AU, '澳洲'),
         (NZ, '新西兰'),
         (SG, '新加坡'),
         (KR, '韩国'),
+        (US, '美国'),
     ]
 
     CNZ = 'CNZ'
