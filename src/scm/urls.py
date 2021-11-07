@@ -9,7 +9,7 @@ urlpatterns = [
     # 统计导航
     path('report/', include(([
         path('profit/', report.ProfitView.as_view(), name='profit'),
-        path('api/profit/data/', report.ProfitViewData.as_view()),
+        path('api/profit/data/<int:pk>/', report.ProfitViewData.as_view()),
     ], 'scm'), namespace='report')),
 
 
