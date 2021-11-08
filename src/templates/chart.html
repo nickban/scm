@@ -71,6 +71,16 @@ $.ajax({
     }
 });
 
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+       color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+ }
+
+
 function setchart(data) {
 var ctx = document.getElementById("myChart").getContext('2d');
 var myChart = new Chart(ctx, {
@@ -80,57 +90,64 @@ data: {
     datasets: [{
         label: '全部品牌',
         data: data.dataall,
-        fill: false,
+        fill: true,
         borderWidth: 2,
-        backgroundColor: window.chartColors.red,
-        borderColor: window.chartColors.red,
+        // backgroundColor: window.chartColors.red,
+        backgroundColor: getRandomColor(),
+        // borderColor: window.chartColors.red,
     },
     {
         label: 'AU',
         data: data.dataau,
-        fill: false,
-        backgroundColor: window.chartColors.blue,
-        borderColor: window.chartColors.blue,
+        fill: true,
+        backgroundColor: getRandomColor(),
+        // backgroundColor: window.chartColors.blue,
+        // borderColor: window.chartColors.blue,
         borderWidth: 2
     },
     {
         label: 'NZ',
         data: data.datanz,
-        fill: false,
-        backgroundColor: window.chartColors.yellow,
-        borderColor: window.chartColors.yellow,
+        fill: true,
+        backgroundColor: getRandomColor(),
+        // backgroundColor: window.chartColors.yellow,
+        // borderColor: window.chartColors.yellow,
         borderWidth: 2
     },
     {
         label: 'SG',
         data: data.datasg,
-        fill: false,
-        backgroundColor: window.chartColors.purple,
-        borderColor: window.chartColors.purple,
+        fill: true,
+        backgroundColor: getRandomColor(),
+        // backgroundColor: window.chartColors.purple,
+        // borderColor: window.chartColors.purple,
         borderWidth: 2
     },
     {
         label: 'KR',
         data: data.datakr,
-        fill: false,
-        backgroundColor: window.chartColors.green,
-        borderColor: window.chartColors.green,
+        fill: true,
+        backgroundColor: getRandomColor(),
+        // backgroundColor: window.chartColors.green,
+        // borderColor: window.chartColors.green,
         borderWidth: 2
     },
     {
         label: 'ALLY',
         data: data.dataally,
-        fill: false,
-        backgroundColor: window.chartColors.green,
-        borderColor: window.chartColors.green,
+        fill: true,
+        backgroundColor: getRandomColor(),
+        // backgroundColor: window.chartColors.green,
+        // borderColor: window.chartColors.green,
         borderWidth: 2
     },
     {
         label: 'JOJO',
         data: data.datajojo,
-        fill: false,
-        backgroundColor: window.chartColors.green,
-        borderColor: window.chartColors.green,
+        fill: true,
+        backgroundColor: getRandomColor(),
+        // backgroundColor: window.chartColors.green,
+        // borderColor: window.chartColors.green,
         borderWidth: 2
     },
 ]
