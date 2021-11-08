@@ -43,7 +43,8 @@
             <th>买手</th>
             <th>跟单</th>
             <th>工厂</th>
-            <th>运输</th>
+            <!-- <th>运输</th> -->
+            <th>款式</th>
             <th>工厂交期</th>
             <!-- 表格不够宽，暂时停用 -->
             <!-- {% if not request.user.is_factory%}
@@ -52,7 +53,7 @@
             {% if listtype == 'confirmed' or listtype == 'shipped' %}
               <th>装箱单</th>
           {% endif %}
-            <th>目的地</th>
+            <!-- <th>目的地</th> -->
             <th>小单</th>
             <th>状态</th>
           </tr>
@@ -80,7 +81,8 @@
               {% else %}
               <td>{{ order.factory }}</td>
               {% endif %}
-              <td>{{ order.get_tran_type_display }}</td>
+              <td>{{ order.style }}</td>
+              <!-- <td>{{ order.get_tran_type_display }}</td> -->
               {% if order.handover_date_f == None %}
               <td></td>
               {% else %}
@@ -109,7 +111,7 @@
                   </td>
                 {% endif %}
               {% endif %}
-              <td>{{ order.get_destination_display }}</td>
+              <!-- <td>{{ order.get_destination_display }}</td> -->
               <td>{{ order.get_childorder_display }}</td>
               <td>{{ order.get_status_display }}</td>
             </tr>
