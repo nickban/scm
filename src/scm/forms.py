@@ -289,7 +289,7 @@ class OrderForm(forms.ModelForm):
                   'parent', 'invoice', 'main_label', 'main_tag', 'addition_tag',
                   'packing_type', 'destination', 'labeltype', 'childorder', 'season_code', 'pgr_code',
                   'itemgroup_code', 'PShippingsample', 'PHangingtape', 'PSparebutton',
-                  'PWashinglabel', 'matchcolor')
+                  'PWashinglabel', 'matchcolor','ziliao')
         widgets = {
                   'comments': forms.Textarea(attrs={'rows': 1}),
                   'matchcolor': forms.Textarea(attrs={'rows': 1}),

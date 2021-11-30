@@ -509,6 +509,13 @@ class Order(models.Model):
         (CNZSG, 'NZ,SG'),
     ]
 
+    QQ = 'QQ'
+    WQ = 'WQ'
+    ZILIAO = [
+        (None, '请选择'),
+        (QQ, '齐全'),
+    ]
+
     NUMBER = 'NUMBER'
     ALPHABET = 'ALPHABET'
     LABELTYPE = [
@@ -534,6 +541,9 @@ class Order(models.Model):
 
     childorder = models.CharField('小单', max_length=50,
                                   choices=CHILDORDER,
+                                  blank=True)
+    ziliao = models.CharField('资料', max_length=50,
+                                  choices=ZILIAO,
                                   blank=True)
 
     tran_type = models.CharField('运输类型', max_length=50, choices=TRAN_TYPE, blank=True)

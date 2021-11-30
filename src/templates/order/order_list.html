@@ -54,7 +54,8 @@
               <th>装箱单</th>
           {% endif %}
             <!-- <th>目的地</th> -->
-            <th>小单</th>
+            <!-- <th>小单</th> -->
+            <th>资料</th>
             <th>状态</th>
           </tr>
         </thead>
@@ -112,7 +113,8 @@
                 {% endif %}
               {% endif %}
               <!-- <td>{{ order.get_destination_display }}</td> -->
-              <td>{{ order.get_childorder_display }}</td>
+              <!-- <td>{{ order.get_childorder_display }}</td> -->
+              <td>{{ order.get_ziliao_display }}</td>
               <td>{{ order.get_status_display }}</td>
             </tr>
           {% endfor %}
