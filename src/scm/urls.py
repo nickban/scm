@@ -65,7 +65,7 @@ urlpatterns = [
         path('<int:pk>/shipped/', order.ordershipped, name='ordershipped'),
         # 订单重置
         path('<int:pk>/reset/', order.orderreset, name='orderreset'),
-        # 测试用
+        # 测试用-翻单
         path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
         # 生产板进度增删改
         path('<int:pk>/progress/fs/', order.fittingsample, name='fittingsample'),

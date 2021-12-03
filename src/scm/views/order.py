@@ -35,6 +35,7 @@ import datetime
 from decouple import config
 
 
+
 # 订单列表-未确认(新建，已送工厂状态)
 @method_decorator([login_required], name='dispatch')
 class OrderListNew(ListView):
@@ -254,13 +255,13 @@ class OrderDelete(DeleteView):
 
 
 # 拷贝订单，测试数据用
-@login_required
-@m_mg_or_required
-def ordercopy(request, pk):
-    order = get_object_or_404(Order, pk=pk)
-    order.pk = None
-    order.save()
-    return redirect('order:orderedit', pk=order.pk)
+# @login_required
+# @m_mg_or_required
+# def ordercopy(request, pk):
+#     order = get_object_or_404(Order, pk=pk)
+#     order.pk = None
+#     order.save()
+#     return redirect('order:orderedit', pk=order.pk)
 
 
 # 改变订单状态到送工厂状态
@@ -1142,3 +1143,38 @@ def progessplist(request, type):
 
 class FunctionList(TemplateView):
     template_name = 'function_list.html'
+
+
+
+# 翻单
+@login_required
+@m_mg_or_required
+def ordercopy(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    order_avatar =  order.avatar
+    order_size_specs = order.sizespecs.all()
+    order_swatches = order.swatches.all()
+    order_packingways = order.PPackingways.all()
+
+    order.pk = None
+    order.status = "NEW"
+    order.save()
+
+    order_avatar.pk = None
+    order_avatar.order = order
+    order_avatar.save()
+
+    for sizespec in order_size_specs:
+        sizespec.pk = None
+        sizespec.order = order
+        sizespec.save()
+
+    for swatch in order_swatches:
+        swatch.pk = None
+        swatch.order = order
+        swatch.save()
+
+    for packingway in order_packingways:
+        order.PPackingways.add(packingway)
+
+    return redirect('order:orderlistnew')
