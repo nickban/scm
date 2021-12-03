@@ -33,6 +33,7 @@ import base64
 import smtplib
 import datetime
 from decouple import config
+from django.core.files.base import ContentFile
 
 
 
@@ -458,15 +459,15 @@ def orderattachcollection(request, pk, attachtype):
 
 
 # 装箱单查找，暂时不用，供今后参考
-def plsearch(request):
-    loginuser = request.user
-    if loginuser.is_factory:
-        factory = loginuser.factory
-        order_list = Order.objects.filter(Q(factory=factory), Q(status='CONFIRMED') | Q(status='SHIPPED'))
-    else:
-        order_list = Order.objects.filter(Q(status='CONFIRMED') | Q(status='SHIPPED'))
-    order_filter = OrderFilter(request.GET, queryset=order_list)
-    return render(request, 'plsearch_list.html', {'filter': order_filter})
+# def plsearch(request):
+#     loginuser = request.user
+#     if loginuser.is_factory:
+#         factory = loginuser.factory
+#         order_list = Order.objects.filter(Q(factory=factory), Q(status='CONFIRMED') | Q(status='SHIPPED'))
+#     else:
+#         order_list = Order.objects.filter(Q(status='CONFIRMED') | Q(status='SHIPPED'))
+#     order_filter = OrderFilter(request.GET, queryset=order_list)
+#     return render(request, 'plsearch_list.html', {'filter': order_filter})
 
 
 # 获取实际出货数量
@@ -1160,8 +1161,11 @@ def ordercopy(request, pk):
     order.status = "NEW"
     order.save()
 
+    new_file = ContentFile(order_avatar.file.read())
+    new_file_name = order_avatar.file.name.split(".")[0] + str(order_avatar.pk) + '.' + order_avatar.file.name.split(".")[1]
     order_avatar.pk = None
     order_avatar.order = order
+    order_avatar.file.save(new_file_name, new_file) 
     order_avatar.save()
 
     for sizespec in order_size_specs:

@@ -100,7 +100,7 @@ urlpatterns = [
         # 查订单颜色的比列
         path('getratio/', order.getratio, name='getratio'),
         # 装箱单查找, 此功能系统暂不使用，代码可以供未来参考
-        path('search/', order.plsearch, name='plsearch'),
+        # path('search/', order.plsearch, name='plsearch'),
         # 订单发票部分
         path('invoice/add/', order.invoiceadd, name='invoiceadd'),
         path('invoice/<int:pk>/detail/', order.invoicedetail, name='invoicedetail'),
