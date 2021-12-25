@@ -472,8 +472,8 @@ class Order(models.Model):
     WEBORDER = 'WEBORDER'
     ORDER_TYPE = [
         (None, '请选择'),
-        (NEWORDER, '新单'),
-        (REPEATORDER, '翻单'),
+        (NEWORDER, '店铺单'),
+        # (REPEATORDER, '翻单'),
         (WEBORDER, '网单'),
 
     ]

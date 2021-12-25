@@ -562,6 +562,7 @@ def packinglistadd(request, pk):
 def packinglistsubmit(request, pk):
     order = get_object_or_404(Order, pk=pk)
     packing_status = order.packing_status
+
     # 获取颜色
     colors = order.colorqtys.all()
     for color in colors:
@@ -576,20 +577,52 @@ def packinglistsubmit(request, pk):
             actualqty = colorboxqs.aggregate(colortotalpcs=Sum('sumtotalqty', output_field=IntegerField()))
             # 取值
             actualqty = actualqty['colortotalpcs']
-            if colorqty in range(401):
-                accepted = actualqty in range(int(colorqty*0.9), int(colorqty*1.1) + 1)
-                if not accepted:
-                    messages.warning(request, '每个颜色的订单数小于400件，只能接受正负10%!')
-                    return redirect('order:packinglistadd', pk=order.pk)
-            else:
-                accepted = actualqty in range(int(colorqty*0.95), int(colorqty*1.05) + 1)
-                if not accepted:
-                    messages.warning(request, '每个颜色的订单数大于400件，只能接受正负5%，最多接受50件!')
-                    return redirect('order:packinglistadd', pk=order.pk)
+            # vg
+            if order.brand.name in ['Valleygirl','MIRROU']:
+                if colorqty in range(401):
+                    accepted = actualqty in range(int(colorqty*0.9), int(colorqty*1.1) + 1)
+                    if not accepted:
+                        messages.warning(request, '每个颜色的订单数小于400件，只能接受正负10%!')
+                        return redirect('order:packinglistadd', pk=order.pk)
                 else:
-                    if (actualqty > colorqty + 50):
+                    accepted = actualqty in range(int(colorqty*0.95), int(colorqty*1.05) + 1)
+                    if not accepted:
                         messages.warning(request, '每个颜色的订单数大于400件，只能接受正负5%，最多接受50件!')
                         return redirect('order:packinglistadd', pk=order.pk)
+                    else:
+                        if (actualqty > colorqty + 50):
+                            messages.warning(request, '每个颜色的订单数大于400件，只能接受正负5%，最多接受50件!')
+                            return redirect('order:packinglistadd', pk=order.pk)
+            # ally
+            if order.brand.name in ['Ally（minx & moss）','Ally']:
+                if order.order_type == 'WEBORDER':
+                    accepted = actualqty in range(int(colorqty*0.9), int(colorqty*1.1) + 1)
+                    if not accepted:
+                        messages.warning(request, 'ALLY网单出货数，只接受正负10%!')
+                        return redirect('order:packinglistadd', pk=order.pk)
+                else:
+                    accepted = actualqty in range(int(colorqty*0.95), int(colorqty*1.05) + 1)
+                    if not accepted:
+                        messages.warning(request, 'ALLY店铺单出货数，只接受正负5%!')
+                        return redirect('order:packinglistadd', pk=order.pk)
+            # you+all
+            if order.brand.name in ['You+All']:
+                if order.order_type == 'WEBORDER':
+                    accepted = actualqty in range(int(colorqty*0.9), int(colorqty*1.1) + 1)
+                    if not accepted:
+                        messages.warning(request, 'You+All网单出货数，只接受正负20%!')
+                        return redirect('order:packinglistadd', pk=order.pk)
+                else:
+                    accepted = actualqty in range(int(colorqty*0.95), int(colorqty*1.05) + 1)
+                    if not accepted:
+                        messages.warning(request, 'You+All店铺单出货数，只接受正负10%!')
+                        return redirect('order:packinglistadd', pk=order.pk)
+            # 其他订单，暂时不做限制
+            # else:
+            #     accepted = actualqty in range(int(colorqty*0.95), int(colorqty*1.05) + 1)
+            #     if not accepted:
+            #         messages.warning(request, '订单出货数，只接受正负5%!')
+            #         return redirect('order:packinglistadd', pk=order.pk)
         else:
             messages.warning(request, "{}没有添加装箱单.".format(color.color_cn))
             return redirect('order:packinglistadd', pk=order.pk)

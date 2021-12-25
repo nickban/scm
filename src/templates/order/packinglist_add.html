@@ -485,6 +485,7 @@
             var id_size5 = parseInt($("#id_size5").val(), 10) || 0;
             var id_size6 = parseInt($("#id_size6").val(), 10) || 0;
 
+            var sharebox_selected = document.getElementById("id_sharebox").checked;
 
             if( packing_type == 2){
                 if (ctn_start_no != '' && ctn_end_no != ''){
@@ -504,6 +505,12 @@
                     $("#id_size5").val("");
                     $("#id_size6").val("");
                     $("#id_totalqty").val("");
+                }
+                
+                if(sharebox_selected){
+                    $("#id_totalboxes").val(totalboxes);
+                        totalqty = id_size1 + id_size2 + id_size3 + id_size4 + id_size5 + id_size6;
+                        $("#id_totalqty").val(totalqty);
                 }
                 else{
                     $("#id_totalboxes").val(totalboxes);
