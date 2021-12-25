@@ -41,7 +41,7 @@ class ProfitViewData(APIView):
             profit_number = profit['profittotal']
             dataall.append(profit_number)
             # 澳洲 订单
-            orderau = Order.objects.filter(Q(status="SHIPPED"), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(destination='AU'))
+            orderau = Order.objects.filter(Q(status="SHIPPED"), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(brand__name='Valleygirl'), Q(destination='AU'))
             orderau = orderau.annotate(profit=ExpressionWrapper(
                        (F('disigner_price')-F('factory_price'))*F('actual_ship_qty'), 
                        output_field=DecimalField()))
@@ -50,7 +50,7 @@ class ProfitViewData(APIView):
             dataau.append(profit_number)
 
             # NZ 订单
-            ordersnz = Order.objects.filter(Q(status="SHIPPED"), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(destination='NZ'))
+            ordersnz = Order.objects.filter(Q(status="SHIPPED"), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(brand__name='MIRROU'))
             ordersnz = ordersnz.annotate(profit=ExpressionWrapper(
                          (F('disigner_price')-F('factory_price'))*F('actual_ship_qty'), 
                          output_field=DecimalField()))
@@ -59,7 +59,7 @@ class ProfitViewData(APIView):
             datanz.append(profit_number)
 
             # SG 订单
-            orderssg = Order.objects.filter(Q(status="SHIPPED"), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(destination='SG'))
+            orderssg = Order.objects.filter(Q(status="SHIPPED"), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(brand__name='Valleygirl'), Q(destination='SG'))
             orderssg = orderssg.annotate(profit=ExpressionWrapper(
                          (F('disigner_price')-F('factory_price'))*F('actual_ship_qty'), 
                          output_field=DecimalField()))
@@ -68,7 +68,7 @@ class ProfitViewData(APIView):
             datasg.append(profit_number)
 
             # 韩国 订单
-            orderskr = Order.objects.filter(Q(status="SHIPPED"), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(destination='KR'))
+            orderskr = Order.objects.filter(Q(status="SHIPPED"), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(brand__name='Valleygirl'), Q(destination='KR'))
             orderskr = orderskr.annotate(profit=ExpressionWrapper(
                        (F('disigner_price')-F('factory_price'))*F('actual_ship_qty'), 
                        output_field=DecimalField()))
@@ -77,22 +77,22 @@ class ProfitViewData(APIView):
             datakr.append(profit_number)
 
             # ALLY
-            orderskr = Order.objects.filter(Q(status="SHIPPED"), Q(handover_date_f__month=month), Q(handover_date_f__year=year),
+            ordersally = Order.objects.filter(Q(status="SHIPPED"), Q(handover_date_f__month=month), Q(handover_date_f__year=year),
                 Q(brand__name='Ally') | Q(brand__name='Ally（minx & moss）') | Q(brand__name='You+All'))
-            orderskr = orderskr.annotate(profit=ExpressionWrapper(
+            ordersally = ordersally .annotate(profit=ExpressionWrapper(
                        (F('disigner_price')-F('factory_price'))*F('actual_ship_qty'), 
                        output_field=DecimalField()))
-            profit= orderskr.aggregate(profittotal=Sum('profit', output_field=DecimalField()))
+            profit= ordersally.aggregate(profittotal=Sum('profit', output_field=DecimalField()))
             profit_number = profit['profittotal']
             dataally.append(profit_number)
 
             # JOJO
-            orderskr = Order.objects.filter(Q(status="SHIPPED"), Q(handover_date_f__month=month), Q(handover_date_f__year=year),
+            ordersjojo= Order.objects.filter(Q(status="SHIPPED"), Q(handover_date_f__month=month), Q(handover_date_f__year=year),
                 Q(brand__name='天使') | Q(brand__name='JoJo') | Q(brand__name='OO') | Q(brand__name='Selfie') | Q(brand__name='Saints Secrets') | Q(brand__name='太阳'))
-            orderskr = orderskr.annotate(profit=ExpressionWrapper(
+            oordersjojo = ordersjojo.annotate(profit=ExpressionWrapper(
                        (F('disigner_price')-F('factory_price'))*F('actual_ship_qty'), 
                        output_field=DecimalField()))
-            profit= orderskr.aggregate(profittotal=Sum('profit', output_field=DecimalField()))
+            profit= oordersjojo.aggregate(profittotal=Sum('profit', output_field=DecimalField()))
             profit_number = profit['profittotal']
             datajojo.append(profit_number)
 

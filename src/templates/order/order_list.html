@@ -62,7 +62,8 @@
         <tbody>
           {% for order in orders %}
             <tr>
-              <td>{{ order.created_date |date:"SHORT_DATE_FORMAT"  }}</td>
+              <td>{{ order.created_date |date:"Y/m/d"  }}</td>
+              <!-- <td>{{ order.created_date |date:"SHORT_DATE_FORMAT"  }}</td> -->
               <td><a href="{{order.avatar.file.url}}"><img src="{{ order.avatar.file.url }}" width=100px, height=100px></td></a>
               {% if order.status == 'SHIPPED' %}
                 <td><a href="{% url 'order:orderdetail'  order.pk %}">{{ order.po }}</a></td>
@@ -87,7 +88,8 @@
               {% if order.handover_date_f == None %}
               <td></td>
               {% else %}
-              <td>{{ order.handover_date_f |date:"SHORT_DATE_FORMAT" }}</td>
+              <td>{{ order.handover_date_f |date:"Y/m/d" }}</td>
+              <!-- <td>{{ order.handover_date_f |date:"SHORT_DATE_FORMAT" }}</td> -->
               {% endif %}
               <!-- 表格不够宽，暂时停用 -->
               <!-- {% if not request.user.is_factory%}
