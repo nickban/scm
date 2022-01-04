@@ -34,7 +34,8 @@ import smtplib
 import datetime
 from decouple import config
 from django.core.files.base import ContentFile
-
+from datetime import date, timedelta
+import calendar
 
 
 # 订单列表-未确认(新建，已送工厂状态)
@@ -804,8 +805,14 @@ def invoiceadd(request):
         datelist = [order.handover_date_f for order in orderlist]
         mindate = min(datelist)
         maxdate = max(datelist)
-        start_of_week = mindate - timedelta(days=mindate.weekday())   # 周一
-        end_of_week = start_of_week + timedelta(days=6)   # 周日
+        # start_of_week = mindate - timedelta(days=mindate.weekday())   # 周一
+        # end_of_week = start_of_week + timedelta(days=6)   # 周日
+
+        start_of_week  = mindate.replace(day=1)
+        end_of_week = mindate.replace(day=calendar.monthrange(mindate.year, mindate.month)[1])
+        # print(start_of_week)
+        # print(end_of_week )
+
         new_invoiceno = increment_invoice_number()
         if maxdate >= start_of_week and maxdate <= end_of_week:
             invoiceno = mindate.strftime("%Y%m%d") + '_' + new_invoiceno
@@ -824,7 +831,7 @@ def invoiceadd(request):
                 order.invoice = invoice
                 order.save()
         else:
-            messages.warning(request, '请把同一周出货的订单创建在一张发票里！')
+            messages.warning(request, '请把同一月份出货的订单创建在一张发票里！')
             return redirect('order:invoicelist')
 
     return render(request, 'invoice_detail.html', {'qs': qs, 'invoice': invoice, 'factory': factory, 'totalpaidamount': totalpaidamount})
