@@ -42,7 +42,9 @@
         <table id="orderlistnew" class="table table-hover">
           <thead>
             <tr>
+              {% if request.user.is_merchandiser%}
               <th></th>
+              {% endif %}
               <th>创建日期</th>
               <th>款式图</th>
               <th>订单号</th>
@@ -70,7 +72,9 @@
           <tbody>
             {% for order in orders %}
               <tr>
+                {% if request.user.is_merchandiser%}
                 <td class="text-right"><input class="form-check-input" type="checkbox" value="{{order.pk}}"  name="orderpk"></td>
+                {% endif %}
                 <td>{{ order.created_date |date:"Y/m/d"  }}</td>
                 <!-- <td>{{ order.created_date |date:"SHORT_DATE_FORMAT"  }}</td> -->
                 <td><a href="{{order.avatar.file.url}}"><img src="{{ order.avatar.file.url }}" width=100px, height=100px></td></a>
