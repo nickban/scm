@@ -45,6 +45,10 @@ urlpatterns = [
         path('new/', order.OrderListNew.as_view(), name='orderlistnew'),
         path('confirmed/', order.OrderListConfrimed.as_view(), name='orderlistconfirmed'),
         path('shipped/', order.OrderListShipped.as_view(), name='orderlistshipped'),
+
+        # 订单信息汇总
+        path('listinfo/', order.orderlistinfo, name='orderlistinfo'),
+
         # 订单新增
         path('add/', order.OrderAdd.as_view(), name='orderadd'),
         # 订单编辑，详情，删除
@@ -67,6 +71,7 @@ urlpatterns = [
         path('<int:pk>/reset/', order.orderreset, name='orderreset'),
         # 测试用-翻单
         path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
+
         # 生产板进度增删改
         path('<int:pk>/progress/fs/', order.fittingsample, name='fittingsample'),
         path('<int:pk>/progress/fs/all/', order.fsall, name='fsall'),

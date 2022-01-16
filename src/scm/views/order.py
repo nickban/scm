@@ -1222,3 +1222,36 @@ def ordercopy(request, pk):
         order.PPackingways.add(packingway)
 
     return redirect('order:orderlistnew')
+
+
+
+# 创建ALLY订单资料汇总
+@login_required
+@m_mg_or_required
+def orderlistinfo(request):
+    packingway_dict = {}
+    colorqtys_dict={}
+
+    orderpklist = request.POST.getlist('orderpk')
+
+    print(orderpklist)
+    if not orderpklist:
+        return redirect('order:orderlistconfirmed')
+    else:
+        orderlist = Order.objects.in_bulk(orderpklist)
+        orderlist = orderlist.values()
+    print(orderlist)
+
+    for i in range(len(orderpklist)):
+        order = get_object_or_404(Order, pk=orderpklist[i])
+        packingways = order.PPackingways.all()
+        colorqtys = order.colorqtys.all().order_by('-created_date')
+        packingway_dict[orderpklist[i]]=packingways
+        colorqtys_dict[orderpklist[i]]=colorqtys
+    print(packingway_dict)
+    print(colorqtys_dict)
+
+
+    return render(request, 'order_info_list.html', {'orderlist': orderlist, 'packingway_dict':packingway_dict, 'colorqtys_dict':colorqtys_dict})
+
+
