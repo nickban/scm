@@ -22,14 +22,15 @@
 
   <body >
     <div class="container-fluid p-0">
-      <div class="card h-100">
+      <div class="card">
         <!-- 导航栏 -->
         <div class="card-header p-0">
             {% include 'header.html'%}
         </div>
 
         <!-- 内容栏 -->
-        <div class="card-body" style="overflow-y: auto">
+        <!-- <div class="card-body" style="overflow-y: auto"> -->
+        <div class="card-body">
           {% block content %}
           {% endblock %}
         </div>
