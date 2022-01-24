@@ -1,10 +1,13 @@
+from distutils.command import check
+from this import d
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import CreateView, ListView, UpdateView, TemplateView, DeleteView
 from scm.models import (User, Order, Order_color_ratio_qty, Order_avatar,
                         Order_swatches, Order_size_specs,
                         Order_shipping_pics, Order_packing_ctn, Invoice,
                         Order_fitting_sample, Order_bulk_fabric, Order_shipping_sample,
-                        Order_packing_status, Order_Barcode, PPackingway)
+                        Order_packing_status, Order_Barcode, PPackingway, Check_item, Check_point, Qc_report,
+                        Check_record, Check_record_pics)
 from scm.forms import (
                        OrderForm, Order_color_ratio_qty_Form,
                        OrderavatarForm, OrdersizespecsForm,
@@ -12,11 +15,11 @@ from scm.forms import (
                        OrderpackingctnForm, InvoiceSearchForm, InvoiceForm,
                        OrderfittingsampleForm, OrderbulkfabricForm,
                        OrdershippingsampleForm, OrderpackingstatusForm,
-                       OrderbarcodeForm)
+                       OrderbarcodeForm, CheckrecordpicsForm)
 from django.contrib.auth.decorators import login_required
 from scm.decorators import (m_mg_or_required, factory_required, office_required,
                             order_is_shipped, packinglist_is_sented, o_m_mg_or_required,
-                            f_f_mg_or_required, merchandiser_manager_required)
+                            f_f_mg_or_required, qc_required, merchandiser_manager_required)
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 from django.db import transaction
@@ -36,6 +39,11 @@ from decouple import config
 from django.core.files.base import ContentFile
 from datetime import date, timedelta
 import calendar
+import json
+
+import smtplib
+from email.mime.text import MIMEText
+from email.header import Header
 
 
 # 订单列表-未确认(新建，已送工厂状态)
@@ -609,12 +617,12 @@ def packinglistsubmit(request, pk):
             # you+all
             if order.brand.name in ['You+All']:
                 if order.order_type == 'WEBORDER':
-                    accepted = actualqty in range(int(colorqty*0.9), int(colorqty*1.1) + 1)
+                    accepted = actualqty in range(int(colorqty*0.8), int(colorqty*1.2) + 1)
                     if not accepted:
                         messages.warning(request, 'You+All网单出货数，只接受正负20%!')
                         return redirect('order:packinglistadd', pk=order.pk)
                 else:
-                    accepted = actualqty in range(int(colorqty*0.95), int(colorqty*1.05) + 1)
+                    accepted = actualqty in range(int(colorqty*0.9), int(colorqty*1.1) + 1)
                     if not accepted:
                         messages.warning(request, 'You+All店铺单出货数，只接受正负10%!')
                         return redirect('order:packinglistadd', pk=order.pk)
@@ -632,7 +640,7 @@ def packinglistsubmit(request, pk):
     # 发邮件，发跟单和行政
     office_emails = User.objects.filter(is_office=True).values_list('email', flat=True)
     office_emails = list(office_emails)
-    print(office_emails)
+
     try:
         avatar_file = order.avatar.file
         encoded = base64.b64encode(open(avatar_file.path, "rb").read()).decode()
@@ -770,7 +778,6 @@ def getratio(request):
         ratiolist = list(map(int, ratiolist))
         if (order.created_date.replace(tzinfo=None)  -  date_allysize.replace(tzinfo=None)).days < 1:
             ratiolist = ratiolist + [0]
-            # print(ratiolist)
     data = {
         'ratio': ratiolist
     }
@@ -810,8 +817,7 @@ def invoiceadd(request):
 
         start_of_week  = mindate.replace(day=1)
         end_of_week = mindate.replace(day=calendar.monthrange(mindate.year, mindate.month)[1])
-        # print(start_of_week)
-        # print(end_of_week )
+
 
         new_invoiceno = increment_invoice_number()
         if maxdate >= start_of_week and maxdate <= end_of_week:
@@ -1234,13 +1240,11 @@ def orderlistinfo(request):
 
     orderpklist = request.POST.getlist('orderpk')
 
-    print(orderpklist)
     if not orderpklist:
         return redirect('order:orderlistconfirmed')
     else:
         orderlist = Order.objects.in_bulk(orderpklist)
         orderlist = orderlist.values()
-    print(orderlist)
 
     for i in range(len(orderpklist)):
         order = get_object_or_404(Order, pk=orderpklist[i])
@@ -1248,10 +1252,307 @@ def orderlistinfo(request):
         colorqtys = order.colorqtys.all().order_by('-created_date')
         packingway_dict[orderpklist[i]]=packingways
         colorqtys_dict[orderpklist[i]]=colorqtys
-    print(packingway_dict)
-    print(colorqtys_dict)
 
 
     return render(request, 'order_info_list.html', {'orderlist': orderlist, 'packingway_dict':packingway_dict, 'colorqtys_dict':colorqtys_dict})
 
 
+# new qc report
+@login_required
+def newqcreport(request):
+    user = request.user
+    orderpklist = request.POST.getlist('orderpk')
+
+    if len(orderpklist)==0:
+        return redirect('order:orderlistconfirmed')
+    else:
+        orderpk = int(orderpklist[0])
+        order = Order.objects.get(pk=orderpk)
+    
+    new_reports = Qc_report.objects.all().filter(status='NEW', order=order)
+
+    if len(new_reports)==0:
+        new_report = Qc_report.objects.create(created_by=user, order=order)
+        return redirect('order:editqcreport', pk=new_report.pk, checkitem_number=0)
+    else:
+        template_name = 'qc_report_alert.html'
+        
+        return render(request, template_name, {'new_reports':new_reports})
+
+
+@login_required
+def editqcreport(request,pk,checkitem_number):
+
+    qc_report = Qc_report.objects.get(pk=pk)
+    order = qc_report.order
+
+    check_items = Check_item.objects.all()
+    check_items_len = len(check_items)
+
+    if checkitem_number==0:
+        check_item = ''
+        check_points  = ''
+        check_item_before = ''
+        check_item_after = ''
+        selected_check_point_id_list = ''
+        selected_check_point_grade_list = ''
+        selected_check_point_ratio_list = ''
+        
+    else:
+        check_items =''
+        # for new page
+        check_item = Check_item.objects.get(number=checkitem_number)
+        check_points = Check_point.objects.filter(check_item=check_item)
+
+        selected_check_point_id_list = []
+        selected_check_point_grade_list = []
+        selected_check_point_ratio_list = []
+
+        check_records = Check_record.objects.filter(qc_report=qc_report, check_item=check_item)
+
+        for i in range(len(check_records)):
+            check_record = check_records[i]
+            check_point_id = check_record.check_point.pk
+            check_point_grade = check_record.get_grade_display()
+            check_point_ratio = check_record.ratio
+            selected_check_point_id_list.append(check_point_id)
+            selected_check_point_grade_list.append(check_point_grade)
+            selected_check_point_ratio_list.append(check_point_ratio)
+
+        if checkitem_number!=check_items_len:
+            check_item_before = check_item.number - 1
+            check_item_after = check_item.number + 1
+        else:
+            check_item_before = check_item.number - 1
+            check_item_after = check_items_len
+
+
+    template_name = 'qc_report_edit.html'
+
+    return render(request, template_name, context = {'qc_report':qc_report, 'order':order, 
+                  'check_item':check_item, 'check_points': check_points ,
+                  'check_items':check_items, 'check_item_before':check_item_before,
+                  'check_item_after':check_item_after, 'check_items_len':check_items_len,
+                  'selected_check_point_id_list': selected_check_point_id_list, 'selected_check_point_grade_list':selected_check_point_grade_list,
+                  'selected_check_point_ratio_list': selected_check_point_ratio_list})
+
+@login_required
+def qcreportapi(request):
+    checkitem_pk = request.GET.get('checkitem_pk',None)
+    table_data = request.GET.get('query', None)
+    qcreport_pk = request.GET.get('qcreport_pk', None)
+    qc_report = Qc_report.objects.get(pk=qcreport_pk)
+    check_item_table = Check_item.objects.get(pk=checkitem_pk)
+    if table_data!='[]':
+        table_data = json.loads(table_data)
+        check_points_table = Check_point.objects.filter(check_item=check_item_table)
+        check_points_table_ids = check_points_table.values_list('pk', flat=True)
+        selected_check_points_ids = [int(item[1]) for item in table_data]
+        diff_ids = list(set(check_points_table_ids) - set(selected_check_points_ids))
+
+        if len(diff_ids)>0:
+            for i in range(len(diff_ids)):
+                pk=diff_ids[i]
+                check_point_unselect = Check_point.objects.get(pk=pk)
+                Check_record.objects.filter(qc_report=qc_report, check_point=check_point_unselect).delete()
+
+        for i in range(len(table_data)):
+            grade = table_data[i][2]
+            if grade=='严重':
+                grade_value='YZ'
+            if grade=='次要':
+                grade_value='CY'
+            if grade=='请选择':
+                grade_value=None
+
+            ratio = table_data[i][3]
+
+            check_point = Check_point.objects.get(pk=table_data[i][1])
+
+            query_checkpoint = Check_record.objects.filter(qc_report=qc_report, check_point=check_point)
+            
+            if len(query_checkpoint)>0:
+                Check_record.objects.filter(qc_report=qc_report, check_point=check_point).update(
+                    qc_report=qc_report, check_point=check_point,  check_item=check_item_table,
+                    grade=grade_value, ratio=ratio
+                    )
+            else:
+                Check_record.objects.create(qc_report=qc_report, check_point=check_point,  check_item=check_item_table,
+                    grade=grade_value, ratio=ratio)
+    
+    else:
+        Check_record.objects.filter(qc_report=qc_report, check_item=check_item_table).delete()
+    data = {'status': 1}
+
+    return JsonResponse(data)
+
+
+@login_required
+def qcreportsum(request,pk):
+
+    qc_report = Qc_report.objects.get(pk=pk)
+    order = qc_report.order
+
+    qc_report.status = 'FINISH'
+    qc_report.save()
+
+    check_records = Check_record.objects.filter(qc_report=qc_report).order_by('check_item__number')
+    template_name = 'qc_report_sum.html'
+
+    return render(request, template_name, context = {'check_records':check_records, 'order':order, 'qc_report':qc_report})
+
+
+
+# 发送QC报告
+@login_required
+def sendqcreport(request, pk):
+    qc_report = Qc_report.objects.get(pk=pk)
+    order = qc_report.order
+
+    try:
+        avatar_file = order.avatar.file
+        encoded = base64.b64encode(open(avatar_file.path, "rb").read()).decode()
+    except ObjectDoesNotExist:
+        encoded = ''
+
+
+    factoryemail = str(order.factory.email)
+    merchandiseremail = str(order.merchandiser.user.email)
+    merchandiser_m_email = User.objects.filter(is_merchandiser_manager=True).values_list('email', flat=True)
+    merchandiser_m_email = list(merchandiser_m_email)
+    
+    merchandiser_m_email.append(factoryemail)
+    merchandiser_m_email.append(merchandiseremail)
+
+    sender_email = 'SCM@monayoung.com.au'
+    receiver_email = merchandiser_m_email
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "缘色SCM-新查货报告通知"
+    message["From"] = sender_email
+    message["To"] = ','.join(receiver_email)  
+    orderpo = order.po
+    orderstyleno = order.style_no
+    brand = order.brand.name
+    created_date = qc_report.created_date.strftime("%Y-%m-%d %H:%M:%S")
+    created_by = qc_report.created_by
+    report_link = qc_report.get_absolute_url()
+    picscollection_link = report_link.replace("sum", "picscollection")
+
+    html = f"""\
+        <html>
+        <body>
+        <h3>新查货报告！</h3>
+        
+        <h3>订单号:{orderpo}</h3>
+        <h3>款号:{orderstyleno}</h3>
+        <h3>品牌:{brand}</h3>
+
+        <h3>查货日期:{created_date}</h3>
+        <h3>查货人员:{created_by}</h3>
+
+        <h3>报告链接:<a href="{report_link}">查看</a></h3>
+        <h3>图片汇总链接:<a href="{picscollection_link}">查看</a></h3>
+        <h3>图片:</h3>
+        <img src="data:image/jpg;base64,{encoded}" width=200px height=200px>
+        </body>
+        </html>
+        """
+    part = MIMEText(html, "html")
+    message.attach(part)
+    with smtplib.SMTP(config('EMAIL_HOST'), config('EMAIL_PORT', cast=int)) as server:
+        server.login(config('EMAIL_HOST_USER'), config('EMAIL_HOST_PASSWORD')) 
+        server.sendmail(sender_email, receiver_email, message.as_string()
+            )
+    messages.success(request, '邮件发送成功!')
+    return redirect('order:qcreportsum', pk=pk)
+
+# 显示全部QCREPORT
+def qrall(request, orderpk):
+    data = dict()
+    order = get_object_or_404(Order, pk=orderpk)
+    qs = order.qcreports.all().order_by('-created_date')
+    data['html_qr_list'] = render_to_string('qr_list_all.html', {'qs': qs})
+    data['pk'] = orderpk
+    return JsonResponse(data)
+
+
+# 只显示最近3个QCREPORT
+def qrthree(request, orderpk):
+    data = dict()
+    order = get_object_or_404(Order, pk=orderpk)
+    qs = order.qcreports.all().order_by('-created_date')[0:3]
+    qs_showlist = []
+    for i in range(len(qs)):
+        qr = qs[i]
+        if request.user == qr.created_by:
+            qs_showlist.append(1)
+        else:
+            qs_showlist.append(0)
+    data['html_qr_list'] = render_to_string('qr_list.html', {'qs': qs})
+    data['qs_showlist'] = qs_showlist
+    data['pk'] = orderpk
+    return JsonResponse(data)
+
+# qr删除
+def qrdelete(request, pk):
+    qr = get_object_or_404(Qc_report, pk=pk)
+    qr.delete()
+
+    return redirect('order:orderlistconfirmed')
+
+
+# 查货照片上传
+@login_required
+def checkrecordpicsadd(request, pk):
+    checkrecord = get_object_or_404(Check_record, pk=pk)
+    form = CheckrecordpicsForm(request.POST, request.FILES)
+    if request.method == 'POST':
+        if form.is_valid():
+            with transaction.atomic():
+                attach = form.save(commit=False)
+                attach.checkrecord = checkrecord
+                attach.save()
+                data = {"files": [{
+                            "name": attach.file.name,
+                            "url": attach.file.url, },
+                            ]}
+        else:
+            data = {'is_valid': False}
+        return JsonResponse(data)
+    else:
+        return render(request, 'checkrecordpicsadd.html', {'checkrecord': checkrecord})
+
+
+
+@login_required
+def checkrecordpicscollection(request, pk):
+    checkrecord = get_object_or_404(Check_record, pk=pk)
+    qcreport = checkrecord.qc_report
+    pics = checkrecord.pics.all()
+    if request.user == qcreport.created_by:
+        show = 1
+    else:
+        show = 0
+    return render(request, 'checkrecord_pics_collection.html', {'checkrecord': checkrecord,
+                  'pics': pics, 'show':show})
+
+@login_required
+def checkrecordpicdelete(request, pk):
+    pic = get_object_or_404(Check_record_pics, pk=pk)
+    check_record = pic.checkrecord
+    pic.delete()
+    return redirect('order:checkrecordpicscollection', pk=check_record.pk)
+    
+@login_required
+def qcreportpicscollection(request, pk):
+    qr = get_object_or_404(Qc_report, pk=pk)
+    order = qr.order
+    checkrecords = Check_record.objects.filter(qc_report=qr)
+    if request.user == qr.created_by:
+        show = 1
+    else:
+        show = 0
+
+    return render(request, 'qcreport_pics_collection.html', {'qr': qr,
+                  'order': order, 'checkrecords': checkrecords, 'show':show})

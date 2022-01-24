@@ -61,6 +61,24 @@ urlpatterns = [
         path('<int:pk>/colorqty/add/', order.colorqtyadd, name='colorqtyadd'),
         path('<int:pk>/colorqty/<int:colorqtypk>/', order.colorqtyedit, name='colorqtyedit'),
         path('<int:pk>/colorqty/<int:colorqtypk>/delete/', order.colorqtydelete, name='colorqtydelete'),
+        #qc_report
+        path('qcreport/add/', order.newqcreport, name='newqcreport'),
+        path('qcreport/api/', order.qcreportapi, name='qcreportapi'),
+        path('qcreport/<int:pk>/sum/', order.qcreportsum, name='qcreportsum'),
+        path('qcreport/<int:pk>/sum/send', order.sendqcreport, name='sendqcreport'),
+        path('qcreport/<int:pk>/checkitem/<int:checkitem_number>/', order.editqcreport, name='editqcreport'),
+        
+        path('<int:orderpk>/qcreports/all/', order.qrall, name='qrall'),
+        path('<int:orderpk>/qcreports/3/', order.qrthree, name='qrthree'),
+        path('qr/<int:pk>/delete/', order.qrdelete, name='qrdelete'),
+
+        path('checkrecord/<int:pk>/picsadd/', order.checkrecordpicsadd, name='checkrecordpicsadd'),
+        path('checkrecord/<int:pk>/picscollection/', order.checkrecordpicscollection, name='checkrecordpicscollection'),
+        path('checkrecord/pic/<int:pk>/delete/', order.checkrecordpicdelete, name='checkrecordpicdelete'),
+
+        path('qcreport/<int:pk>/picscollection/', order.qcreportpicscollection, name='qcreportpicscollection'),
+
+
         # 订单送工厂，通知工厂
         path('<int:pk>/sentfactory/', order.ordersentfactory, name='ordersentfactory'),
         # 订单确认

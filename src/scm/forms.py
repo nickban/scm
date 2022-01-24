@@ -11,7 +11,7 @@ from .models import (User, Factory,
                      Order_swatches, Order_shipping_pics, Order_avatar,
                      Order_packing_ctn, Invoice, Order_fitting_sample,
                      Order_bulk_fabric, Order_shipping_sample, Order_packing_status,
-                     Mainlabel, Maintag, Additiontag, Order_Barcode)
+                     Mainlabel, Maintag, Additiontag, Order_Barcode, Check_record_pics)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
@@ -530,3 +530,8 @@ class SetPasswordForm(forms.Form):
         super(SetPasswordForm, self).__init__(*args, **kwargs)
 
 
+# 查货照片
+class CheckrecordpicsForm(forms.ModelForm):
+    class Meta:
+        model = Check_record_pics
+        fields = ('file',)

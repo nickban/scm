@@ -1,4 +1,4 @@
-{% extends 'base_home.html' %}
+{% extends 'base_file_upload.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 
@@ -17,12 +17,12 @@
             {% else %}
             <input id="fileupload" type="file" name="file" class="inputfile" data-url="{% url 'order:orderattachadd' pk=order.pk attachtype=attachtype%}"  multiple>
             {% endif %}
-            <label for="fileupload">请点击选择文件...</label>
+            <label for="fileupload"><a class="btn btn-outline-primary" role="button">请选择文件..</a></label>
         </div>
         {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
-            <a class="btn btn-outline-primary" href="{% url 'order:orderedit' order.pk %}" role="button">返回</a>
+        <a class="col-1 btn btn-outline-primary" href="{% url 'order:orderedit' order.pk %}" role="button">返回</a>
         {% else %}
-            <a class="btn btn-outline-primary" href="{% url 'order:orderdetail' order.pk %}" role="button">返回</a>
+        <a class="col-1 btn btn-outline-primary" href="{% url 'order:orderdetail' order.pk %}" role="button">返回</a>
         {% endif %}
     </form>
 {% endblock %}

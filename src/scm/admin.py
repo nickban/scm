@@ -6,7 +6,9 @@ from .models import (Sample, User, Style, Brand, Merchandiser, Designer,
                      Order_size_specs, Invoice, Order_fitting_sample,
                      Mainlabel, Maintag, Additiontag, Packingtype, Order_packing_ctn,
                      Order_packing_status, PShippingsample, PSparebutton,
-                     PWashinglabel, PPackingway)
+                     PWashinglabel, PPackingway, Check_item, Check_point, Qc_report,
+                    Check_record, Check_record_pics)
+
 
 admin.site.register(User)
 admin.site.register(Sample)
@@ -39,4 +41,8 @@ admin.site.register(PShippingsample)
 admin.site.register(PSparebutton)
 admin.site.register(PWashinglabel)
 admin.site.register(PPackingway)
-
+admin.site.register(Check_item)
+admin.site.register(Check_point)
+admin.site.register(Qc_report)
+admin.site.register(Check_record)
+admin.site.register(Check_record_pics)

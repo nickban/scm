@@ -9,25 +9,22 @@
 {% block content %}
 <div>
   <div class="form-group d-flex flex-wrap align-items-end">
-    {% for attach in attaches %}
-        <a href="{{attach.file.url}}">
-        <img src="{{ attach.file.url}}" width=300 height=300 class="img-thumbnail"></a>    
-      {% if order.status == 'NEW' or order.status == 'SENT_FACTORY' or order.status == 'CONFIRMED' %}
-            <a data-title="提示" class="delete" href="{% url 'order:orderattachdelete' pk=order.pk attachtype=attachtype attach_pk=attach.pk %}">
+    <p>检查项目:{{checkrecord.check_item.name}}/  编号:{{checkrecord.check_point.number}}/   名称:{{checkrecord.check_point.name}}/  等级:{{checkrecord.get_grade_display}}/    比列:{{checkrecord.ratio}}</p>
+  </div>
+  
+  <div class="form-group d-flex flex-wrap align-items-end">
+    {% for pic in pics %}
+        <a href="{{pic.file.url}}">
+        <img src="{{ pic.file.url}}" width=300 height=300 class="img-thumbnail"></a>    
+        {% if show == 1 %}
+            <a data-title="提示" class="delete" href="{% url 'order:checkrecordpicdelete' pk=pic.pk %}">
             <i class="mx-2 far fa-trash-alt fa-1x"></i></a> 
       {% endif %}
     {% endfor %}
   </div>
-  <div class="form-group">
-    {% if order.status == 'SHIPPED'%}
-       <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderdetail' pk=order.pk%}" role="button">返回</a>
-    {% else %}
-        {% if request.user.is_merchandiser or  request.user.is_merchandiser_manager%}
-          <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderedit' pk=order.pk%}" role="button">返回</a>
-        {% else%}
-          <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderdetail' pk=order.pk%}" role="button">返回</a>
-        {% endif %}
-    {% endif %}
+
+  <div class="form-group d-flex flex-wrap align-items-end">
+    <a class="col-3 btn btn-outline-primary" role="button" onclick="window.close();">退出</a>
   </div>
 </div>
 {% endblock %}

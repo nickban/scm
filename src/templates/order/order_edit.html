@@ -170,42 +170,51 @@
             </div>
             <div class="row">
                 <div class="col-12 mt-2">
-                    {% if sizespecs %}
-                    <ul class="list-group list-group-horizontal d-flex flex-wrap ">
-                    {% for sizespec in sizespecs %}
-                        <li class="list-group-item border rounded mr-1">
-                            <a href="{{ sizespec.file.url }}">{{ sizespec.file.name |basename }}</a> 
-                            <a data-title="提示" class="delete" href="{% url 'order:orderattachdelete' pk=order.pk  attachtype='sizespecs' attach_pk=sizespec.pk %}">
-                            <i class="far fa-trash-alt fa-1x"></i></a> 
-                        </li>
-                    {% endfor %}
-                    </ul>
-                    {% endif %}
+
+                        {% if sizespecs %}
+                        <ul class="list-inline list-group-horizontal d-flex flex-wrap ">
+                        {% for sizespec in sizespecs %}
+
+                            <li class="list-group-item border rounded mr-1">
+                                <a href="{{ sizespec.file.url }}">{{ sizespec.file.name |basename }}</a> 
+                                <a data-title="提示" class="delete" href="{% url 'order:orderattachdelete' pk=order.pk  attachtype='sizespecs' attach_pk=sizespec.pk %}">
+                                <i class="far fa-trash-alt fa-1x"></i></a>
+                            </li>
+
+                        {% endfor %}
+                        </ul>
+                        {% endif %}
+
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12 mt-1">
+            <div class="row mt-0">
+                <div class="col ">
                     <div class="form-group">
                         {{ form.comments |as_crispy_field }}
                     </div>
                 </div>
-            </div>
-            <div class="row my-2">
-                <div class="col-12">
+                <div class="col ">
                     <div class="form-group">
                         {{ form.matchcolor |as_crispy_field }}
                     </div>
                 </div>
+                <div class="col">
+                    <div class="form-group">
+                        {{ form.PShippingsample |as_crispy_field }}
+                    </div>
+                </div>
             </div>
-            <!-- 主唛挂牌 -->
-            <div class="row">
+
+            <div class="row mt-2">
                 <div class="col-sm ">
                     <div class="form-group">
                         {{ form.main_label |as_crispy_field }}
                     </div>
+                </div>
+                <div class="col-sm ">
                     {% if order.pk and order.main_label%}
                     <div class="form-group mt-1">
-                        <img  height='40' src="{{ order.main_label.file.url}}"  alt="主唛照片">
+                        <img  class="w-100" height=125px src="{{ order.main_label.file.url}}"  alt="主唛照片">
                     </div>
                     {% endif %}
                 </div>
@@ -213,9 +222,11 @@
                     <div class="form-group">
                         {{ form.main_tag |as_crispy_field }}
                     </div>
+                </div>
+                <div class="col-sm ">
                     {% if order.pk and order.main_tag%}
                     <div class="form-group mt-1">
-                        <img height='40' src="{{ order.main_tag.file.url}}" alt="挂牌照片" >
+                        <img class="w-100" height=125px src="{{ order.main_tag.file.url}}" alt="挂牌照片" >
                     </div>
                     {% endif %}
                 </div>
@@ -223,38 +234,23 @@
                     <div class="form-group">
                         {{ form.addition_tag |as_crispy_field }}
                     </div>
+                </div>
+                <div class="col-sm ">
                     {% if order.pk and order.addition_tag%}
                     <div class="form-group mt-1">
-                        <img height='40' src="{{ order.addition_tag.file.url}}" alt="附加挂牌照片" >
+                        <img class="w-100" height=125px src="{{ order.addition_tag.file.url}}" alt="附加挂牌照片" >
                     </div>
                     {% endif %}
-                </div>
-                <div class="col-sm ">
-                    <div class="form-group">
-                        {{ form.season_code |as_crispy_field }}
-                    </div>
-
-                </div>
-                <div class="col-sm ">
-                    <div class="form-group">
-                        {{ form.pgr_code |as_crispy_field }}
-                    </div>
-
-                </div>
-                <div class="col-sm ">
-                    <div class="form-group">
-                        {{ form.itemgroup_code |as_crispy_field }}
-                    </div>
                 </div>
             </div>
                 
             <div class="row my-2">
-                <div class="col-sm">
+                <div class="col-sm-6">
                     <div class="form-group">
-                        {{ form.PShippingsample |as_crispy_field }}
+                        {{ form.PSparebutton |as_crispy_field }}
                     </div>
                 </div>
-                <div class="col-sm">
+                <div class="col-sm-2">
                     <div class="form-group">
                         {{ form.PHangingtape |as_crispy_field }}
                     </div>
@@ -262,13 +258,6 @@
                 <div class="col-sm">
                     <div class="form-group">
                         {{ form.PWashinglabel |as_crispy_field }}
-                    </div>
-                </div>
-            </div>
-            <div class="row my-2">
-                <div class="col-sm">
-                    <div class="form-group">
-                        {{ form.PSparebutton |as_crispy_field }}
                     </div>
                 </div>
             </div>

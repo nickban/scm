@@ -1,7 +1,9 @@
+from pydoc import describe
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
+from django.conf import settings
 import os
 
 
@@ -898,3 +900,84 @@ class Order_child_order(models.Model):
                               on_delete=models.CASCADE,
                               related_name='childorders')
     child_order = models.CharField('小单', max_length=200)
+
+
+# for qc report
+class Check_item(models.Model):
+    name = models.CharField('检查类别', max_length=100)
+    number = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+
+class Check_point(models.Model):
+    name = models.CharField('检查项目', max_length=100)
+    number = models.CharField('序号', max_length=20)
+    description = models.CharField('描述', max_length=200,blank=True, null=True)
+    check_item = models.ForeignKey(Check_item,
+                              on_delete=models.CASCADE,
+                              verbose_name='检查类别',
+                              related_name='Checkpoints')
+    def __str__(self):
+        return self.name
+
+class Qc_report(models.Model):
+    NEW = 'NEW'
+    FINISH = 'FINISH'
+    REPORT_STATUS = [
+        (NEW, '新建'),
+        (FINISH, '完成'),
+    ]
+    created_date = models.DateTimeField('创建日期', auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='质检人员')
+    order = models.ForeignKey(Order,
+                              on_delete=models.CASCADE,
+                              related_name='qcreports')
+    status = models.CharField('状态',
+                              max_length=100,
+                              choices=REPORT_STATUS,
+                              default=NEW)
+    def get_absolute_url(self):
+        host = settings.ALLOWED_HOSTS[0]
+        if settings.DEBUG == True:
+            host = host + ':8000'
+        # print(host)
+        return host + "/order/qcreport/%i/sum/" % self.id
+    
+
+
+class Check_record(models.Model):
+    YZ = 'YZ'
+    CY = 'CY'
+
+    GRADE = [
+        (None, '请选择'),
+        (YZ, '严重'),
+        (CY, '次要'),
+    ]
+
+    qc_report = models.ForeignKey(Qc_report,
+                              on_delete=models.CASCADE,
+                              related_name='checkrecords')
+
+    check_point = models.ForeignKey(Check_point,
+                              on_delete=models.CASCADE)
+
+    check_item  = models.ForeignKey(Check_item,
+                              on_delete=models.CASCADE)
+
+    grade = models.CharField('严重等级',
+                              max_length=50,
+                              choices=GRADE,
+                              blank=True,
+                              null=True)
+
+    ratio = models.CharField('比列', max_length=50, null=True)
+    file = models.ImageField(upload_to='order/qc/', blank=True)
+    
+# 查货照片
+class Check_record_pics(models.Model):
+    file = models.FileField(upload_to='order/checkrecordpics/', blank=True)
+    checkrecord = models.ForeignKey(Check_record,
+                                on_delete=models.CASCADE,
+                                related_name='pics')

@@ -89,7 +89,7 @@
                         <a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='shipppingpics'%}">
                         <span class="badge badge-success">查看</span></a>
                         {% else %}
-                        <h6><span class="badge badge-warning">未上传</span></h6>
+                        <span class="badge badge-warning">未上传</span>
                         {% endif %}
                 </div>
 
@@ -112,16 +112,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <!-- <div class="col-12 text-left pl-0">
-                        <label for="packing_type">小单</label>
-                    </div>
-                    <div style="min-height: 38px" class="fielddetail col-12  border border-1 rounded text-left">
-                        {% if not order.childorder %}
-                        
-                        {% else %}
-                            {{ order.get_childorder_display}}
-                        {% endif %}
-                    </div> -->
                     <div class="col-12 text-left pl-0">
                         <label for="packing_type">资料</label>
                     </div>
@@ -298,11 +288,11 @@
             </div>
         </div>
 
-        <div class="row my-2">
+        <div class="row">
             <div class="col-12">
                 <div class="form-group">
                     {% if sizespecs %}
-                        <ul class="list-group list-group-horizontal d-flex flex-wrap">
+                        <ul class="list-inline list-group-horizontal d-flex flex-wrap">
                         {% for sizespec in sizespecs %}
                         <li class="list-group-item">
                             <a href="{{ sizespec.file.url }}">{{ sizespec.file.name |basename }}</a> 
@@ -312,8 +302,8 @@
                 </div>
             </div>
         </div>
-        <div class="row my-2">
-            <div class="col-12">
+        <div class="row">
+            <div class="col">
                 <div class="form-group">
                     <span class="mr-5">生产板评语</span>
                 </div>
@@ -321,9 +311,7 @@
                     {{ order.comments | linebreaks }}
                 </div>
             </div>
-        </div>
-        <div class="row my-2">
-            <div class="col-12">
+            <div class="col">
                 <div class="form-group">
                     <span class="mr-5">配色要求</span>
                 </div>
@@ -331,7 +319,20 @@
                     {{ order.matchcolor | linebreaks }}
                 </div>
             </div>
+            <div class="col">
+                <div class="form-group">
+                    <span class="mr-5">船头板</span>
+                    <div style="min-height: 38px" class="fielddetail border border-1 rounded form-group">
+                        {% if not order.PShippingsample %}
+                        
+                        {% else %}
+                            {{ order.PShippingsample | linebreaks}}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
+
         <div class="row">
             <div class="col-sm">
                 <div class="form-group">
@@ -346,12 +347,16 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="form-group mt-1">
-                    {% if not order.main_label %}
-                        
-                    {% else %}
-                        <img height='40' src="{{ order.main_label.file.url}}" alt="主唛照片" >
-                    {% endif %}
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <div class="form-group mt-1">
+                        {% if not order.main_label %}
+                            
+                        {% else %}
+                            <img class="w-100" height=125px  src="{{ order.main_label.file.url}}" alt="主唛照片" >
+                        {% endif %}
+                    </div>
                 </div>
             </div>
             <div class="col-sm">
@@ -367,11 +372,13 @@
                         {% endif %}
                     </div>
                 </div>
+            </div>
+            <div class="col-sm">
                 <div class="form-group mt-1">
                     {% if not order.main_tag %}
                         
                     {% else %}
-                        <img height='40' src="{{ order.main_tag.file.url}}" alt="挂牌照片" >
+                        <img class="w-100" height=125px  src="{{ order.main_tag.file.url}}" alt="挂牌照片" >
                     {% endif %}
                     
                 </div>
@@ -381,7 +388,7 @@
                     <div class="col-12 text-left pl-0">
                         <label for="addition_tag">附加挂牌</label>
                     </div>
-                    <div style="min-height: 38px" class="fielddetail col-12  border border-1 rounded text-left">
+                    <div class="w-100" height=125px class="fielddetail col-12  border border-1 rounded text-left">
                         {% if not order.addition_tag %}
                         
                         {% else %}
@@ -389,79 +396,36 @@
                         {% endif %}
                     </div>
                 </div>
+            </div>
+            <div class="col-sm">
                 <div class="form-group mt-1">
                     {% if not order.addition_tag %}
                         
                     {% else %}
-                        <img height='40' src="{{ order.addition_tag.file.url}}" alt="附件挂牌照片" >
+                        <img class="w-100" height=125px  src="{{ order.addition_tag.file.url}}" alt="附件挂牌照片" >
                     {% endif %}
                     
                 </div>
             </div>
-            <div class="col-sm">
-                <div class="form-group">
-                    <div class="col-12 text-left pl-0">
-                        <label for="addition_tag">SEASON</label>
-                    </div>
-                    <div style="min-height: 38px" class="fielddetail col-12  border border-1 rounded text-left">
-                        {% if not order.season_code %}
-                        
-                        {% else %}
-                            {{ order.season_code}}
-                        {% endif %}
-                    </div>
-                </div>
-
-            </div>
-            <div class="col-sm">
-                <div class="form-group">
-                    <div class="col-12 text-left pl-0">
-                        <label for="addition_tag">PGR</label>
-                    </div>
-                    <div style="min-height: 38px" class="fielddetail col-12  border border-1 rounded text-left">
-                        {% if not order.pgr_code %}
-                        
-                        {% else %}
-                            {{ order.pgr_code}}
-                        {% endif %}
-                    </div>
-                </div>
-
-            </div>
-            <div class="col-sm">
-                <div class="form-group">
-                    <div class="col-12 text-left pl-0">
-                        <label for="addition_tag">ITEM GROUP</label>
-                    </div>
-                    <div style="min-height: 38px" class="fielddetail col-12  border border-1 rounded text-left">
-                        {% if not order.itemgroup_code %}
-                        
-                        {% else %}
-                            {{ order.itemgroup_code}}
-                        {% endif %}
-                    </div>
-                </div>
-
-            </div>
         </div>
         <div class="row my-2">
-            <div class="col-sm">
+            <div class="col-sm-6">
                 <div class="form-group">
-                    <div class="col-12 text-left pl-0">
-                        <label for="addition_tag">船头板</label>
+                    <div class="text-left pl-0">
+                        <label for="addition_tag">备用扣</label>
                     </div>
                     <div style="min-height: 38px" class="fielddetail col-12  border border-1 rounded text-left">
-                        {% if not order.PShippingsample %}
+                        {% if not order.PSparebutton %}
                         
                         {% else %}
-                            {{ order.PShippingsample}}
+                            {{ order.PSparebutton}}
                         {% endif %}
                     </div>
                 </div>
             </div>
-            <div class="col-sm">
+            <div class="col-sm-2">
                 <div class="form-group">
-                    <div class="col-12 text-left pl-0">
+                    <div class="text-left pl-0">
                         <label for="addition_tag">挂衣绳</label>
                     </div>
                     <div style="min-height: 38px" class="fielddetail col-12  border border-1 rounded text-left">
@@ -476,7 +440,7 @@
             </div>
             <div class="col-sm">
                 <div class="form-group">
-                    <div class="col-12 text-left pl-0">
+                    <div class="text-left pl-0">
                         <label for="addition_tag">洗水唛</label>
                     </div>
                     <div style="min-height: 38px" class="fielddetail col-12  border border-1 rounded text-left">
@@ -484,22 +448,6 @@
                         
                         {% else %}
                             {{ order.PWashinglabel}}
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row my-2">
-            <div class="col-sm">
-                <div class="form-group">
-                    <div class="col-12 text-left pl-0">
-                        <label for="addition_tag">备用扣</label>
-                    </div>
-                    <div style="min-height: 38px" class="fielddetail col-12  border border-1 rounded text-left">
-                        {% if not order.PSparebutton %}
-                        
-                        {% else %}
-                            {{ order.PSparebutton}}
                         {% endif %}
                     </div>
                 </div>
