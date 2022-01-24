@@ -973,7 +973,8 @@ class Check_record(models.Model):
                               null=True)
 
     ratio = models.CharField('比列', max_length=50, null=True)
-    file = models.ImageField(upload_to='order/qc/', blank=True)
+    comments = models.CharField('QC备注', max_length=500, null=True)
+
     
 # 查货照片
 class Check_record_pics(models.Model):

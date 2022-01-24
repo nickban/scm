@@ -1297,6 +1297,8 @@ def editqcreport(request,pk,checkitem_number):
         selected_check_point_id_list = ''
         selected_check_point_grade_list = ''
         selected_check_point_ratio_list = ''
+        selected_check_point_commennts_list = ''
+        
         
     else:
         check_items =''
@@ -1307,6 +1309,7 @@ def editqcreport(request,pk,checkitem_number):
         selected_check_point_id_list = []
         selected_check_point_grade_list = []
         selected_check_point_ratio_list = []
+        selected_check_point_commennts_list = []
 
         check_records = Check_record.objects.filter(qc_report=qc_report, check_item=check_item)
 
@@ -1315,9 +1318,11 @@ def editqcreport(request,pk,checkitem_number):
             check_point_id = check_record.check_point.pk
             check_point_grade = check_record.get_grade_display()
             check_point_ratio = check_record.ratio
+            check_point_comments= check_record.comments
             selected_check_point_id_list.append(check_point_id)
             selected_check_point_grade_list.append(check_point_grade)
             selected_check_point_ratio_list.append(check_point_ratio)
+            selected_check_point_commennts_list.append(check_point_comments)
 
         if checkitem_number!=check_items_len:
             check_item_before = check_item.number - 1
@@ -1334,7 +1339,8 @@ def editqcreport(request,pk,checkitem_number):
                   'check_items':check_items, 'check_item_before':check_item_before,
                   'check_item_after':check_item_after, 'check_items_len':check_items_len,
                   'selected_check_point_id_list': selected_check_point_id_list, 'selected_check_point_grade_list':selected_check_point_grade_list,
-                  'selected_check_point_ratio_list': selected_check_point_ratio_list})
+                  'selected_check_point_ratio_list': selected_check_point_ratio_list,
+                  'selected_check_point_commennts_list':selected_check_point_commennts_list})
 
 @login_required
 def qcreportapi(request):
@@ -1366,6 +1372,7 @@ def qcreportapi(request):
                 grade_value=None
 
             ratio = table_data[i][3]
+            comments = table_data[i][4]
 
             check_point = Check_point.objects.get(pk=table_data[i][1])
 
@@ -1374,11 +1381,10 @@ def qcreportapi(request):
             if len(query_checkpoint)>0:
                 Check_record.objects.filter(qc_report=qc_report, check_point=check_point).update(
                     qc_report=qc_report, check_point=check_point,  check_item=check_item_table,
-                    grade=grade_value, ratio=ratio
-                    )
+                    grade=grade_value, ratio=ratio,comments=comments)
             else:
                 Check_record.objects.create(qc_report=qc_report, check_point=check_point,  check_item=check_item_table,
-                    grade=grade_value, ratio=ratio)
+                    grade=grade_value, ratio=ratio,comments=comments)
     
     else:
         Check_record.objects.filter(qc_report=qc_report, check_item=check_item_table).delete()
@@ -1436,9 +1442,12 @@ def sendqcreport(request, pk):
     brand = order.brand.name
     created_date = qc_report.created_date.strftime("%Y-%m-%d %H:%M:%S")
     created_by = qc_report.created_by
-    report_link = qc_report.get_absolute_url()
-    picscollection_link = report_link.replace("sum", "picscollection")
-
+    report_link_old = qc_report.get_absolute_url()
+    report_link = 'http://' + report_link_old
+    picscollection_link_old = report_link_old.replace("sum", "picscollection")
+    picscollection_link = 'http://' + picscollection_link_old
+    print(report_link)
+    print(picscollection_link)
     html = f"""\
         <html>
         <body>
@@ -1548,7 +1557,7 @@ def checkrecordpicdelete(request, pk):
 def qcreportpicscollection(request, pk):
     qr = get_object_or_404(Qc_report, pk=pk)
     order = qr.order
-    checkrecords = Check_record.objects.filter(qc_report=qr)
+    checkrecords = Check_record.objects.filter(qc_report=qr).order_by('check_item__number')
     if request.user == qr.created_by:
         show = 1
     else:

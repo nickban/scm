@@ -45,16 +45,17 @@
     </div>
 </div>
 
-<table id="dataTable" class="table responsive-table mt-3">
+<table id="dataTable" class="table responsive-table table-hover mt-3">
     <thead>
     <tr>
-        <th scope="col-sm">检查项目</th>
-        <th scope="col-sm">编号</th>
-        <th scope="col-sm">名称</th>
-        <th class="w-50"scope="col">描述</th>
-        <th class="w-10" scope="col">瑕疵等级</th>
-        <th class="w-10" scope="col">比列</th>
-        <th class="w-10" scope="col">照片</th>
+        <th class="col-sm-1" scope="col">检查项目</th>
+        <th class="col-sm-1" scope="col">编号</th>
+        <th class="col-sm-1" scope="col">名称</th>
+        <th class="col-sm-4" scope="col">描述</th>
+        <th class="col-sm-2" scope="col">QC备注</th>
+        <th class="col-sm-1" scope="col">瑕疵等级</th>
+        <th class="col-sm-0" scope="col">比列</th>
+        <th class="col-sm-0" scope="col">照片</th>
     </tr>
     </thead>
     <tbody>
@@ -69,6 +70,8 @@
             <td>{{check_record.check_point.description}}</td>
             {% endif %}
             
+            <td>{{check_record.comments}}</td>
+            
             {% if check_record.grade == None %}
                 <td></td>
             {% else %}
@@ -77,8 +80,8 @@
         
             <td>{{check_record.ratio}}</td>
 
-            <td><a id={{check_record.pk}} class="upload btn btn-block btn-outline-primary"  role="button">上传</a></td>
-            <td><a id={{check_record.pk}} class="collection btn btn-block btn-outline-primary"  role="button">查看</a></td>
+            <td><a id={{check_record.pk}} class="upload btn btn-block btn-outline-primary"  role="button">上传</a>
+                <a id={{check_record.pk}} class="collection btn btn-block btn-outline-primary"  role="button">查看</a></td>
         </tr>
         {% endfor %}
         </tbody>

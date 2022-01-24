@@ -61,10 +61,10 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">检查条目</th>
-                <th class="col-sm-6"scope="col">描述</th>
-                <th class="col-sm-2" scope="col">瑕疵等级</th>
+                <th class="col-sm-4"scope="col">描述</th>
+                <th class="col-sm-3" scope="col">QC备注</th>
+                <th class="col-sm-1" scope="col">瑕疵等级</th>
                 <th class="col-sm-1" scope="col">比列</th>
-                <!-- <th class="col-sm-1" scope="col">照片</th> -->
             </tr>
             </thead>
             <tbody>
@@ -77,6 +77,7 @@
                 {% else %}
                 <td>{{check_point.description}}</td>
                 {% endif %}
+                <td><input class="form-control comments" type="text"></td>
                 <td>
                     <select class="form-control select">
                         <option>请选择</option>
@@ -108,6 +109,11 @@
                     <a id="Afterward_ID" href="{% url 'order:editqcreport' pk=qc_report.pk checkitem_number=check_item_after %}" class="btn btn-block btn-outline-primary"  role="button">下一项</a>
                 </div>
             </div>
+            <div class="col">
+                <div class="form-group mt-2">
+                    <a id="Last_ID" href="{% url 'order:editqcreport' pk=qc_report.pk checkitem_number=check_items_len %}" class="btn btn-block btn-outline-primary"  role="button">最后一项</a>
+                </div>
+            </div>
             {% endif %}
           </div>
         {% endif %}
@@ -121,6 +127,7 @@
     var selected_check_point_id_list= "{{selected_check_point_id_list}}"
     var selected_check_point_grade_list = "{{selected_check_point_grade_list}}"
     var selected_check_point_ratio_list = "{{selected_check_point_ratio_list}}"
+    var selected_check_point_commennts_list = "{{selected_check_point_commennts_list}}"
     function trimdata(data){
         new_data = []
             // console.log(data)
@@ -140,22 +147,25 @@
     selected_check_point_id_list= trimdata(selected_check_point_id_list)
     selected_check_point_grade_list = trimdata(selected_check_point_grade_list)
     selected_check_point_ratio_list= trimdata(selected_check_point_ratio_list)
+    selected_check_point_commennts_list= trimdata(selected_check_point_commennts_list)
 
     // console.log(selected_check_point_id_list)
     // console.log(selected_check_point_grade_list )
     // console.log(selected_check_point_ratio_list)
 
     if (selected_check_point_id_list.length >= 0){
-        fill_data(selected_check_point_id_list,selected_check_point_grade_list,selected_check_point_ratio_list)
+        fill_data(selected_check_point_id_list,selected_check_point_grade_list,
+        selected_check_point_ratio_list,selected_check_point_commennts_list)
     }
 
-    function fill_data(checkboxdata,gradedata,ratiodata){
+    function fill_data(checkboxdata,gradedata,ratiodata,commentsdata){
         var checkboxs = $( ".checkbox");
         for (var i = 0; i < checkboxs.length; i++) {
 
             var tr= $(checkboxs[i]).parent().parent()
             var select = $(tr).find(".select")
             var ratio = $(tr).find(".ratio")
+            var comments = $(tr).find(".comments")
 
             value= $(checkboxs[i]).val()
 
@@ -165,6 +175,7 @@
             if (index >= 0){
                 grade_value = gradedata[index]
                 ratio_value = ratiodata[index]
+                comments_value = commentsdata[index]
 
                 $(checkboxs[i]).prop( "checked", true)
                 console.log('grade_value')
@@ -173,6 +184,7 @@
                 $(select).val(grade_value)
                 
                 $(ratio).val(ratio_value)
+                $(comments).val(comments_value)
 
 
             }
@@ -188,6 +200,10 @@
     }) 
 
     $( "#Finish_ID" ).on('click', function(){
+        navClick('');
+    }) 
+
+    $( "#Last_ID" ).on('click', function(){
         navClick('');
     }) 
 
@@ -212,15 +228,18 @@
                 var tr= $(checkboxs[i]).parent().parent()
                 var select = $(tr).find(".select")
                 var ratio = $(tr).find(".ratio")
+                var comments = $(tr).find(".comments")
 
                 checkpoint_pk = $(checkboxs[i]).val()
                 select_value = select.val()
                 ratio_value = ratio.val()
+                comments_value = comments.val()
 
                 row_data.push(checkitem_pk)
                 row_data.push(checkpoint_pk)
                 row_data.push(select_value)
-                row_data.push(ratio_value )
+                row_data.push(ratio_value)
+                row_data.push(comments_value )
 
                 table_data.push(row_data)
             }
