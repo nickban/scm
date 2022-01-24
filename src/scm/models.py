@@ -913,7 +913,7 @@ class Check_item(models.Model):
 class Check_point(models.Model):
     name = models.CharField('检查项目', max_length=100)
     number = models.CharField('序号', max_length=20)
-    description = models.CharField('描述', max_length=200,blank=True, null=True)
+    description = models.CharField('描述', max_length=500,blank=True, null=True)
     check_item = models.ForeignKey(Check_item,
                               on_delete=models.CASCADE,
                               verbose_name='检查类别',
