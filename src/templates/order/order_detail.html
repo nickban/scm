@@ -222,7 +222,7 @@
                             {{ order.factory_price}}
                         {% endif %}
                     </div>
-                    {% if not request.user.is_factory %}
+                    {% if request.user.is_merchandiser or request.user.is_merchandiser_manager %}
                     <div class="form-group">
                         <div class="col-12 text-left pl-0">
                             <label for="disigner_price">客人价格</label>
@@ -270,7 +270,7 @@
                             {{ order.handover_date_f |date:"SHORT_DATE_FORMAT" }}
                         {% endif %}
                     </div>
-                    {% if not request.user.is_factory %}
+                    {% if request.user.is_merchandiser or request.user.is_merchandiser_manager %}
                     <div class="form-group">
                         <div class="col-12 text-left pl-0">
                             <label for="handover_date_d">客人交期</label>
