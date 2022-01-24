@@ -42,7 +42,12 @@ admin.site.register(PSparebutton)
 admin.site.register(PWashinglabel)
 admin.site.register(PPackingway)
 admin.site.register(Check_item)
-admin.site.register(Check_point)
 admin.site.register(Qc_report)
 admin.site.register(Check_record)
 admin.site.register(Check_record_pics)
+
+
+class Check_pointAdmin(admin.ModelAdmin):
+    # a list of displayed columns name.
+    list_display = ['check_item', 'number', 'name', 'description']
+admin.site.register(Check_point, Check_pointAdmin)
