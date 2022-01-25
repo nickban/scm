@@ -149,6 +149,12 @@ class OrderListShipThisWeek(ListView):
         else:
             qs = Order.objects.filter(handover_date_f__range=(beginning_of_week, end_of_week), status='CONFIRMED')
             return qs
+        
+    def get_context_data(self, **kwargs):
+        kwargs['listtype'] = 'confirmed'
+        return super().get_context_data(**kwargs)
+
+
 
 # 订单新建
 @method_decorator([login_required, m_mg_or_required], name='dispatch')
