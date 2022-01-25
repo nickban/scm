@@ -351,7 +351,7 @@
                       <!-- 每个订单只显示最近3条进度记录 -->
                       {% for each in order.qcreports.all|slice:":3" %}
                         <li >时间:{{each.created_date |date:"Y/m/d" }}  查货人:{{each.created_by}}
-                             <a href="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ each.get_absolute_url }}">查看报告</a>
+                             <a href="{{ each.get_absolute_url }}">查看报告</a>
                         </li>
                       {% endfor %}
                     {% endif %}
