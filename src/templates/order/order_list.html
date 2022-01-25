@@ -45,7 +45,7 @@
         <table id="orderlistnew" class="table table-hover">
           <thead>
             <tr>
-              {% if request.user.is_merchandiser%}
+              {% if request.user.is_merchandiser or request.user.is_merchandiser_manager %}
               <th></th>
               {% endif %}
               <th>创建日期</th>
@@ -75,7 +75,7 @@
           <tbody>
             {% for order in orders %}
               <tr>
-                {% if request.user.is_merchandiser%}
+                {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
                 <td class="text-right"><input class="form-check-input" type="checkbox" value="{{order.pk}}"  name="orderpk"></td>
                 {% endif %}
                 <td>{{ order.created_date |date:"Y/m/d"  }}</td>

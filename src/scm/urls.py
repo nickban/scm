@@ -78,6 +78,7 @@ urlpatterns = [
 
         path('qcreport/<int:pk>/picscollection/', order.qcreportpicscollection, name='qcreportpicscollection'),
 
+        path('qcreport/list/', order.qcreportlist, name='qcreportlist'),
 
         # 订单送工厂，通知工厂
         path('<int:pk>/sentfactory/', order.ordersentfactory, name='ordersentfactory'),

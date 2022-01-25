@@ -1,5 +1,6 @@
 from distutils.command import check
 from this import d
+from urllib import request
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import CreateView, ListView, UpdateView, TemplateView, DeleteView
 from scm.models import (User, Order, Order_color_ratio_qty, Order_avatar,
@@ -1399,8 +1400,9 @@ def qcreportsum(request,pk):
     qc_report = Qc_report.objects.get(pk=pk)
     order = qc_report.order
 
-    qc_report.status = 'FINISH'
-    qc_report.save()
+    if qc_report.status != 'SEND':
+        qc_report.status = 'FINISH'
+        qc_report.save()
 
     check_records = Check_record.objects.filter(qc_report=qc_report).order_by('check_item__number')
     template_name = 'qc_report_sum.html'
@@ -1414,6 +1416,9 @@ def qcreportsum(request,pk):
 def sendqcreport(request, pk):
     qc_report = Qc_report.objects.get(pk=pk)
     order = qc_report.order
+
+    qc_report.status = 'SEND'
+    qc_report.save()
 
     try:
         avatar_file = order.avatar.file
@@ -1442,12 +1447,8 @@ def sendqcreport(request, pk):
     brand = order.brand.name
     created_date = qc_report.created_date.strftime("%Y-%m-%d %H:%M:%S")
     created_by = qc_report.created_by
-    report_link_old = qc_report.get_absolute_url()
-    report_link = 'http://' + report_link_old
-    picscollection_link_old = report_link_old.replace("sum", "picscollection")
-    picscollection_link = 'http://' + picscollection_link_old
-    print(report_link)
-    print(picscollection_link)
+    report_link = qc_report.get_absolute_url()
+    picscollection_link = report_link.replace("sum", "picscollection")
     html = f"""\
         <html>
         <body>
@@ -1565,3 +1566,33 @@ def qcreportpicscollection(request, pk):
 
     return render(request, 'qcreport_pics_collection.html', {'qr': qr,
                   'order': order, 'checkrecords': checkrecords, 'show':show})
+
+# QCREPORT LIST
+@login_required
+def qcreportlist(request):
+    loginuser = request.user
+    if loginuser.is_merchandiser:
+        qcreports = Qc_report.objects.filter(Q(order__merchandiser=loginuser.merchandiser)).order_by('-created_date')
+
+    elif loginuser.is_factory:
+        qcreports =  Qc_report.objects.filter(Q(order__factory=loginuser.factory)).order_by('-created_date')
+
+    else:
+        qcreports =  Qc_report.objects.all().order_by('-created_date')
+
+    gradesum = [] 
+
+    for i in range(len(qcreports)):
+        grade = []
+        qcreport = qcreports[i]
+        checkrecords = qcreport.checkrecords
+
+        checkrecords_yz_count = checkrecords.filter(grade='YZ').count()
+        checkrecords_cy_count = checkrecords.filter(grade='CY').count()
+        grade.append(checkrecords_yz_count)
+        grade.append(checkrecords_cy_count)
+        gradesum.append(grade)
+
+    template_name = 'qcreport_list.html'
+    
+    return render(request, template_name, {'qcreports': qcreports, 'gradesum':gradesum}) 

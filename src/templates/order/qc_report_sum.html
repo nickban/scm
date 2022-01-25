@@ -80,8 +80,12 @@
         
             <td>{{check_record.ratio}}</td>
 
-            <td><a id={{check_record.pk}} class="upload btn btn-block btn-outline-primary"  role="button">上传</a>
-                <a id={{check_record.pk}} class="collection btn btn-block btn-outline-primary"  role="button">查看</a></td>
+            <td>
+                {% if request.user == qc_report.created_by%}
+                <a id={{check_record.pk}} class="upload btn btn-block btn-outline-primary"  role="button">上传</a>
+                {% endif %}
+                <a id={{check_record.pk}} class="collection btn btn-block btn-outline-primary"  role="button">查看</a>
+            </td>
         </tr>
         {% endfor %}
         </tbody>

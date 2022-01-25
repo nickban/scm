@@ -924,9 +924,11 @@ class Check_point(models.Model):
 class Qc_report(models.Model):
     NEW = 'NEW'
     FINISH = 'FINISH'
+    SEND = 'SEND'
     REPORT_STATUS = [
         (NEW, '新建'),
         (FINISH, '完成'),
+        (SEND, '已发送'),
     ]
     created_date = models.DateTimeField('创建日期', auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='质检人员')
@@ -942,9 +944,15 @@ class Qc_report(models.Model):
         if settings.DEBUG == True:
             host = host + ':8000'
         # print(host)
-        return host + "/order/qcreport/%i/sum/" % self.id
-    
+        return 'http://' + host + "/order/qcreport/%i/sum/" % self.id
 
+    def get_grade_sum(self):
+
+        checkrecords = self.checkrecords.all()
+        checkrecords_yz_count = checkrecords.filter(grade='YZ').count()
+        checkrecords_cy_count = checkrecords.filter(grade='CY').count()
+
+        return '严重问题:' + str(checkrecords_yz_count) + ';' + '次要问题:' + str(checkrecords_cy_count) + ';'
 
 class Check_record(models.Model):
     YZ = 'YZ'
