@@ -31,30 +31,15 @@ $(function () {
         type: 'get',
         dataType: 'json',
         success: function (data) {
+          console.log('aaaaa')
           pk = data['pk']
           id = 'qr' + pk
           element = $('#' + id);
+          qs_showlist = data['qs_showlist']
+          console.log(qs_showlist)
           element.html(data.html_qr_list);
           }
         });
       });
     });
 
-    // qr删除,由于是动态生产的，一定要下面的这种写法
-    $(document).on('click', '.qr-delete', function () {
-      var id = $(this).attr("id");
-      console.log('getqrid')
-      var idno = id.slice(3)
-      url = '/qcreport/' + idno + '/delete/'
-      $.ajax({
-        url: url,
-        type: 'get',
-        dataType: 'json',
-        success: function (data) {
-          pk = data['pk']
-          id = 'qr' + pk
-          element = $('#' + id);
-          element.html(data.html_qr_list);
-        }
-      });
-    });
