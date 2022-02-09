@@ -11,7 +11,8 @@ from .models import (User, Factory,
                      Order_swatches, Order_shipping_pics, Order_avatar,
                      Order_packing_ctn, Invoice, Order_fitting_sample,
                      Order_bulk_fabric, Order_shipping_sample, Order_packing_status,
-                     Mainlabel, Maintag, Additiontag, Order_Barcode, Check_record_pics)
+                     Mainlabel, Maintag, Additiontag, Order_Barcode, Check_record_pics,
+                     Qc_report)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
 from django.utils.translation import ugettext_lazy as _
@@ -535,3 +536,22 @@ class CheckrecordpicsForm(forms.ModelForm):
     class Meta:
         model = Check_record_pics
         fields = ('file',)
+
+# QCREPORT
+class QcreportForm(forms.ModelForm):
+
+    class Meta:
+        model = Qc_report
+        fields = ('product_status', 'color', 'ratio')
+        error_messages = {
+                    'product_status': {
+                        'required': "必填字段！",
+                    },
+                    'color': {
+                        'required': "必填字段！",
+                    },
+                    'ratio': {
+                        'required': "必填字段！",
+                    },
+                }
+

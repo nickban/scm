@@ -16,7 +16,7 @@ from scm.forms import (
                        OrderpackingctnForm, InvoiceSearchForm, InvoiceForm,
                        OrderfittingsampleForm, OrderbulkfabricForm,
                        OrdershippingsampleForm, OrderpackingstatusForm,
-                       OrderbarcodeForm, CheckrecordpicsForm)
+                       OrderbarcodeForm, CheckrecordpicsForm, QcreportForm)
 from django.contrib.auth.decorators import login_required
 from scm.decorators import (m_mg_or_required, factory_required, office_required,
                             order_is_shipped, packinglist_is_sented, o_m_mg_or_required,
@@ -1311,11 +1311,46 @@ def newqcreport(request):
 
     if len(new_reports)==0:
         new_report = Qc_report.objects.create(created_by=user, order=order)
-        return redirect('order:editqcreport', pk=new_report.pk, checkitem_number=0)
+        form = QcreportForm()
+        template_name = 'qc_report_new.html'
+        
+        return render(request, template_name, {'new_report':new_report, 'form':form, 'order':order})
+        # return redirect('order:editqcreport', pk=new_report.pk, checkitem_number=0)
     else:
         template_name = 'qc_report_alert.html'
         
         return render(request, template_name, {'new_reports':new_reports})
+
+
+@login_required
+def updateqcreport(request,pk):
+    
+    new_report = Qc_report.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = QcreportForm(request.POST)
+        if form.is_valid():
+            new_report.product_status = form.cleaned_data['product_status']
+            new_report.color = form.cleaned_data['color']
+            new_report.ratio = form.cleaned_data['ratio']
+            new_report.save()
+            
+            return redirect('order:editqcreport', pk=new_report.pk, checkitem_number=0)
+        else:
+            messages.warning(request, '请填写带*的字段信息!')
+            template_name = 'qc_report_new.html'
+            form = QcreportForm()
+            order = new_report.order
+            return render(request, template_name, {'new_report':new_report, 'form':form, 'order':order})
+
+    else:
+
+        template_name = 'qc_report_new.html'
+        form = QcreportForm(instance=new_report)
+        order = new_report.order
+        
+        return render(request, template_name, {'new_report':new_report, 'form':form, 'order':order})
+
+
 
 
 @login_required

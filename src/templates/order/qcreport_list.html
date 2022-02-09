@@ -18,6 +18,7 @@
       <th scope="col">款号</th>
       <th scope="col">跟单</th>
       <th scope="col">工厂</th>
+      <th scope="col">大货状态</th>
       <th scope="col">严重程度统计</th>
       <th scope="col">报告</th>
       <th scope="col">状态</th>
@@ -32,6 +33,16 @@
       <td>{{qcreport.order.style_no}}</td>
       <td>{{qcreport.order.merchandiser}}</td>
       <td>{{qcreport.order.factory}}</td>
+      <td>
+        {% if qcreport.product_status == None %}
+        {% elif qcreport.product_status == NEW_P%}
+        刚出成品
+        {% elif qcreport.product_status == FINISH_P%}
+        成品全部完成
+        {% else %}
+        大货包装完成
+        {% endif %}
+      </td>
       <td>{{qcreport.get_grade_sum}}</td>
       <td><a href="{{qcreport.get_absolute_url}}">查看</a></td>
       <td>{{qcreport.get_status_display}}</td>

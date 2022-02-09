@@ -69,7 +69,7 @@
           {% for invoice in invoiceqs %}
           <tr>
             <td>{{ forloop.counter}}</td>
-            <td>{{ invoice.created_date |date:"SHORT_DATE_FORMAT"}}</td>
+            <td>{{ invoice.created_date |date:"Y/m/d" }}</td>
             <td><a href="{% url 'order:invoicedetail' invoice.pk%}">{{ invoice.invoice_no}}</a></td>
             <td>{{ invoice.factory}}</td>
             <td>{{ invoice.get_status_display}}</td>

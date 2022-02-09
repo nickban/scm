@@ -30,7 +30,7 @@
     </div>
     {% if request.user == qc_report.created_by%}
     <div class="col-2 form-group">
-        <a href="{% url 'order:editqcreport' pk=qc_report.pk checkitem_number=1 %}"  class="btn btn-block btn-outline-primary p-1" role="button">修改报告</a>
+        <a href="{% url 'order:updateqcreport' pk=qc_report.pk %}"  class="btn btn-block btn-outline-primary p-1" role="button">修改报告</a>
         <a href="{% url 'order:sendqcreport' pk=qc_report.pk %}"  class="btn btn-block btn-outline-primary p-1" role="button">发送报告</a>
         <a href="{% url 'order:qrdelete' pk=qc_report.pk %}"  class="btn btn-block btn-outline-primary p-1" role="button">删除报告</a>
     </div>

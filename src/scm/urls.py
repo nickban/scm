@@ -64,6 +64,7 @@ urlpatterns = [
         path('<int:pk>/colorqty/<int:colorqtypk>/delete/', order.colorqtydelete, name='colorqtydelete'),
         #qc_report
         path('qcreport/add/', order.newqcreport, name='newqcreport'),
+        path('qcreport/<int:pk>/update', order.updateqcreport, name='updateqcreport'),
         path('qcreport/api/', order.qcreportapi, name='qcreportapi'),
         path('qcreport/<int:pk>/sum/', order.qcreportsum, name='qcreportsum'),
         path('qcreport/<int:pk>/sum/send', order.sendqcreport, name='sendqcreport'),

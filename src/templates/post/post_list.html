@@ -29,7 +29,7 @@
         <tbody>
           {% for post in posts %}
             <tr>
-              <td>{{ post.create_time|date:"SHORT_DATE_FORMAT"  }}</td>
+              <td>{{ post.create_time |date:"Y/m/d"  }}</td>
               {% if request.user.is_office %}
               <td><a href="{% url 'post:postedit' post.pk %}">{{ post.title }}</a></td>
               {% else %}

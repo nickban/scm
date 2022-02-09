@@ -23,7 +23,7 @@
                 <li class="list-group-item">创建人:{{new_report.created_by}}</li>
                 <li class="list-group-item">状态:{% if new_report.status == 'NEW'%}新建{%endif%}</li>
                 <div class="form-group mt-2">
-                    <a class="btn btn-block btn-outline-primary" href="{% url 'order:editqcreport' pk=new_report.pk checkitem_number=0 %}" role="button">继续</a>
+                    <a class="btn btn-block btn-outline-primary" href="{% url 'order:updateqcreport' pk=new_report.pk %}" role="button">继续</a>
                 </div>
                 {% endfor %}
             </ul>

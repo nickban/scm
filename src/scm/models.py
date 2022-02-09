@@ -1,3 +1,4 @@
+from pickle import NONE
 from pydoc import describe
 from django.db import models
 from django.urls import reverse
@@ -930,6 +931,28 @@ class Qc_report(models.Model):
         (FINISH, '完成'),
         (SEND, '已发送'),
     ]
+
+    NEW_P = 'NEW_P'
+    FINISH_P = 'FINISH_P'
+    PACK_P = 'SEND_P'
+
+    PRODUCT_STATUS = [
+        (None, '请选择'),
+        (NEW_P, '刚出成品'),
+        (FINISH_P, '成品全部完成'),
+        (PACK_P, '大货包装完成'),
+    ]
+
+    ONE_C = 'ONE_C'
+    ALL_C = 'ALL_C'
+
+
+    COLOR_STATUS = [
+        (None, '请选择'),
+        (ONE_C, '单色'),
+        (ALL_C, '齐色'),
+    ]
+
     created_date = models.DateTimeField('创建日期', auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='质检人员')
     order = models.ForeignKey(Order,
@@ -939,6 +962,14 @@ class Qc_report(models.Model):
                               max_length=100,
                               choices=REPORT_STATUS,
                               default=NEW)
+    product_status = models.CharField('大货状态',
+                            max_length=100,
+                            choices=PRODUCT_STATUS)
+    color = models.CharField('颜色',
+                            max_length=100,
+                            choices=COLOR_STATUS)
+    ratio = models.CharField('抽查数量/件', max_length=50)
+
     def get_absolute_url(self):
         host = settings.ALLOWED_HOSTS[0]
         if settings.DEBUG == True:
