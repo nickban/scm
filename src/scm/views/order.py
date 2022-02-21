@@ -578,7 +578,8 @@ def packinglistadd(request, pk):
                                         size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'), size6=Sum('size6'),
                                         totalqty=Sum('sumtotalqty'))
     # packing_ctns_exclude_share = order.packing_ctns.filter(sharebox=False) ALLY增加尾箱后统计不对，改为全部箱数统计
-    packing_ctns_exclude_share = order.packing_ctns.all()
+    # packing_ctns_exclude_share = order.packing_ctns.all()
+    packing_ctns_exclude_share = order.packing_ctns.filter(sharebox=False)
     packing_ctns_exclude_share_grossweight = packing_ctns_exclude_share.annotate(gross_weight=F('totalboxes')*gross_weight)
     totalgrossweight = packing_ctns_exclude_share_grossweight.aggregate(totalgrossweight=Sum('gross_weight'))
     totalgrossweight = totalgrossweight['totalgrossweight']
@@ -745,7 +746,8 @@ def packinglistdetail(request, pk):
                                         size2=Sum('size2'), size3=Sum('size3'), size4=Sum('size4'), size5=Sum('size5'), size6=Sum('size6'),
                                         totalqty=Sum('sumtotalqty'))
     # packing_ctns_exclude_share = order.packing_ctns.filter(sharebox=False) ALLY增加尾箱后统计不对，改为全部箱数统计
-    packing_ctns_exclude_share = order.packing_ctns.all()
+    packing_ctns_exclude_share = order.packing_ctns.filter(sharebox=False)
+    # packing_ctns_exclude_share = order.packing_ctns.all()
     packing_ctns_exclude_share_grossweight = packing_ctns_exclude_share.annotate(gross_weight=F('totalboxes')*gross_weight)
     totalgrossweight = packing_ctns_exclude_share_grossweight.aggregate(totalgrossweight=Sum('gross_weight'))
     totalgrossweight = totalgrossweight['totalgrossweight']
