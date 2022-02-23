@@ -68,6 +68,7 @@ urlpatterns = [
         path('qcreport/api/', order.qcreportapi, name='qcreportapi'),
         path('qcreport/<int:pk>/sum/', order.qcreportsum, name='qcreportsum'),
         path('qcreport/<int:pk>/sum/send', order.sendqcreport, name='sendqcreport'),
+        path('qcreport/<int:pk>/finish', order.qcreportfinish, name='qcreportfinish'),
         path('qcreport/<int:pk>/checkitem/<int:checkitem_number>/', order.editqcreport, name='editqcreport'),
         
         path('<int:orderpk>/qcreports/all/', order.qrall, name='qrall'),

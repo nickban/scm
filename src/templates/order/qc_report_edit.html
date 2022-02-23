@@ -100,7 +100,7 @@
             {% if check_item.number == check_items_len %}
             <div class="col">
                 <div class="form-group mt-2">
-                    <a  id="Finish_ID" href="{% url 'order:qcreportsum' pk=qc_report.pk %}" class="btn btn-block btn-outline-primary"  role="button">完成</a>
+                    <a  id="Finish_ID" href="{% url 'order:qcreportfinish' pk=qc_report.pk %}" class="btn btn-block btn-outline-primary"  role="button">完成</a>
                 </div>
             </div>
             {% else %}

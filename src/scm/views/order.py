@@ -1469,9 +1469,8 @@ def qcreportapi(request):
 
     return JsonResponse(data)
 
-
 @login_required
-def qcreportsum(request,pk):
+def qcreportfinish(request,pk):
 
     qc_report = Qc_report.objects.get(pk=pk)
     order = qc_report.order
@@ -1479,6 +1478,19 @@ def qcreportsum(request,pk):
     if qc_report.status != 'SEND':
         qc_report.status = 'FINISH'
         qc_report.save()
+    
+        return redirect('order:qcreportsum', pk=qc_report.pk)
+
+
+@login_required
+def qcreportsum(request,pk):
+
+    qc_report = Qc_report.objects.get(pk=pk)
+    order = qc_report.order
+
+    # if qc_report.status != 'SEND':
+    #     qc_report.status = 'FINISH'
+    #     qc_report.save()
 
     check_records = Check_record.objects.filter(qc_report=qc_report).order_by('check_item__number')
     template_name = 'qc_report_sum.html'
