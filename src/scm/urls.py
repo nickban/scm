@@ -46,6 +46,7 @@ urlpatterns = [
         path('confirmed/', order.OrderListConfrimed.as_view(), name='orderlistconfirmed'),
         path('shipped/', order.OrderListShipped.as_view(), name='orderlistshipped'),
         path('shippedthisweek/', order.OrderListShipThisWeek.as_view(), name='orderlistshipthisweek'),
+        path('shippednextweek/', order.OrderListShipNextWeek.as_view(), name='orderlistshipnextweek'),
 
         # 订单信息汇总
         path('listinfo/', order.orderlistinfo, name='orderlistinfo'),
