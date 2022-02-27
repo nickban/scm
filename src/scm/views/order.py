@@ -132,13 +132,9 @@ class OrderListShipThisWeek(ListView):
     def get_queryset(self):
         loginuser = self.request.user
         today = date.today()
-        # print(today)
         day_of_week = today.weekday()
-        # print(day_of_week)
         to_beginning_of_week = datetime.timedelta(days=day_of_week)
-        # print(to_beginning_of_week)
         beginning_of_week = today - to_beginning_of_week
-        # print(beginning_of_week )
 
         to_end_of_week = datetime.timedelta(days=6 - day_of_week)
         end_of_week = today + to_end_of_week
