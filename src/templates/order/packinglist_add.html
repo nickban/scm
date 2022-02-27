@@ -512,6 +512,11 @@
                         totalqty = id_size1 + id_size2 + id_size3 + id_size4 + id_size5 + id_size6;
                         $("#id_totalqty").val(totalqty);
                 }
+                if(id_bags==0){
+                    $("#id_totalboxes").val(totalboxes);
+                        totalqty = id_size1 + id_size2 + id_size3 + id_size4 + id_size5 + id_size6;
+                    $("#id_totalqty").val(totalqty);
+                }
                 else{
                     $("#id_totalboxes").val(totalboxes);
                     $("#id_size1").val(colorratio[0]*id_bags);
