@@ -20,7 +20,7 @@ from scm.forms import (
 from django.contrib.auth.decorators import login_required
 from scm.decorators import (m_mg_or_required, factory_required, office_required,
                             order_is_shipped, packinglist_is_sented, o_m_mg_or_required,
-                            f_f_mg_or_required, qc_required, merchandiser_manager_required)
+                            f_f_mg_or_required, m_mg_qc_or_required, qc_required, merchandiser_manager_required)
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
 from django.db import transaction
@@ -1314,7 +1314,7 @@ def ordercopy(request, pk):
 
 # 创建ALLY订单资料汇总
 @login_required
-@m_mg_or_required
+@m_mg_qc_or_required
 def orderlistinfo(request):
     packingway_dict = {}
     colorqtys_dict={}

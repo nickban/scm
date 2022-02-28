@@ -37,15 +37,17 @@
     <div class="table-responsive">
       <form action="{% url 'order:orderlistinfo'%}" method="post">
         {%csrf_token%}
-        {% if  listtype == 'confirmed' and request.user.is_merchandiser%}
+        {% if  listtype == 'confirmed'%}
+          {% if request.user.is_merchandiser or request.user.is_qc %}
           <div class="col-2 pl-0 form-group">
             <input type="submit" value="订单信息汇总" class="btn btn-block btn-outline-primary">
           </div>
+          {% endif %}
         {% endif %}
         <table id="orderlistnew" class="table table-hover">
           <thead>
             <tr>
-              {% if request.user.is_merchandiser or request.user.is_merchandiser_manager %}
+              {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc %}
               <th></th>
               {% endif %}
               <th>创建日期</th>
@@ -75,7 +77,7 @@
           <tbody>
             {% for order in orders %}
               <tr>
-                {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
+                {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc%}
                 <td class="text-right"><input class="form-check-input" type="checkbox" value="{{order.pk}}"  name="orderpk"></td>
                 {% endif %}
                 <td>{{ order.created_date |date:"Y/m/d"  }}</td>
