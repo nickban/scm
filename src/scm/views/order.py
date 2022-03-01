@@ -6,7 +6,7 @@ from django.views.generic import CreateView, ListView, UpdateView, TemplateView,
 from scm.models import (User, Order, Order_color_ratio_qty, Order_avatar,
                         Order_swatches, Order_size_specs,
                         Order_shipping_pics, Order_packing_ctn, Invoice,
-                        Order_fitting_sample, Order_bulk_fabric, Order_shipping_sample,
+                        Order_fitting_sample, Order_bulk_fabric, Order_shipping_sample, Order_production,
                         Order_packing_status, Order_Barcode, PPackingway, Check_item, Check_point, Qc_report,
                         Check_record, Check_record_pics)
 from scm.forms import (
@@ -14,7 +14,7 @@ from scm.forms import (
                        OrderavatarForm, OrdersizespecsForm,
                        OrderswatchForm, OrdershippingpicsForm,
                        OrderpackingctnForm, InvoiceSearchForm, InvoiceForm,
-                       OrderfittingsampleForm, OrderbulkfabricForm,
+                       OrderfittingsampleForm, OrderbulkfabricForm, OrderproductionForm,
                        OrdershippingsampleForm, OrderpackingstatusForm,
                        OrderbarcodeForm, CheckrecordpicsForm, QcreportForm)
 from django.contrib.auth.decorators import login_required
@@ -1070,7 +1070,26 @@ def fsthree(request, pk):
     data['pk'] = pk
     return JsonResponse(data)
 
+# 显示全部pr进度
+def prall(request, pk):
+    data = dict()
+    order = get_object_or_404(Order, pk=pk)
+    qs = order.productions.all().order_by('-created_date')
+    data['form_is_valid'] = True
+    data['html_pr_list'] = render_to_string('pr_list_all.html', {'qs': qs})
+    data['pk'] = pk
+    return JsonResponse(data)
 
+
+# 只显示最近3个pr进度
+def prthree(request, pk):
+    data = dict()
+    order = get_object_or_404(Order, pk=pk)
+    qs = order.productions.all().order_by('-created_date')
+    data['form_is_valid'] = True
+    data['html_pr_list'] = render_to_string('pr_list.html', {'qs': qs})
+    data['pk'] = pk
+    return JsonResponse(data)
 
 # 生产板进度修改
 def fsedit(request, pk):
@@ -1188,6 +1207,34 @@ def shippingsample(request, pk):
     return JsonResponse(data)
 
 
+
+
+# 大货进度增加
+def production(request, pk):
+    pk = pk
+    data = dict()
+    order = get_object_or_404(Order, pk=pk)
+    print(order)
+    if request.method == 'POST':
+        form = OrderproductionForm(request.POST)
+        if form.is_valid():
+            production = form.save(commit=False)
+            production.order = order
+            production.save()
+            data['form_is_valid'] = True
+            qs = order.productions.all().order_by('-created_date')
+            data['html_pr_list'] = render_to_string('pr_list.html', {'qs': qs})
+        else:
+            data['form_is_valid'] = False
+    else:
+        form = OrderproductionForm()
+    context = {'form': form, 'pk': pk}
+    data['html_form'] = render_to_string('pr_create_form.html',
+                                         context,
+                                         request=request)
+    data['pk'] = pk
+    return JsonResponse(data)
+
 # 船头板进度删除
 def ssdelete(request, pk):
     data = dict()
@@ -1198,6 +1245,19 @@ def ssdelete(request, pk):
     qs = order.shippingsamples.all().order_by('-created_date')
     data['form_is_valid'] = True
     data['html_ss_list'] = render_to_string('ss_list.html', {'qs': qs})
+    data['pk'] = pk
+    return JsonResponse(data)
+
+# 大货进度删除
+def prdelete(request, pk):
+    data = dict()
+    pr = get_object_or_404(Order_production, pk=pk)
+    order = pr.order
+    pk = order.pk
+    pr.delete()
+    qs = order.productions.all().order_by('-created_date')
+    data['form_is_valid'] = True
+    data['html_pr_list'] = render_to_string('pr_list.html', {'qs': qs})
     data['pk'] = pk
     return JsonResponse(data)
 
@@ -1226,6 +1286,30 @@ def ssedit(request, pk):
     data['pk'] = pk
     return JsonResponse(data)
 
+# 大货进度修改
+def predit(request, pk):
+    data = dict()
+    pr = get_object_or_404(Order_production, pk=pk)
+    order = pr.order
+    pk = order.pk
+    if request.method == 'POST':
+        form = OrderproductionForm(request.POST, instance=pr)
+        if form.is_valid():
+            form.save()
+            qs = order.productions.all().order_by('-created_date')
+            data['form_is_valid'] = True
+            data['html_pr_list'] = render_to_string('pr_list.html', {'qs': qs})
+        else:
+            data['form_is_valid'] = False
+    else:
+        form = OrderproductionForm(instance=pr)
+    context = {'form': form, 'pk': pr.pk}
+    data['html_form'] = render_to_string('pr_edit_form.html',
+                                         context,
+                                         request=request)
+    data['pk'] = pk
+    return JsonResponse(data)
+
 
 def progessplist(request, type):
     loginuser = request.user
@@ -1241,6 +1325,12 @@ def progessplist(request, type):
     shipping_p = Order_shipping_sample.objects.filter(status="WARNING").values_list('order', flat=True)
     # 有船头板问题的订单
     orders_shipping_p = Order.objects.filter(pk__in=shipping_p)
+
+    # 有问题的大货进度记录对应的订单列表['orderid']
+    production_p = Order_production.objects.filter(status="WARNING").values_list('order', flat=True)
+    # 有大货问题的订单
+    orders_production_p = Order.objects.filter(pk__in=production_p)
+
     if type == 'fitting':
         if loginuser.is_factory:
             orders = orders_fitting_p.filter(factory=loginuser.factory)
@@ -1259,13 +1349,22 @@ def progessplist(request, type):
             orders = orders_bulk_fabric_p
         return render(request, 'order_list.html', {'orders': orders})
 
-    else:
+    elif type == 'shipingsample':
         if loginuser.is_factory:
             orders = orders_shipping_p.filter(factory=loginuser.factory)
         elif loginuser.is_merchandiser:
             orders = orders_shipping_p.filter(merchandiser=loginuser.merchandiser)
         else:
             orders = orders_shipping_p
+        return render(request, 'order_list.html', {'orders': orders})
+    
+    else:
+        if loginuser.is_factory:
+            orders = orders_production_p.filter(factory=loginuser.factory)
+        elif loginuser.is_merchandiser:
+            orders = orders_production_p.filter(merchandiser=loginuser.merchandiser)
+        else:
+            orders = orders_production_p
         return render(request, 'order_list.html', {'orders': orders})
 
 

@@ -23,7 +23,6 @@ $(function () {
     });
         // 显示3条fs记录
         $('.js-list-fs3').click(function () {
-          console.log(3)
           var parent = $(this).parent()
           var ul = parent.find('.list-unstyled')
           var id = ul.attr("id");

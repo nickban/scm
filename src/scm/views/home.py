@@ -3,7 +3,7 @@ from django.views.generic import (TemplateView,
                                   CreateView, ListView, UpdateView, DetailView,
                                   DeleteView)
 from scm.models import (Order, Order_bulk_fabric, Order_fitting_sample,
-                        Order_shipping_sample, User, Post, PostAttachment, Sample,
+                        Order_shipping_sample, Order_production, User, Post, PostAttachment, Sample,
                         Sample_os_pics, Mainlabel, Maintag, Additiontag,
                      Sample_size_specs, Sample_os_avatar,
                      Sample_swatches, Sample_quotation_form,
@@ -39,14 +39,24 @@ def home(request):
     bulk_fabric_p = Order_bulk_fabric.objects.filter(status="WARNING").values_list('order', flat=True)
     # 有大货布问题的订单
     orders_bulk_fabric_p = Order.objects.filter(pk__in=bulk_fabric_p)
+
     # 有问题的生产办进度记录对应的订单列表['orderid']
     fitting_p = Order_fitting_sample.objects.filter(status="WARNING").values_list('order', flat=True)
     # 有生产板问题的订单
     orders_fitting_p = Order.objects.filter(pk__in=fitting_p)
+
     # 有问题的船头板进度记录对应的订单列表['orderid']
     shipping_p = Order_shipping_sample.objects.filter(status="WARNING").values_list('order', flat=True)
     # 有船头板问题的订单
     orders_shipping_p = Order.objects.filter(pk__in=shipping_p)
+
+    # 有问题的大货进度记录对应的订单列表['orderid']
+    production_p = Order_production.objects.filter(status="WARNING").values_list('order', flat=True)
+    # 有船大货问题的订单
+    orders_production_p = Order.objects.filter(pk__in=production_p)
+
+    print(orders_production_p)
+    print(production_p)
 
     if loginuser.is_factory:
         samples = Sample.objects.filter(Q(factory=loginuser.factory), Q(status="SENT_F"))
@@ -60,6 +70,9 @@ def home(request):
         orders_shipping_p = orders_shipping_p.filter(factory=loginuser.factory)
         orders_shipping_p_number = orders_shipping_p.count()
 
+        orders_production_p = orders_production_p.filter(factory=loginuser.factory)
+        orders_production_p_number = orders_production_p.count()
+
     elif loginuser.is_merchandiser:
         samples = Sample.objects.filter(Q(merchandiser=loginuser.merchandiser), (Q(status="NEW") | Q(status="SENT_F")))
         samplesnumber = samples.count()
@@ -71,6 +84,10 @@ def home(request):
         orders_fitting_p_number = orders_fitting_p.count()
         orders_shipping_p = orders_shipping_p.filter(merchandiser=loginuser.merchandiser)
         orders_shipping_p_number = orders_shipping_p.count()
+
+        orders_production_p = orders_production_p.filter(merchandiser=loginuser.merchandiser)
+        orders_production_p_number = orders_production_p.count()
+
     else:
         samples = Sample.objects.filter(Q(status="NEW") | Q(status="SENT_F"))
         samplesnumber = samples.count()
@@ -80,11 +97,14 @@ def home(request):
         orders_fitting_p_number = orders_fitting_p.count()
         orders_shipping_p_number = orders_shipping_p.count()
 
+        orders_production_p_number = orders_production_p.count()
+
     return render(request, 'home.html', {'samplesnumber': samplesnumber,
                                          'ordernumbernotc': ordernumbernotc,
                                          'posts': posts,
                                          'orders_bulk_fabric_p_number': orders_bulk_fabric_p_number,
                                          'orders_fitting_p_number': orders_fitting_p_number,
+                                         'orders_production_p_number': orders_production_p_number,
                                          'orders_shipping_p_number': orders_shipping_p_number})
 
 

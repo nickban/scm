@@ -30,22 +30,19 @@
 var currentTime = new Date()
 var this_year = currentTime.getFullYear()
 
-console.log(this_year)
 
 $('#datepicker').val(this_year)
 
 var endpoint_path = '/report/api/profit/data/'
 var endpoint = endpoint_path + this_year
 
-console.log(endpoint)
 
 $(".report").click(function(event) {
     var year = $('#datepicker').val();
-    console.log(year)
 
     var endpoint_path = '/report/api/profit/data/'
     var endpoint = endpoint_path + year
-    console.log(endpoint)
+
 
     $.ajax({
         method: "GET",

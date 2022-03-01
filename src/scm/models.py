@@ -852,7 +852,8 @@ class Order_bulk_fabric(models.Model):
                               max_length=100,
                               choices=CHOICES,
                               default=NORMAL)
-
+    class Meta:
+        ordering = ['-created_date']
 
 class Order_fitting_sample(models.Model):
     NORMAL = 'NORMAL'
@@ -893,6 +894,29 @@ class Order_shipping_sample(models.Model):
                               max_length=100,
                               choices=CHOICES,
                               default=NORMAL)
+    class Meta:
+        ordering = ['-created_date']
+
+class Order_production(models.Model):
+    NORMAL = 'NORMAL'
+    WARNING = 'WARNING'
+    URGENT = 'URGENT'
+    CHOICES = [
+        (NORMAL, '正常'),
+        (WARNING, '警告'),
+    ]
+    created_date = models.DateTimeField(auto_now_add=True)
+    order = models.ForeignKey(Order,
+                              on_delete=models.CASCADE,
+                              related_name='productions')
+    production = models.CharField('大货进度', max_length=200)
+    status = models.CharField('状态',
+                              max_length=100,
+                              choices=CHOICES,
+                              default=NORMAL)
+    
+    class Meta:
+        ordering = ['-created_date']
 
 
 class Order_child_order(models.Model):
@@ -984,6 +1008,10 @@ class Qc_report(models.Model):
         checkrecords_cy_count = checkrecords.filter(grade='CY').count()
 
         return '严重问题:' + str(checkrecords_yz_count) + ';' + '次要问题:' + str(checkrecords_cy_count) + ';'
+
+    class Meta:
+        ordering = ['-created_date']
+
 
 class Check_record(models.Model):
     YZ = 'YZ'

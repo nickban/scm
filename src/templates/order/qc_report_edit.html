@@ -178,8 +178,8 @@
                 comments_value = commentsdata[index]
 
                 $(checkboxs[i]).prop( "checked", true)
-                console.log('grade_value')
-                console.log(grade_value)
+                // console.log('grade_value')
+                // console.log(grade_value)
 
                 $(select).val(grade_value)
                 
@@ -218,8 +218,8 @@
         checkitem_pk = $(checkitem_span).attr('id')
         qcreport_pk = $(qcreport_span).attr('id')
 
-        console.log(checkitem_pk)
-        console.log(qcreport_pk)
+        // console.log(checkitem_pk)
+        // console.log(qcreport_pk)
 
         for (var i = 0; i < checkboxs.length; i++) {
             if ( $(checkboxs[i]).prop( "checked" )){
@@ -249,7 +249,7 @@
 
         var data_json= JSON.stringify(table_data);
 
-        console.log(data_json)
+        // console.log(data_json)
 
         $.ajax({
             url: url,
@@ -260,7 +260,7 @@
                 'qcreport_pk':qcreport_pk,
             },
             success: function (data) {
-                console.log(data)
+                // console.log(data)
             }
         }); // end ajax
     };

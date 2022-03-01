@@ -31,12 +31,10 @@ $(function () {
         type: 'get',
         dataType: 'json',
         success: function (data) {
-          console.log('aaaaa')
           pk = data['pk']
           id = 'qr' + pk
           element = $('#' + id);
           qs_showlist = data['qs_showlist']
-          console.log(qs_showlist)
           element.html(data.html_qr_list);
           }
         });

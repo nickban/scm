@@ -109,6 +109,13 @@ urlpatterns = [
         path('<int:pk>/progress/ss/', order.shippingsample, name='shippingsample'),
         path('ss/<int:pk>/delete/', order.ssdelete, name='ssdelete'),
         path('ss/<int:pk>/edit/', order.ssedit, name='ssedit'),
+
+        # 大货进度增删改
+        path('<int:pk>/progress/pr/', order.production, name='production'),
+        path('pr/<int:pk>/delete/', order.prdelete, name='prdelete'),
+        path('pr/<int:pk>/edit/', order.predit, name='predit'),
+        path('<int:pk>/progress/pr/all/', order.prall, name='prall'),
+        path('<int:pk>/progress/pr/3/', order.prthree, name='prthree'),
         # 进度有问题的订单试图
         path('progressp/<str:type>/', order.progessplist, name='progessplist'),
         # 创建装箱单

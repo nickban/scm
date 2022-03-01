@@ -10,7 +10,7 @@ from .models import (User, Factory,
                      Order, Order_color_ratio_qty, Order_size_specs,
                      Order_swatches, Order_shipping_pics, Order_avatar,
                      Order_packing_ctn, Invoice, Order_fitting_sample,
-                     Order_bulk_fabric, Order_shipping_sample, Order_packing_status,
+                     Order_bulk_fabric, Order_shipping_sample, Order_packing_status, Order_production,
                      Mainlabel, Maintag, Additiontag, Order_Barcode, Check_record_pics,
                      Qc_report)
 from django.db import transaction
@@ -408,6 +408,11 @@ class OrdershippingsampleForm(forms.ModelForm):
         model = Order_shipping_sample
         fields = ('shipping_sample', 'status')
 
+# 订单船大货进度
+class OrderproductionForm(forms.ModelForm):
+    class Meta:
+        model = Order_production
+        fields = ('production', 'status')
 
 # 修改纸箱规格
 class OrderpackingstatusForm(forms.ModelForm):

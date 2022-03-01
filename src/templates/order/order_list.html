@@ -184,7 +184,7 @@
             {% if order.handover_date_f == None %}
             <td></td>
             {% else %}
-            <td>{{ order.handover_date_f |date:"SHORT_DATE_FORMAT" }}</td>
+            <td>{{ order.handover_date_f |date:"Y/m/d"  }}</td>
             {% endif %}
             <td><img src="{{ order.avatar.file.url }}" width=100px, height=100px></td>
             <!-- 生产板列表 -->
@@ -314,6 +314,7 @@
               <th style="min-width: 50px;">工厂</th>
               <th style="min-width: 70px;">工厂交期</th>
               <th style="min-width: 70px;">款式图</th>
+              <th style="min-width: 300px;">大货进度</th>
               <th style="min-width: 300px;">查货报告</th>
             </tr>
           </thead>
@@ -341,10 +342,43 @@
               {% if order.handover_date_f == None %}
               <td></td>
               {% else %}
-              <td>{{ order.handover_date_f |date:"SHORT_DATE_FORMAT" }}</td>
+              <td>{{ order.handover_date_f |date:"Y/m/d" }}</td>
               {% endif %}
               <td><img src="{{ order.avatar.file.url }}" width=100px, height=100px></td>
-              <!-- 生产板列表 -->
+              <!-- 大货进度 -->
+              <td>
+                <!-- 通过class:js-create-bf激活js -->
+                {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc%}
+                <i class="fas fa-plus-circle fa-1x js-create-pro"></i>
+                <i class="fas fa-list-ul js-list-prall"></i>
+                <i class="fas fa-list-ol js-list-pr3"></i>
+                {% endif%}
+                <!-- 设置唯一id, 传值给js, 因为页面有多个进度种类,前面加类别fs -->
+                <ul id=pr{{order.pk}} class="list-unstyled">
+                    {% if order.productions.count > 0 %}
+                      <!-- 每个订单只显示最近3条进度记录 -->
+                      {% for each in order.productions.all|slice:":3" %}
+                        {% if each.status == 'WARNING' %}
+                        <li style="color:red;">{{each.production}}
+                        {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc %}
+                          <!-- 删除进度图标, 设置id,传值js, fs-delete 用于js事件 -->
+                          <i id=prd{{each.pk}} class="mx-2 pr-delete far fa-trash-alt fa-1x"></i>
+                          <!-- 编辑进度图标, 设置id,传值js, fs-edit 用于js事件 -->
+                          <i id=pre{{each.pk}} class="pr-edit fas fa-edit fa-1x"></i>
+                        {% endif %}
+                        </li>
+                        {% else %}
+                        <li >{{each.production}}
+                        {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc%}
+                          <i id=prd{{each.pk}} class="mx-2 pr-delete far fa-trash-alt fa-1x"></i>
+                          <i id=pre{{each.pk}} class="pr-edit fas fa-edit fa-1x"></i>
+                        {% endif %}
+                        </li>
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+                </ul>
+              </td>
               <td>
                 <i class="fas fa-list-ul js-list-qrall"></i>
                 <i class="fas fa-list-ol js-list-qr3"></i>
@@ -363,7 +397,7 @@
                           大货包装完成
                           {% endif %}
                           -
-                             <a href="{{ each.get_absolute_url }}">查看报告</a>
+                             <a href="{{ each.get_absolute_url }}">报告</a>
                         </li>
                       {% endfor %}
                     {% endif %}
@@ -399,6 +433,14 @@
     </div>
   </div>
 </div>
+
+<!-- 大货的弹出框 -->
+<div class="modal fade" id="modal-pr">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block script %}
@@ -409,6 +451,7 @@
 <!-- 生产板进度js -->
 <script src="{% static 'js/fittingsample.js'%}"></script>
 <script src="{% static 'js/bulkfabric.js'%}"></script>
+<script src="{% static 'js/production.js'%}"></script>
 <script src="{% static 'js/shippingsample.js'%}"></script>
 <script src="{% static 'js/qcreport.js'%}"></script>
 <!-- datatable的js设置 -->
