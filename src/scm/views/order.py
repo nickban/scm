@@ -689,16 +689,16 @@ def packinglistsubmit(request, pk):
                         messages.warning(request, 'ALLY网单出货数，只接受正负10%!')
                         return redirect('order:packinglistadd', pk=order.pk)
                 else:
-                    accepted = actualqty in range(int(colorqty*0.95), int(colorqty*1.05) + 1)
+                    accepted = actualqty in range(int(colorqty*0.9), int(colorqty*1.1) + 1)
                     if not accepted:
-                        messages.warning(request, 'ALLY店铺单出货数，只接受正负5%!')
+                        messages.warning(request, 'ALLY店铺单出货数，只接受正负10%!')
                         return redirect('order:packinglistadd', pk=order.pk)
             # you+all
             if order.brand.name in ['You+All']:
                 if order.order_type == 'WEBORDER':
-                    accepted = actualqty in range(int(colorqty*0.8), int(colorqty*1.2) + 1)
+                    accepted = actualqty in range(int(colorqty*0.9), int(colorqty*1.1) + 1)
                     if not accepted:
-                        messages.warning(request, 'You+All网单出货数，只接受正负20%!')
+                        messages.warning(request, 'You+All网单出货数，只接受正负10%!')
                         return redirect('order:packinglistadd', pk=order.pk)
                 else:
                     accepted = actualqty in range(int(colorqty*0.9), int(colorqty*1.1) + 1)
