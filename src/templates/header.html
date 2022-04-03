@@ -38,8 +38,14 @@
         <a class="nav-link" href="{% url 'post:postlist' %}">历史信息</a>
       </li>
       {% if request.user.is_merchandiser or request.user.is_merchandiser_manager  %}
-      <li class="nav-item">
-        <a class="nav-link " href="{% url 'report:profit' %}">统计</a>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">统计</a>
+        <div class="dropdown-menu">
+
+          <a class="dropdown-item" href="{% url 'report:profit' %}">利润</a>
+          <a class="dropdown-item" href="{% url 'report:factoryqty' %}">接单数量</a>
+
+        </div>
       </li>
       {% endif %}
       {% if request.user.is_merchandiser_manager  %}

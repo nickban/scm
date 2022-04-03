@@ -4,10 +4,11 @@ from rest_framework.response import Response
 from django.views import View
 from django.shortcuts import render
 from django.db.models import F, Sum, DecimalField, ExpressionWrapper,  Q
-from scm.models import Order
+from scm.models import Factory, Order
 from django.utils.decorators import method_decorator
 from scm.decorators import m_mg_or_required
 from django.contrib.auth.decorators import login_required
+from scm.models import User
 
 
 @method_decorator([login_required, m_mg_or_required], name='dispatch')
@@ -23,7 +24,6 @@ class ProfitViewData(APIView):
 
     def get(self, request, *args, **kwargs):
         year = self.kwargs['pk']
-        print(year)
         dataall = []
         dataau = []
         datanz = []
@@ -105,6 +105,134 @@ class ProfitViewData(APIView):
             "datakr": datakr,
             "dataally": dataally,
             "datajojo": datajojo,
+        }   
+
+        return Response(data)
+
+
+
+
+@method_decorator([login_required, m_mg_or_required], name='dispatch')
+class Factory_Qty_View(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'chart_factory_qty.html')
+
+
+@method_decorator([login_required, m_mg_or_required], name='dispatch')
+class Factory_Qty_ViewData(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, *args, **kwargs):
+        year = self.kwargs['pk']
+        datazp = []
+        datasc = []
+        dataqx = []
+        databz = []
+        datajh = []
+        datajs = []
+        datals = []
+        datahy = []
+        for month in range(1,13):
+            # ZP
+            user = User.objects.get(username='卓品服饰')
+            factory = user.factory
+            ordersall = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(factory=factory))
+            totalqtyzp = 0
+            for order in ordersall:
+                qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                qty_number = qty['orderqty']
+                totalqtyzp = totalqtyzp + qty_number
+            datazp.append(totalqtyzp)
+
+            # 勋成毛织
+            user = User.objects.get(username='勋成毛织')
+            factory = user.factory
+            ordersall = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(factory=factory))
+            totalqtysc = 0
+            for order in ordersall:
+                qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                qty_number = qty['orderqty']
+                totalqtysc = totalqtysc + qty_number
+            datasc.append(totalqtysc)
+            
+            # 启先
+            user = User.objects.get(username='启先')
+            factory = user.factory
+            ordersall = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(factory=factory))
+            totalqtyqx = 0
+            for order in ordersall:
+                qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                qty_number = qty['orderqty']
+                totalqtyqx = totalqtyqx + qty_number
+            dataqx.append(totalqtyqx)
+
+            # 标准
+            user = User.objects.get(username='标准')
+            factory = user.factory
+            ordersall = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(factory=factory))
+            totalqtybz = 0
+            for order in ordersall:
+                qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                qty_number = qty['orderqty']
+                totalqtybz = totalqtybz + qty_number
+            databz.append(totalqtybz)
+
+            # 俊和
+            user = User.objects.get(username='俊和')
+            factory = user.factory
+            ordersall = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(factory=factory))
+            totalqtyjh = 0
+            for order in ordersall:
+                qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                qty_number = qty['orderqty']
+                totalqtyjh = totalqtyjh + qty_number
+            datajh.append(totalqtyjh)
+
+            # 杰森
+            user = User.objects.get(username='杰森')
+            factory = user.factory
+            ordersall = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(factory=factory))
+            totalqtyjs = 0
+            for order in ordersall:
+                qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                qty_number = qty['orderqty']
+                totalqtyjs = totalqtyjs + qty_number
+            datajs.append(totalqtyjs)
+
+            # 宏业
+            user = User.objects.get(username='宏业')
+            factory = user.factory
+            ordersall = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(factory=factory))
+            totalqtyhy = 0
+            for order in ordersall:
+                qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                qty_number = qty['orderqty']
+                totalqtyhy = totalqtyhy + qty_number
+            datahy.append(totalqtyhy)   
+
+            # 刘氏
+            user = User.objects.get(username='刘氏')
+            factory = user.factory
+            ordersall = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(factory=factory))
+            totalqtyls = 0
+            for order in ordersall:
+                qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                qty_number = qty['orderqty']
+                totalqtyls = totalqtyls + qty_number
+            datals.append(totalqtyls)       
+
+        data = {
+            "labels": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+            "datazp": datazp,
+            "datasc": datasc,
+            "dataqx": dataqx,
+            "databz": databz,
+            "datajh": datajh,
+            "datajs": datajs,
+            "datahy": datahy,
+            "datals": datals,
+
         }   
 
         return Response(data)

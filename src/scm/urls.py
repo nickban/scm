@@ -10,6 +10,8 @@ urlpatterns = [
     path('report/', include(([
         path('profit/', report.ProfitView.as_view(), name='profit'),
         path('api/profit/data/<int:pk>/', report.ProfitViewData.as_view()),
+        path('factory_qty/', report.Factory_Qty_View.as_view(), name='factoryqty'),
+        path('api/factory_qty/data/<int:pk>/', report.Factory_Qty_ViewData.as_view()),
     ], 'scm'), namespace='report')),
 
 

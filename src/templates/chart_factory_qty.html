@@ -33,14 +33,14 @@ var this_year = currentTime.getFullYear()
 
 $('#datepicker').val(this_year)
 
-var endpoint_path = '/report/api/profit/data/'
+var endpoint_path = '/report/api/factory_qty/data/'
 var endpoint = endpoint_path + this_year
 
 
 $(".report").click(function(event) {
     var year = $('#datepicker').val();
 
-    var endpoint_path = '/report/api/profit/data/'
+    var endpoint_path = '/report/api/factory_qty/data/'
     var endpoint = endpoint_path + year
 
 
@@ -84,8 +84,8 @@ type: 'bar',
 data: {
     labels: data.labels,
     datasets: [{
-        label: '全部品牌',
-        data: data.dataall,
+        label: '卓品',
+        data: data.datazp,
         fill: true,
         borderWidth: 2,
         // backgroundColor: window.chartColors.red,
@@ -93,58 +93,67 @@ data: {
         // borderColor: window.chartColors.red,
     },
     {
-        label: 'AU',
-        data: data.dataau,
+        label: '勋成',
+        data: data.datasc,
         fill: true,
+        borderWidth: 2,
+        // backgroundColor: window.chartColors.red,
         backgroundColor: getRandomColor(),
-        // backgroundColor: window.chartColors.blue,
-        // borderColor: window.chartColors.blue,
-        borderWidth: 2
+        // borderColor: window.chartColors.red,
     },
     {
-        label: 'NZ',
-        data: data.datanz,
+        label: '启先',
+        data: data.dataqx,
         fill: true,
+        borderWidth: 2,
+        // backgroundColor: window.chartColors.red,
         backgroundColor: getRandomColor(),
-        // backgroundColor: window.chartColors.yellow,
-        // borderColor: window.chartColors.yellow,
-        borderWidth: 2
+        // borderColor: window.chartColors.red,
     },
     {
-        label: 'SG',
-        data: data.datasg,
+        label: '标准',
+        data: data.databz,
         fill: true,
+        borderWidth: 2,
+        // backgroundColor: window.chartColors.red,
         backgroundColor: getRandomColor(),
-        // backgroundColor: window.chartColors.purple,
-        // borderColor: window.chartColors.purple,
-        borderWidth: 2
+        // borderColor: window.chartColors.red,
     },
     {
-        label: 'KR',
-        data: data.datakr,
+        label: '俊和',
+        data: data.datajh,
         fill: true,
+        borderWidth: 2,
+        // backgroundColor: window.chartColors.red,
         backgroundColor: getRandomColor(),
-        // backgroundColor: window.chartColors.green,
-        // borderColor: window.chartColors.green,
-        borderWidth: 2
+        // borderColor: window.chartColors.red,
     },
     {
-        label: 'ALLY',
-        data: data.dataally,
+        label: '杰森',
+        data: data.datajs,
         fill: true,
+        borderWidth: 2,
+        // backgroundColor: window.chartColors.red,
         backgroundColor: getRandomColor(),
-        // backgroundColor: window.chartColors.green,
-        // borderColor: window.chartColors.green,
-        borderWidth: 2
+        // borderColor: window.chartColors.red,
     },
     {
-        label: 'JOJO',
-        data: data.datajojo,
+        label: '宏业',
+        data: data.datahy,
         fill: true,
+        borderWidth: 2,
+        // backgroundColor: window.chartColors.red,
         backgroundColor: getRandomColor(),
-        // backgroundColor: window.chartColors.green,
-        // borderColor: window.chartColors.green,
-        borderWidth: 2
+        // borderColor: window.chartColors.red,
+    },
+    {
+        label: '刘氏',
+        data: data.datals,
+        fill: true,
+        borderWidth: 2,
+        // backgroundColor: window.chartColors.red,
+        backgroundColor: getRandomColor(),
+        // borderColor: window.chartColors.red,
     },
 ]
 },
@@ -152,7 +161,7 @@ options: {
             responsive: true,
             title: {
                 display: true,
-                text: '公司订单利润柱状图(数据基于已出货订单统计)'
+                text: '工厂接单数量统计'
             },
             tooltips: {
                 mode: 'index',
@@ -174,7 +183,7 @@ options: {
                     display: true,
                     scaleLabel: {
                         display: true,
-                        labelString: '单位:RMB'
+                        labelString: '单位:件'
                     },
                     ticks: {
                         beginAtZero: true
