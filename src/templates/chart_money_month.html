@@ -84,14 +84,24 @@ type: 'bar',
 data: {
     labels: data.labels,
     datasets: [{
-        label: 'ALLY',
-        data: data.data_ally,
+        label: 'ALLY_确认订单',
+        data: data.data_ally_confirm,
         fill: true,
         borderWidth: 2,
         // backgroundColor: window.chartColors.red,
         backgroundColor: getRandomColor(),
         // borderColor: window.chartColors.red,
     },
+    {
+        label: 'ALLY_全部订单',
+        data: data.data_ally_all,
+        fill: true,
+        borderWidth: 2,
+        // backgroundColor: window.chartColors.red,
+        backgroundColor: getRandomColor(),
+        // borderColor: window.chartColors.red,
+    },
+
 ]
 },
 options: {
