@@ -40,8 +40,9 @@ var endpoint = endpoint_path + this_year
 $(".report").click(function(event) {
     var year = $('#datepicker').val();
 
-    var endpoint_path = '/report/api/factory_qty/data/'
+    var endpoint_path = '/report/api/money_month/data/'
     var endpoint = endpoint_path + year
+    console.log(endpoint)
 
 
     $.ajax({

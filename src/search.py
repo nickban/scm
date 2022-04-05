@@ -6,6 +6,6 @@ for order in orders:
     try:
         packingstatus = order.packing_status
     except packingstatus.DoesNotExist:
-        print(order.po)
+        # print(order.po)
 
 

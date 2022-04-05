@@ -24,6 +24,7 @@ class ProfitViewData(APIView):
 
     def get(self, request, *args, **kwargs):
         year = self.kwargs['pk']
+        # print(year)
         dataall = []
         dataau = []
         datanz = []
@@ -125,6 +126,7 @@ class Factory_Qty_ViewData(APIView):
 
     def get(self, request, *args, **kwargs):
         year = self.kwargs['pk']
+        print(year)
         datazp = []
         datasc = []
         dataqx = []
@@ -254,6 +256,7 @@ class Money_Month_ViewData(APIView):
         year = self.kwargs['pk']
         data_ally_confirm = []
         data_ally_all = []
+        # print(year)
 
         for month in range(1,13):
             ordersconfirm = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_d__month=month), Q(handover_date_f__year=year),

@@ -55,8 +55,8 @@ def home(request):
     # 有船大货问题的订单
     orders_production_p = Order.objects.filter(pk__in=production_p)
 
-    print(orders_production_p)
-    print(production_p)
+    # print(orders_production_p)
+    # print(production_p)
 
     if loginuser.is_factory:
         samples = Sample.objects.filter(Q(factory=loginuser.factory), Q(status="SENT_F"))
