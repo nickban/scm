@@ -12,6 +12,8 @@ urlpatterns = [
         path('api/profit/data/<int:pk>/', report.ProfitViewData.as_view()),
         path('factory_qty/', report.Factory_Qty_View.as_view(), name='factoryqty'),
         path('api/factory_qty/data/<int:pk>/', report.Factory_Qty_ViewData.as_view()),
+        path('money_month/', report.Money_Month_View.as_view(), name='moneymonth'),
+        path('api/money_month/data/<int:pk>/', report.Money_Month_ViewData.as_view()),
     ], 'scm'), namespace='report')),
 
 

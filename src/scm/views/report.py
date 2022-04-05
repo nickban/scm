@@ -236,3 +236,43 @@ class Factory_Qty_ViewData(APIView):
         }   
 
         return Response(data)
+
+
+
+@method_decorator([login_required, m_mg_or_required], name='dispatch')
+class Money_Month_View(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'chart_money_month.html')
+
+
+@method_decorator([login_required, m_mg_or_required], name='dispatch')
+class Money_Month_ViewData(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, *args, **kwargs):
+        year = self.kwargs['pk']
+        data_ally = []
+        print(year)
+
+        for month in range(1,13):
+            ordersall = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_d__month=month), Q(handover_date_f__year=year),
+            Q(brand__name='Ally') | Q(brand__name='Ally（minx & moss）') | Q(brand__name='You+All'))
+            total_money=0
+            print(ordersall)
+            for order in ordersall:
+                order_qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                order_qty = order_qty['orderqty']
+                order_money = order_qty*order.disigner_price
+                total_money = total_money + order_money
+            data_ally.append(total_money)
+    
+
+        data = {
+            "labels": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+            "data_ally": data_ally,
+
+
+        }   
+
+        return Response(data)
