@@ -270,7 +270,7 @@
                             {{ order.handover_date_f |date:"SHORT_DATE_FORMAT" }}
                         {% endif %}
                     </div>
-                    {% if request.user.is_merchandiser or request.user.is_merchandiser_manager %}
+                    {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or user.is_qc %}
                     <div class="form-group">
                         <div class="col-12 text-left pl-0">
                             <label for="handover_date_d">客人交期</label>
