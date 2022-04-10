@@ -62,7 +62,7 @@
               <th>款式</th>
               <th>工厂交期</th>
               {% if request.user.is_merchandiser or request.user.is_qc %}
-              <th>客人交期</th>
+                <th>客人交期</th>
               {% endif %}
               <!-- 表格不够宽，暂时停用 -->
               <!-- {% if not request.user.is_factory%}
@@ -70,7 +70,7 @@
               {% endif %} -->
               {% if listtype == 'confirmed' or listtype == 'shipped' %}
                 <th>装箱单</th>
-            {% endif %}
+              {% endif %}
               <!-- <th>目的地</th> -->
               <!-- <th>小单</th> -->
               <th>资料</th>
@@ -110,16 +110,16 @@
                 <td></td>
                 {% else %}
                 <td>{{ order.handover_date_f |date:"Y/m/d" }}</td>
+                {% endif %}
 
                 {% if request.user.is_merchandiser or request.user.is_qc %}
-                {% if order.handover_date_d == None %}
-                <td></td>
-                {% else %}
-                <td>{{ order.handover_date_d |date:"Y/m/d" }}</td>
-                {% endif %}
+                  {% if order.handover_date_d == None %}
+                  <td></td>
+                  {% else %}
+                  <td>{{ order.handover_date_d |date:"Y/m/d" }}</td>
+                  {% endif %}
                 {% endif %}
                 <!-- <td>{{ order.handover_date_f |date:"SHORT_DATE_FORMAT" }}</td> -->
-                {% endif %}
                 <!-- 表格不够宽，暂时停用 -->
                 <!-- {% if not request.user.is_factory%}
                   {% if order.handover_date_d == None %}
