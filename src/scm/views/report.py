@@ -1,4 +1,5 @@
 from os import name
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.views import View
@@ -259,10 +260,12 @@ class Money_Month_ViewData(APIView):
         # print(year)
 
         for month in range(1,13):
-            ordersconfirm = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_d__month=month), Q(handover_date_f__year=year),
+            print(month)
+            ordersconfirm = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_d__month=month), Q(handover_date_d__year=year),
             Q(brand__name='Ally') | Q(brand__name='Ally（minx & moss）') | Q(brand__name='You+All'))
             
             total_money_confirm=0
+            print(ordersconfirm)
 
             for order in ordersconfirm:
                 order_qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
@@ -272,7 +275,7 @@ class Money_Month_ViewData(APIView):
             data_ally_confirm.append(total_money_confirm)
 
 
-            ordersall = Order.objects.filter(Q(handover_date_d__month=month), Q(handover_date_f__year=year),
+            ordersall = Order.objects.filter(~Q(status="NEW"), Q(handover_date_d__month=month), Q(handover_date_d__year=year),
             Q(brand__name='Ally') | Q(brand__name='Ally（minx & moss）') | Q(brand__name='You+All'))
             
             total_money_all=0
