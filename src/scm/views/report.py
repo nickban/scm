@@ -260,12 +260,12 @@ class Money_Month_ViewData(APIView):
         # print(year)
 
         for month in range(1,13):
-            print(month)
+
             ordersconfirm = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_d__month=month), Q(handover_date_d__year=year),
             Q(brand__name='Ally') | Q(brand__name='Ally（minx & moss）') | Q(brand__name='You+All'))
             
             total_money_confirm=0
-            print(ordersconfirm)
+
 
             for order in ordersconfirm:
                 order_qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
