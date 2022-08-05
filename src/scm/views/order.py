@@ -157,7 +157,7 @@ class OrderListShipThisWeek(ListView):
 
 
 
-# 订单列表-本周出货
+# 订单列表-下周出货
 @method_decorator([login_required], name='dispatch')
 class OrderListShipNextWeek(ListView):
     model = Order
@@ -176,6 +176,43 @@ class OrderListShipNextWeek(ListView):
         to_end_of_week = datetime.timedelta(days=6 - day_of_week)
         end_of_week = today + to_end_of_week
         end_of_week = end_of_week + timedelta(days=7)
+        # print(end_of_week)
+
+        if loginuser.is_merchandiser:
+            qs = Order.objects.filter(merchandiser=loginuser.merchandiser, handover_date_f__range=(beginning_of_week,end_of_week), status='CONFIRMED')
+            return qs
+
+        elif loginuser.is_factory:
+            qs = Order.objects.filter(factory=loginuser.factory, handover_date_f__range=(beginning_of_week, end_of_week), status='CONFIRMED')
+            return qs
+        else:
+            qs = Order.objects.filter(handover_date_f__range=(beginning_of_week, end_of_week), status='CONFIRMED')
+            return qs
+        
+    def get_context_data(self, **kwargs):
+        kwargs['listtype'] = 'confirmed'
+        return super().get_context_data(**kwargs)
+
+
+# 订单列表-下下周出货
+@method_decorator([login_required], name='dispatch')
+class OrderListShipNextNextWeek(ListView):
+    model = Order
+    ordering = ('-created_date', )
+    context_object_name = 'orders'
+    template_name = 'order_list.html'
+
+    def get_queryset(self):
+        loginuser = self.request.user
+        today = date.today()
+        day_of_week = today.weekday()
+        to_beginning_of_week = datetime.timedelta(days=day_of_week)
+        beginning_of_week = today - to_beginning_of_week
+        beginning_of_week = beginning_of_week + timedelta(days=14)
+        # print(beginning_of_week)
+        to_end_of_week = datetime.timedelta(days=6 - day_of_week)
+        end_of_week = today + to_end_of_week
+        end_of_week = end_of_week + timedelta(days=14)
         # print(end_of_week)
 
         if loginuser.is_merchandiser:
