@@ -24,9 +24,10 @@
           {% endif %}
           <a class="dropdown-item" href="{% url 'order:orderlistnew' %}">未确认</a>
           <a class="dropdown-item" href="{% url 'order:orderlistconfirmed' %}">已确认</a>
-          <a class="dropdown-item" href="{% url 'order:orderlistshipthisweek' %}">本周出货</a>
-          <a class="dropdown-item" href="{% url 'order:orderlistshipnextweek' %}">下一周出货</a>
-          <a class="dropdown-item" href="{% url 'order:orderlistshipnextnextweek' %}">下二周出货</a>
+          <a class="dropdown-item" href="{% url 'order:ordershipbyweek' 0 %}">出货列表</a>
+          <!-- <a class="dropdown-item" href="{% url 'order:orderlistshipthisweek' %}">本周出货</a> -->
+          <!-- <a class="dropdown-item" href="{% url 'order:orderlistshipnextweek' %}">下一周出货</a> -->
+          <!-- <a class="dropdown-item" href="{% url 'order:orderlistshipnextnextweek' %}">下二周出货</a> -->
           <a class="dropdown-item" href="{% url 'order:qcreportlist' %}">查货报告</a>
           <a class="dropdown-item" href="{% url 'order:orderlistshipped' %}">历史出货</a>
           {% if request.user.is_factory or request.user.is_finance or request.user.is_merchandiser_manager%}

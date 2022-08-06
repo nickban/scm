@@ -119,6 +119,51 @@ class OrderListShipped(ListView):
         # kwargs['type'] = type
         return super().get_context_data(**kwargs)
 
+# 订单列表-出货按周统计
+
+@login_required
+def ordershipbyweek(request, pk):
+
+    loginuser = request.user
+
+    today = date.today()
+    day_of_week = today.weekday()
+    to_beginning_of_week = datetime.timedelta(days=day_of_week)
+    beginning_of_week = today - to_beginning_of_week
+
+    to_end_of_week = datetime.timedelta(days=6 - day_of_week)
+    end_of_week = today + to_end_of_week
+
+    if pk==0:
+        beginning_of_week = beginning_of_week + timedelta(days=0)
+        end_of_week = end_of_week + timedelta(days=0)
+    if pk==999:
+        beginning_of_week = beginning_of_week + timedelta(days=-300*7)
+        end_of_week = end_of_week - timedelta(days=7)
+        # print(beginning_of_week)
+        # print(end_of_week)
+    if pk>0 and pk!=999:
+        beginning_of_week = beginning_of_week + timedelta(days=pk*7)
+        end_of_week = end_of_week + timedelta(days=pk*7)
+
+    # print(end_of_week)
+
+    if loginuser.is_merchandiser:
+        orders = Order.objects.filter(merchandiser=loginuser.merchandiser, handover_date_f__range=(beginning_of_week,end_of_week), status='CONFIRMED')
+
+    elif loginuser.is_factory:
+        orders = Order.objects.filter(factory=loginuser.factory, handover_date_f__range=(beginning_of_week, end_of_week), status='CONFIRMED')
+    else:
+        orders = Order.objects.filter(handover_date_f__range=(beginning_of_week, end_of_week), status='CONFIRMED')
+    
+    pk_next = pk+1
+
+    if pk>=1:
+        pk_before = pk-1
+    else:
+        pk_before = 0
+
+    return render(request, 'order_list.html', {'orders': orders, 'shipbyweek': 'shipbyweek', 'pk': pk, 'pk_before': pk_before, 'pk_next': pk_next, 'listtype':'confirmed'})
 
 
 # 订单列表-本周出货
