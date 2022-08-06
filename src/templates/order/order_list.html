@@ -13,11 +13,16 @@
   <div class="col-12">
     {% if listtype == 'new'%}
     <p style="font-weight: bolder;">当前位置: 未确认订单</p>
-    {% elif  listtype == 'confirmed'%}
+    {% endif %}
+
+    {% if  listtype == 'confirmed'%}
     <p style="font-weight: bolder;">当前位置: 已确认订单</p>
-    {% else %}
+    {% endif %}
+
+    {% if  listtype == 'shipped'%}
     <p style="font-weight: bolder;">当前位置: 已出货订单</p>
     {% endif %}
+
   </div>
 </div>
 <ul class="nav nav-tabs" role="tablist">
