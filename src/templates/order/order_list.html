@@ -44,7 +44,7 @@
         {%csrf_token%}
         {% if  listtype == 'confirmed'%}
           <div class="form-group">
-            {% if request.user.is_merchandiser%}
+            {% if request.user.is_merchandiser or request.user.is_qc%}
             {% if  shipbyweek != 'shipbyweek'%}
             <input type="submit" value="订单信息汇总" class="col-2 btn btn-outline-primary">
             {% endif %}
