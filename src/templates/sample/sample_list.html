@@ -29,6 +29,7 @@
           <th>跟单</th>
           <th>工厂</th>
           <th>工厂报价</th>
+          <th>预计完成日期</th>
           <th>寄板日期</th>
           <th>状态</th>
         </tr>
@@ -60,6 +61,11 @@
             <td></td>
             {% else %}
               <td>{{ sample.qutation }}</td>
+            {% endif %}
+            {% if sample.estimate_finish_date == None %}
+            <td></td>
+            {% else %}
+              <td>{{ sample.estimate_finish_date |date:"SHORT_DATE_FORMAT"}}</td>
             {% endif %}
             <td>{{ sample.parcel_date |date:"SHORT_DATE_FORMAT" }}</td>
             <td>{{ sample.get_status_display }}</td>

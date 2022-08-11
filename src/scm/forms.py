@@ -163,6 +163,7 @@ class NewsampleForm(forms.ModelForm):
 # 样板表单
 class SampleForm(forms.ModelForm):
     parcel_date = forms.DateField(widget=DatePicker(), label="寄件日期", required=False)
+    estimate_finish_date = forms.DateField(widget=DatePicker(), label="预计完成日期", required=False)
     qutation = forms.DecimalField(label="工厂报价(元)", required=False)
 
     def __init__(self, *args, **kwargs):
@@ -177,7 +178,7 @@ class SampleForm(forms.ModelForm):
         model = Sample
         fields = ('has_os_sample', 'sample_no', 'brand',
                   'merchandiser', 'designer', 'factory', 'style', 'qutation',
-                  'parcel_date', 'alteration')
+                  'parcel_date', 'estimate_finish_date','alteration')
         widgets = {
                   'alteration': forms.Textarea(attrs={'rows': 6}),
                   }
@@ -186,6 +187,7 @@ class SampleForm(forms.ModelForm):
 # 详情页表单，工厂提交数据
 class SampledetailForm(forms.ModelForm):
     qutation = forms.DecimalField(label="工厂报价(元)", required=False)
+    estimate_finish_date = forms.DateField(widget=DatePicker(), label="预计完成日期", required=False)
 
     def __init__(self, *args, **kwargs):
         super(SampledetailForm, self).__init__(*args, **kwargs)
@@ -202,7 +204,7 @@ class SampledetailForm(forms.ModelForm):
 
     class Meta:
         model = Sample
-        fields = ('has_os_sample', 'qutation')
+        fields = ('has_os_sample', 'qutation', 'estimate_finish_date')
         widgets = {
                   'alteration': forms.Textarea(attrs={'rows': 6}),
                   }

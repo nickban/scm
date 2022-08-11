@@ -188,6 +188,7 @@ class Sample(models.Model):
                                 on_delete=models.SET_NULL,
                                 null=True)
     parcel_date = models.DateField('寄件日期', null=True, blank=True)
+    estimate_finish_date = models.DateField('预计完成日期', null=True, blank=True)
     qutation = models.DecimalField('工厂报价',
                                    max_digits=5,
                                    decimal_places=2,
