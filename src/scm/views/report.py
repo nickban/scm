@@ -33,6 +33,7 @@ class ProfitViewData(APIView):
         # datakr = []
         dataally = []
         # datajojo = []
+        datavg = []
         for month in range(1,13):
             # 全部订单
             ordersall = Order.objects.filter(~Q(status="NEW"), Q(handover_date_d__month=month), Q(handover_date_d__year=year))
@@ -59,6 +60,17 @@ class ProfitViewData(APIView):
                 order_profit = order_qty*(order.disigner_price-order.factory_price)
                 profit_ally = profit_ally + order_profit
             dataally.append(profit_ally)
+
+            # VG
+            ordersvg = Order.objects.filter(~Q(status="NEW"), Q(handover_date_d__month=month), Q(handover_date_d__year=year),
+                Q(brand__name='Valleygirl') | Q(brand__name='MIRROU'))
+            profit_ally =0
+            for order in ordersvg:
+                order_qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                order_qty = order_qty['orderqty']
+                order_profit = order_qty*(order.disigner_price-order.factory_price)
+                profit_ally = profit_ally + order_profit
+            datavg.append(profit_ally)
             
             # ordersall = ordersall.annotate(profit=ExpressionWrapper(
             #             (F('disigner_price')-F('factory_price'))*F('actual_ship_qty'), 
@@ -131,6 +143,7 @@ class ProfitViewData(APIView):
             # "datakr": datakr,
             "dataally": dataally,
             # "datajojo": datajojo,
+            "datavg": datavg,
         }   
 
         return Response(data)
