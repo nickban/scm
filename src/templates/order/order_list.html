@@ -341,7 +341,11 @@
               <th style="min-width: 50px;">跟单</th>
               <th style="min-width: 50px;">工厂</th>
               <th style="min-width: 70px;">工厂交期</th>
+              {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc%}
+              <th style="min-width: 70px;">客人交期</th>
+              {% endif %}
               <th style="min-width: 70px;">款式图</th>
+              <th style="min-width: 70px;">装箱单</th>
               <th style="min-width: 300px;">大货进度</th>
               <th style="min-width: 300px;">查货报告</th>
             </tr>
@@ -372,7 +376,33 @@
               {% else %}
               <td>{{ order.handover_date_f |date:"Y/m/d" }}</td>
               {% endif %}
+
+              {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc%}
+                {% if order.handover_date_d == None %}
+                <td></td>
+                {% else %}
+                <td>{{ order.handover_date_d |date:"Y/m/d" }}</td>
+                {% endif %}
+              {% endif %}
+
               <td><img src="{{ order.avatar.file.url }}" width=100px, height=100px></td>
+
+
+              {% if order.packing_ctns.all.count > 0 %}
+                {% if order.packing_status.status == 'NEW'%}
+                  <td><a href="{% url 'order:packinglistadd' pk=order.pk%}">查看</a></td>
+                {% else %}
+                  <td><a href="{% url 'order:packinglistdetail' pk=order.pk%}">查看</a></td>
+                {% endif %}
+              {% else %}
+                <td>
+                  {% if request.user.is_factory %}
+                  <a href="{% url 'order:packinglistadd' pk=order.pk%}">创建</a>
+                  {% endif%}
+                </td>
+              {% endif %}
+
+
               <!-- 大货进度 -->
               <td>
                 <!-- 通过class:js-create-bf激活js -->
