@@ -359,8 +359,8 @@ class Money_Month_ViewData(APIView):
             "labels": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
             "data_ally_confirm": data_ally_confirm,
             "data_ally_all": data_ally_all,
-            "data_ally_confirm": data_vg_confirm,
-            "data_ally_all": data_vg_all,
+            "data_vg_confirm": data_vg_confirm,
+            "data_vg_all": data_vg_all,
 
 
         }   
