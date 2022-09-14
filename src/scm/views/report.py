@@ -294,41 +294,73 @@ class Money_Month_ViewData(APIView):
         year = self.kwargs['pk']
         data_ally_confirm = []
         data_ally_all = []
+
+        data_vg_confirm = []
+        data_vg_all = []
         # print(year)
 
         for month in range(1,13):
 
-            ordersconfirm = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_d__month=month), Q(handover_date_d__year=year),
+            ordersconfirm_ally = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_d__month=month), Q(handover_date_d__year=year),
             Q(brand__name='Ally') | Q(brand__name='Ally（minx & moss）') | Q(brand__name='You+All'))
             
-            total_money_confirm=0
+            total_money_confirm_ally=0
 
 
-            for order in ordersconfirm:
+            for order in ordersconfirm_ally:
                 order_qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
                 order_qty = order_qty['orderqty']
                 order_money = order_qty*order.disigner_price
-                total_money_confirm = total_money_confirm + order_money
-            data_ally_confirm.append(total_money_confirm)
+                total_money_confirm_ally = total_money_confirm_ally + order_money
+            data_ally_confirm.append(total_money_confirm_ally)
 
 
-            ordersall = Order.objects.filter(~Q(status="NEW"), Q(handover_date_d__month=month), Q(handover_date_d__year=year),
+            ordersall_ally = Order.objects.filter(~Q(status="NEW"), Q(handover_date_d__month=month), Q(handover_date_d__year=year),
             Q(brand__name='Ally') | Q(brand__name='Ally（minx & moss）') | Q(brand__name='You+All'))
             
-            total_money_all=0
+            total_money_all_ally=0
 
-            for order in ordersall:
+            for order in ordersall_ally:
                 order_qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
                 order_qty = order_qty['orderqty']
                 order_money = order_qty*order.disigner_price
-                total_money_all = total_money_all + order_money
-            data_ally_all.append(total_money_all)
+                total_money_all_ally = total_money_all_ally + order_money
+            data_ally_all.append(total_money_all_ally)
+
+            # vg
+            ordersconfirm_vg = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_d__month=month), Q(handover_date_d__year=year),
+            Q(brand__name='Valleygirl') | Q(brand__name='MIRROU'))
+            
+            total_money_confirm_vg=0
+
+
+            for order in ordersconfirm_vg:
+                order_qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                order_qty = order_qty['orderqty']
+                order_money = order_qty*order.disigner_price
+                total_money_confirm_vg = total_money_confirm_vg + order_money
+            data_vg_confirm.append(total_money_confirm_vg)
+
+
+            ordersall_vg = Order.objects.filter(~Q(status="NEW"), Q(handover_date_d__month=month), Q(handover_date_d__year=year),
+            Q(brand__name='Valleygirl') | Q(brand__name='MIRROU'))
+            
+            total_money_all_vg=0
+
+            for order in ordersall_vg:
+                order_qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                order_qty = order_qty['orderqty']
+                order_money = order_qty*order.disigner_price
+                total_money_all_vg = total_money_all_vg + order_money
+            data_vg_all.append(total_money_all_vg)
     
 
         data = {
             "labels": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
             "data_ally_confirm": data_ally_confirm,
             "data_ally_all": data_ally_all,
+            "data_ally_confirm": data_vg_confirm,
+            "data_ally_all": data_vg_all,
 
 
         }   
