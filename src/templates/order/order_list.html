@@ -389,17 +389,9 @@
 
 
               {% if order.packing_ctns.all.count > 0 %}
-                {% if order.packing_status.status == 'NEW'%}
-                  <td><a href="{% url 'order:packinglistadd' pk=order.pk%}">查看</a></td>
-                {% else %}
                   <td><a href="{% url 'order:packinglistdetail' pk=order.pk%}">查看</a></td>
-                {% endif %}
               {% else %}
-                <td>
-                  {% if request.user.is_factory %}
-                  <a href="{% url 'order:packinglistadd' pk=order.pk%}">创建</a>
-                  {% endif%}
-                </td>
+                  <td></td>
               {% endif %}
 
 
