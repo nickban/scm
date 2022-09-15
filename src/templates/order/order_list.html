@@ -49,12 +49,31 @@
             <input type="submit" value="订单信息汇总" class="col-2 btn btn-outline-primary">
             {% endif %}
             {% endif %}
-          {% if  shipbyweek == 'shipbyweek'%}
-            <a class="col-2  btn btn-outline-primary"  href="{% url 'order:ordershipbyweek'  999 %}">超期订单</a>
-            <a class="col-2  btn  btn-outline-primary"  href="{% url 'order:ordershipbyweek'  0 %}">本周出货</a>
-            <a class="col-2 btn  btn-outline-primary"  href="{% url 'order:ordershipbyweek'  pk_next %}">下一周</a>
-            <a class="col-2  btn  btn-outline-primary"  href="{% url 'order:ordershipbyweek'  pk_before %}">上一周</a>
-          {% endif %}
+            <div class="row mb-3">
+
+              {% if  shipbyweek == 'shipbyweek'%}
+              <div class=" col-2">
+                <div class="form-group">
+                  <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyweek'  999 %}">超期订单</a>
+                </div>
+              </div>
+              <div class=" col-2">
+                <div class="form-group">
+                  <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyweek'  0 %}">本周出货</a>
+                </div>
+              </div>
+              <div class=" col-2">
+                <div class="form-group">
+                  <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyweek'  pk_next %}">下一周</a>
+                </div>
+              </div>
+              <div class=" col-2">
+                <div class="form-group">
+                  <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyweek'  pk_before %}">上一周</a>
+                </div>
+              </div>
+              {% endif %}
+            </div>
           </div>
         {% endif %}
 
@@ -169,6 +188,33 @@
     </div>
   </div>
   <div id="progress" class="tab-pane fade"><br>
+    {% if  listtype == 'confirmed'%}
+    <div class="row mb-3">
+
+      {% if  shipbyweek == 'shipbyweek'%}
+      <div class=" col-2">
+        <div class="form-group">
+          <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyweek'  999 %}">超期订单</a>
+        </div>
+      </div>
+      <div class=" col-2">
+        <div class="form-group">
+          <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyweek'  0 %}">本周出货</a>
+        </div>
+      </div>
+      <div class=" col-2">
+        <div class="form-group">
+          <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyweek'  pk_next %}">下一周</a>
+        </div>
+      </div>
+      <div class=" col-2">
+        <div class="form-group">
+          <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyweek'  pk_before %}">上一周</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
     <div class="table-responsive">
       <table id="orderlistnew_p" class="table table-hover">
         <thead>
@@ -321,13 +367,48 @@
     <div class="table-responsive">
       <form action="{% url 'order:newqcreport'%}" method="post">
         {%csrf_token%}
+
         {% if  listtype == 'confirmed'%}
+        <div class="row mb-3">
+          {% if  request.user.is_qc %}
+          <div class=" col-2">
+            <div class="form-group">
+              <input type="submit" value="新建查货报告" class="btn btn-block btn-outline-primary">
+            </div>
+          </div>
+          {% endif %}
+          {% if  shipbyweek == 'shipbyweek'%}
+          <div class=" col-2">
+            <div class="form-group">
+              <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyweek'  999 %}">超期订单</a>
+            </div>
+          </div>
+          <div class=" col-2">
+            <div class="form-group">
+              <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyweek'  0 %}">本周出货</a>
+            </div>
+          </div>
+          <div class=" col-2">
+            <div class="form-group">
+              <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyweek'  pk_next %}">下一周</a>
+            </div>
+          </div>
+          <div class=" col-2">
+            <div class="form-group">
+              <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyweek'  pk_before %}">上一周</a>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- {% if  listtype == 'confirmed'%}
         {% if  request.user.is_qc %}
         <div class="col-2 pl-0 form-group">
           <input type="submit" value="新建查货报告" class="btn btn-block btn-outline-primary">
         </div>
         {% endif %}
-        {% endif %}
+        {% endif %} -->
         <table id="orderlistnew_qc" class="table table-hover">
           <thead>
             <tr>
