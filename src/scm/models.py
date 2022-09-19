@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
 from django.conf import settings
 import os
+from datetime import date
 
 
 # 系统登录用户模块，用于分配用户角色
@@ -202,6 +203,16 @@ class Sample(models.Model):
 
     def __str__(self):
         return self.sample_no
+    
+    @property
+    def days_till(self):
+        today = date.today()
+        days_till = today - self.created_date.date()
+        days_till_str = str(days_till).split(",",1)[0].split(" ",1)[0]
+        return days_till_str
+
+
+
 
 
 class Sample_size_spec_factory(models.Model):

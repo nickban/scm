@@ -29,6 +29,9 @@
           <th>跟单</th>
           <th>工厂</th>
           <th>工厂报价</th>
+          {% if type == 'NEW'%}
+          <th>板期</th>
+          {% endif %}
           <th>预计完成日期</th>
           <th>寄板日期</th>
           <th>状态</th>
@@ -61,6 +64,9 @@
             <td></td>
             {% else %}
               <td>{{ sample.qutation }}</td>
+            {% endif %}
+            {% if type == 'NEW'%}
+            <td>{{ sample.days_till }}天</td>
             {% endif %}
             {% if sample.estimate_finish_date == None %}
             <td></td>
