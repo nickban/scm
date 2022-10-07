@@ -1,3 +1,4 @@
+from re import search
 from django.contrib import admin
 from .models import (Sample, User, Style, Brand, Merchandiser, Designer,
                      Factory, Shipping, Qc, Finance, Office, Admin,
@@ -35,8 +36,19 @@ admin.site.register(Mainlabel)
 admin.site.register(Maintag)
 admin.site.register(Additiontag)
 admin.site.register(Packingtype)
-admin.site.register(Order_packing_ctn)
-admin.site.register(Order_packing_status)
+
+
+class Order_packing_ctnAdmin(admin.ModelAdmin):
+    list_display = ('order','created_date','ctn_start_no','ctn_end_no')
+    search_fields = ('order__po',)
+
+admin.site.register(Order_packing_ctn,Order_packing_ctnAdmin)
+
+class Order_packing_statusAdmin(admin.ModelAdmin):
+    list_display = ('order','status',)
+    search_fields = ('order__po',)
+
+admin.site.register(Order_packing_status, Order_packing_statusAdmin)
 admin.site.register(PShippingsample)
 admin.site.register(PSparebutton)
 admin.site.register(PWashinglabel)
