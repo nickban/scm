@@ -22,6 +22,10 @@ urlpatterns = [
         # 未完成，已完成样板列表
         path('', sample.SampleListNew.as_view(), name='samplelistnew'),
         path('completed/', sample.SampleListCompleted.as_view(), name='samplelistcompleted'),
+        path('completedoneyear/', sample.SampleListCompletedoneyear.as_view(), name='samplelistcompletedoneyear'),
+        path('completedall/', sample.SampleListCompletedall.as_view(), name='samplelistcompletedall'),
+
+
         # 样板新增
         path('add/step1/', sample.SampleAddStep1.as_view(), name='sampleaddstep1'),
         path('add/<int:pk>/step2/', sample.SampleAddStep2.as_view(), name='sampleaddstep2'),
@@ -49,6 +53,8 @@ urlpatterns = [
         path('new/', order.OrderListNew.as_view(), name='orderlistnew'),
         path('confirmed/', order.OrderListConfrimed.as_view(), name='orderlistconfirmed'),
         path('shipped/', order.OrderListShipped.as_view(), name='orderlistshipped'),
+        path('shippedoneyear/', order.OrderListShippedoneyear.as_view(), name='orderlistshippedoneyear'),
+        path('shippedall/', order.OrderListShippedall.as_view(), name='orderlistshippedall'),
 
         path('shipbyweek/<int:pk>/', order.ordershipbyweek, name='ordershipbyweek'),
 

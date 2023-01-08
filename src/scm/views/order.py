@@ -93,7 +93,7 @@ class OrderListConfrimed(ListView):
         return super().get_context_data(**kwargs)
 
 
-# 订单列表-已出货(已出货状态)
+# 订单列表-已出货(已出货状态),默认看半年出货
 @method_decorator([login_required], name='dispatch')
 class OrderListShipped(ListView):
     model = Order
@@ -103,6 +103,78 @@ class OrderListShipped(ListView):
 
     def get_queryset(self):
         loginuser = self.request.user
+
+        today = datetime.datetime.today() 
+        half_year = datetime.datetime.today() - datetime.timedelta(days=180)
+
+
+
+        if loginuser.is_merchandiser:
+            return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
+                                        Q(handover_date_f__range=(half_year,today)),
+                                        Q(status='SHIPPED'))
+        elif loginuser.is_factory:
+            return Order.objects.filter(Q(factory=loginuser.factory),
+                                        Q(handover_date_f__range=(half_year,today)),
+                                        Q(status='SHIPPED'))
+        else:
+            return Order.objects.filter(handover_date_f__range=(half_year,today), status='SHIPPED')
+
+    def get_context_data(self, **kwargs):
+
+        kwargs['listtype'] = 'shipped'
+        # 待确认，应该type没有用到
+        # kwargs['type'] = type
+        return super().get_context_data(**kwargs)
+
+
+# 订单列表-已出货(已出货状态),看一年
+@method_decorator([login_required], name='dispatch')
+class OrderListShippedoneyear(ListView):
+    model = Order
+    ordering = ('-created_date', )
+    context_object_name = 'orders'
+    template_name = 'order_list.html'
+
+    def get_queryset(self):
+        loginuser = self.request.user
+
+        today = datetime.datetime.today() 
+        one_year = datetime.datetime.today() - datetime.timedelta(days=365)
+
+
+
+        if loginuser.is_merchandiser:
+            return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
+                                        Q(handover_date_f__range=(one_year,today)),
+                                        Q(status='SHIPPED'))
+        elif loginuser.is_factory:
+            return Order.objects.filter(Q(factory=loginuser.factory),
+                                        Q(handover_date_f__range=(one_year,today)),
+                                        Q(status='SHIPPED'))
+        else:
+            return Order.objects.filter(handover_date_f__range=(one_year,today), status='SHIPPED')
+
+    def get_context_data(self, **kwargs):
+
+        kwargs['listtype'] = 'shipped'
+        # 待确认，应该type没有用到
+        # kwargs['type'] = type
+        return super().get_context_data(**kwargs)
+
+
+# 订单列表-已出货(已出货状态),看全部
+@method_decorator([login_required], name='dispatch')
+class OrderListShippedall(ListView):
+    model = Order
+    ordering = ('-created_date', )
+    context_object_name = 'orders'
+    template_name = 'order_list.html'
+
+    def get_queryset(self):
+        loginuser = self.request.user
+
+
         if loginuser.is_merchandiser:
             return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
                                         Q(status='SHIPPED'))

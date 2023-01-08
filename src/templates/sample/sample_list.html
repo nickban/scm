@@ -15,6 +15,23 @@
         <p style="font-weight: bolder;">当前位置: 未完成样板</p>
         {% else %}
         <p style="font-weight: bolder;">当前位置: 已完成样板</p>
+        <div class="row mb-3">
+          <div class=" col-2">
+            <div class="form-group">
+              <a class="btn btn-block btn-outline-primary"  href="{% url 'sample:samplelistcompleted' %}">最近半年</a>
+            </div>
+          </div>
+          <div class=" col-2">
+            <div class="form-group">
+              <a class="btn btn-block btn-outline-primary"  href="{% url 'sample:samplelistcompletedoneyear' %}">最近一年</a>
+            </div>
+          </div>
+          <div class=" col-2">
+            <div class="form-group">
+              <a class="btn btn-block btn-outline-primary"  href="{% url 'sample:samplelistcompletedall' %}">全部</a>
+            </div>
+          </div>
+        </div>
         {% endif %}
       </div>
     </div>

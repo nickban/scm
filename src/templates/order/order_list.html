@@ -21,6 +21,23 @@
 
     {% if  listtype == 'shipped'%}
     <p style="font-weight: bolder;">当前位置: 已出货订单</p>
+    <div class="row mb-3">
+      <div class=" col-2">
+        <div class="form-group">
+          <a class="btn btn-block btn-outline-primary"  href="{% url 'order:orderlistshipped' %}">最近半年</a>
+        </div>
+      </div>
+      <div class=" col-2">
+        <div class="form-group">
+          <a class="btn btn-block btn-outline-primary"  href="{% url 'order:orderlistshippedoneyear' %}">最近一年</a>
+        </div>
+      </div>
+      <div class=" col-2">
+        <div class="form-group">
+          <a class="btn btn-block btn-outline-primary"  href="{% url 'order:orderlistshippedall' %}">全部</a>
+        </div>
+      </div>
+    </div>
     {% endif %}
 
   </div>

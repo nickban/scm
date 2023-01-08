@@ -24,6 +24,7 @@ from email.mime.multipart import MIMEMultipart
 import base64
 import smtplib
 from decouple import config
+import datetime
 
 
 # 样板列表-未完成(新建，已送工厂状态)
@@ -48,7 +49,7 @@ class SampleListNew(ListView):
         kwargs['type'] = 'NEW'
         return super().get_context_data(**kwargs)
 
-# 样板列表-已完成(已完成状态)
+# 样板列表-已完成(已完成状态),默认看半年
 @method_decorator([login_required], name='dispatch')
 class SampleListCompleted(ListView):
     model = Sample
@@ -58,6 +59,68 @@ class SampleListCompleted(ListView):
 
     def get_queryset(self):
         loginuser = self.request.user
+
+        today = datetime.datetime.today() 
+        half_year = datetime.datetime.today() - datetime.timedelta(days=180)
+
+        if loginuser.is_merchandiser:
+            return Sample.objects.filter(Q(merchandiser=loginuser.merchandiser),
+                                         Q(created_date__range=(half_year,today)),
+                                         Q(status='COMPLETED'))
+        elif loginuser.is_factory:
+            return Sample.objects.filter(Q(factory=loginuser.factory),
+                                         Q(created_date__range=(half_year,today)),
+                                         Q(status='COMPLETED'))
+        else:
+            return Sample.objects.filter(created_date__range=(half_year,today), status='COMPLETED')
+
+    def get_context_data(self, **kwargs):
+        kwargs['type'] = 'COMPLETED'
+        return super().get_context_data(**kwargs)
+
+
+
+# 样板列表-已完成(已完成状态),看一年
+@method_decorator([login_required], name='dispatch')
+class SampleListCompletedoneyear(ListView):
+    model = Sample
+    ordering = ('-created_date', )
+    context_object_name = 'samples'
+    template_name = 'sample_list.html'
+
+    def get_queryset(self):
+        loginuser = self.request.user
+
+        today = datetime.datetime.today() 
+        one_year = datetime.datetime.today() - datetime.timedelta(days=365)
+
+        if loginuser.is_merchandiser:
+            return Sample.objects.filter(Q(merchandiser=loginuser.merchandiser),
+                                         Q(created_date__range=(one_year,today)),
+                                         Q(status='COMPLETED'))
+        elif loginuser.is_factory:
+            return Sample.objects.filter(Q(factory=loginuser.factory),
+                                         Q(created_date__range=(one_year,today)),
+                                         Q(status='COMPLETED'))
+        else:
+            return Sample.objects.filter(created_date__range=(one_year,today), status='COMPLETED')
+
+    def get_context_data(self, **kwargs):
+        kwargs['type'] = 'COMPLETED'
+        return super().get_context_data(**kwargs)
+
+
+# 样板列表-已完成(已完成状态),看全部
+@method_decorator([login_required], name='dispatch')
+class SampleListCompletedall(ListView):
+    model = Sample
+    ordering = ('-created_date', )
+    context_object_name = 'samples'
+    template_name = 'sample_list.html'
+
+    def get_queryset(self):
+        loginuser = self.request.user
+
         if loginuser.is_merchandiser:
             return Sample.objects.filter(Q(merchandiser=loginuser.merchandiser),
                                          Q(status='COMPLETED'))
