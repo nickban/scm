@@ -370,11 +370,23 @@ class Invoice(models.Model):
                                 null=True)
 
 
+    def total_money(self):
+        totalpaidamount = 0
+        orders= self.orders.all()
+        for order in orders:
+            factory_price = order.factory_price or 0
+            paidamount = order.actual_ship_qty * factory_price
+            totalpaidamount = totalpaidamount + paidamount
+
+        return totalpaidamount
+
 @receiver(models.signals.post_delete, sender=Invoice)
 def auto_delete_file_invoice(sender, instance, **kwargs):
     if instance.file:
         if os.path.isfile(instance.file.path):
             os.remove(instance.file.path)
+
+
 
 
 class Mainlabel(models.Model):

@@ -65,6 +65,7 @@
             <th scope="col">发票号</th>
             <th scope="col">工厂</th>
             <th scope="col">状态</th>
+            <th scope="col">发票金额</th>
             <th scope="col">操作</th>
           </tr>
         </thead>
@@ -76,6 +77,7 @@
             <td><a href="{% url 'order:invoicedetail' invoice.pk%}">{{ invoice.invoice_no}}</a></td>
             <td>{{ invoice.factory}}</td>
             <td>{{ invoice.get_status_display}}</td>
+            <td>{{ invoice.total_money}}</td>
 
             {% if request.user.is_factory%}
               {% if not invoice.status == 'PAID'%}
