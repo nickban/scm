@@ -6,12 +6,13 @@
 </li> -->
 <li >{{each.created_date |date:"Y/m/d" }} - {{each.created_by}} 
     -
-    {% if each.product_status == None %}
-    {% elif each.product_status == NEW_P%}
+    {% if each.product_status == 'NEW_P' %}
     刚出成品
-    {% elif each.product_status == FINISH_P%}
+    {% endif %}
+    {% if each.product_status == 'FINISH_P'%}
     成品全部完成
-    {% else %}
+    {% endif %}
+    {% if each.product_status == 'SEND_P'%}
     大货包装完成
     {% endif %}
     -

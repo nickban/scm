@@ -1629,6 +1629,7 @@ def updateqcreport(request,pk):
             new_report.color = form.cleaned_data['color']
             new_report.ratio = form.cleaned_data['ratio']
             new_report.save()
+            # print(new_report.product_status)
             
             return redirect('order:editqcreport', pk=new_report.pk, checkitem_number=0)
         else:
