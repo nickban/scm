@@ -34,12 +34,13 @@
       <td>{{qcreport.order.merchandiser}}</td>
       <td>{{qcreport.order.factory}}</td>
       <td>
-        {% if qcreport.product_status == None %}
-        {% elif qcreport.product_status == NEW_P%}
+        {% if qcreport.product_status == 'NEW_P' %}
         刚出成品
-        {% elif qcreport.product_status == FINISH_P%}
+        {% endif %}
+        {% if qcreport.product_status == 'FINISH_P'%}
         成品全部完成
-        {% else %}
+        {% endif %}
+        {% if qcreport.product_status == 'SEND_P'%}
         大货包装完成
         {% endif %}
       </td>
