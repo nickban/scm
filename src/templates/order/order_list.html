@@ -387,7 +387,7 @@
 
         {% if  listtype == 'confirmed'%}
         <div class="row mb-3">
-          {% if  request.user.is_qc %}
+          {% if  request.user.is_qc or request.user.is_factory %}
           <div class=" col-2">
             <div class="form-group">
               <input type="submit" value="新建查货报告" class="btn btn-block btn-outline-primary">
