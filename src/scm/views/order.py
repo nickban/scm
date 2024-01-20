@@ -1134,20 +1134,21 @@ def invoiceadd(request):
         datelist = [order.handover_date_f for order in orderlist]
         mindate = min(datelist)
         maxdate = max(datelist)
-        start_of_week = mindate - timedelta(days=mindate.weekday())   # 周一
-        end_of_week = start_of_week + timedelta(days=6)   # 周日
+        # start_of_week = mindate - timedelta(days=mindate.weekday())   # 周一
+        # end_of_week = start_of_week + timedelta(days=6)   # 周日
 
         # start_of_week  = mindate.replace(day=1)
         # end_of_week = mindate.replace(day=calendar.monthrange(mindate.year, mindate.month)[1])
 
 
         new_invoiceno = increment_invoice_number()
-        if maxdate >= start_of_week and maxdate <= end_of_week:
+        # if maxdate >= start_of_week and maxdate <= end_of_week: 属于同一周
+        if mindate.month == maxdate.month:
             invoiceno = mindate.strftime("%Y%m%d") + '_' + new_invoiceno
             factory = request.user.factory
             invoice = Invoice.objects.create(invoice_no=invoiceno, factory=factory,
-                                             handoverdate=mindate, start_of_week=start_of_week,
-                                             end_of_week=end_of_week)
+                                             handoverdate=mindate, start_of_week=mindate,
+                                             end_of_week=maxdate)
             for order in orderlist:
                 # totalqty = order.packing_ctns.aggregate(totalqty=Sum('totalqty', output_field=IntegerField()))
                 # totalqty = totalqty.get('totalqty') or 0
@@ -1159,7 +1160,7 @@ def invoiceadd(request):
                 order.invoice = invoice
                 order.save()
         else:
-            messages.warning(request, '请把同一周出货的订单创建在一张发票里！')
+            messages.warning(request, '请把同一月份出货的订单创建在一张发票里！')
             return redirect('order:invoicelist')
 
     return render(request, 'invoice_detail.html', {'qs': qs, 'invoice': invoice, 'factory': factory, 'totalpaidamount': totalpaidamount})
