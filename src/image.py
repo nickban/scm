@@ -13,5 +13,6 @@ new_size = (100, 100)
 for filename in os.listdir(input_folder):
     if filename.endswith(".jpg") or filename.endswith(".jpeg") or filename.endswith(".png"):
         with Image.open(os.path.join(input_folder, filename)) as im:
+            im = im.convert("RGB")
             im.thumbnail(new_size)
             im.save(os.path.join(output_folder, filename))
