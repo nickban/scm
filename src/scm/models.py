@@ -7,6 +7,7 @@ from django.dispatch import receiver
 from django.conf import settings
 import os
 from datetime import date
+from PIL import Image
 
 
 # 系统登录用户模块，用于分配用户角色
@@ -246,6 +247,14 @@ class Sample_os_avatar(models.Model):
     file = models.ImageField(upload_to='sample/os_avatar/', blank=True)
     sample = models.OneToOneField(Sample, on_delete=models.CASCADE,
                                   related_name='os_avatar')
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.file.path)
+        max_size = (100, 100)
+        img.thumbnail(max_size)
+        img.save(self.file.path)
 
 
 @receiver(models.signals.post_delete, sender=Sample_os_avatar)
@@ -701,6 +710,13 @@ class Order_avatar(models.Model):
     file = models.ImageField(upload_to='order/avatar/', blank=True)
     order = models.OneToOneField(Order, on_delete=models.CASCADE,
                                  related_name='avatar')
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.file.path)
+        max_size = (100, 100)
+        img.thumbnail(max_size)
+        img.save(self.file.path)
 
 
 @receiver(models.signals.post_delete, sender=Order_avatar)

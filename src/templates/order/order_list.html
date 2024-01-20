@@ -111,7 +111,7 @@
               <!-- <th>运输</th> -->
               <th>款式</th>
               <th>工厂交期</th>
-              {% if request.user.is_merchandiser or request.user.is_qc %}
+              {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc%}
                 <th>客人交期</th>
               {% endif %}
               <!-- 表格不够宽，暂时停用 -->
@@ -243,6 +243,9 @@
             <th style="min-width: 50px;">买手</th>
             <th style="min-width: 50px;">工厂</th>
             <th style="min-width: 70px;">工厂交期</th>
+            {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc%}
+            <th style="min-width: 70px;">客人交期</th>
+            {% endif %}
             <th style="min-width: 70px;">款式图</th>
             <th style="min-width: 300px;">生产板</th>
             <th style="min-width: 200px;">大货布</th>
@@ -276,6 +279,15 @@
             {% else %}
             <td>{{ order.handover_date_f |date:"Y/m/d"  }}</td>
             {% endif %}
+
+            {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc%}
+            {% if order.handover_date_d == None %}
+            <td></td>
+            {% else %}
+            <td>{{ order.handover_date_d |date:"Y/m/d" }}</td>
+            {% endif %}
+          {% endif %}
+
             <td><img src="{{ order.avatar.file.url }}" width=100px, height=100px></td>
             <!-- 生产板列表 -->
             <td>
