@@ -57,6 +57,7 @@ urlpatterns = [
         path('shippedall/', order.OrderListShippedall.as_view(), name='orderlistshippedall'),
 
         path('shipbyweek/<int:pk>/', order.ordershipbyweek, name='ordershipbyweek'),
+        path('shipbyyear/<int:pk>/', order.ordershipbyyear, name='ordershipbyyear'),
 
         path('shippedthisweek/', order.OrderListShipThisWeek.as_view(), name='orderlistshipthisweek'),
         path('shippednextweek/', order.OrderListShipNextWeek.as_view(), name='orderlistshipnextweek'),

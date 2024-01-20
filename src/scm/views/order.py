@@ -163,6 +163,40 @@ class OrderListShippedoneyear(ListView):
         return super().get_context_data(**kwargs)
 
 
+# 订单列表-已出货(已出货状态),看上一年
+@method_decorator([login_required], name='dispatch')
+class OrderListShippedlastyear(ListView):
+    model = Order
+    ordering = ('-created_date', )
+    context_object_name = 'orders'
+    template_name = 'order_list.html'
+
+    def get_queryset(self):
+        loginuser = self.request.user
+
+        today = datetime.datetime.today() 
+        one_year = datetime.datetime.today() - datetime.timedelta(days=365)
+
+
+
+        if loginuser.is_merchandiser:
+            return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
+                                        Q(handover_date_f__range=(one_year,today)),
+                                        Q(status='SHIPPED'))
+        elif loginuser.is_factory:
+            return Order.objects.filter(Q(factory=loginuser.factory),
+                                        Q(handover_date_f__range=(one_year,today)),
+                                        Q(status='SHIPPED'))
+        else:
+            return Order.objects.filter(handover_date_f__range=(one_year,today), status='SHIPPED')
+
+    def get_context_data(self, **kwargs):
+
+        kwargs['listtype'] = 'shipped'
+        # 待确认，应该type没有用到
+        # kwargs['type'] = type
+        return super().get_context_data(**kwargs)
+    
 # 订单列表-已出货(已出货状态),看全部
 @method_decorator([login_required], name='dispatch')
 class OrderListShippedall(ListView):
@@ -236,6 +270,59 @@ def ordershipbyweek(request, pk):
         pk_before = 0
 
     return render(request, 'order_list.html', {'orders': orders, 'shipbyweek': 'shipbyweek', 'pk': pk, 'pk_before': pk_before, 'pk_next': pk_next, 'listtype':'confirmed'})
+
+
+# 订单列表-出货按年统计
+
+@login_required
+def ordershipbyyear(request, pk):
+
+    loginuser = request.user
+
+    if pk==0:
+        # 获取当前日期时间
+        now = datetime.datetime.now()
+        # 设置本年度的起始日期为1月1号
+        start_date = datetime.datetime(year=now.year, month=1, day=1)
+        # 设置本年度的结束日期为12月31号（根据需要调整）
+        end_date = datetime.datetime(year=now.year + 1, month=1, day=1) - datetime.timedelta(days=1)
+
+
+    if pk==999:
+        # 获取当前日期时间
+        now = datetime.datetime.now()
+        # 设置本年度的起始日期为1月1号
+        start_date = datetime.datetime(year=now.year - 20, month=1, day=1)
+        # 设置本年度的结束日期为12月31号（根据需要调整）
+        end_date = datetime.datetime(year=now.year + 1, month=1, day=1) - datetime.timedelta(days=1)
+
+    if pk!=0 and pk!=999:
+        # 获取当前日期时间
+        now = datetime.datetime.now()
+        # 设置本年度的起始日期为1月1号
+        start_date = datetime.datetime(year=now.year - pk, month=1, day=1)
+        # 设置本年度的结束日期为12月31号（根据需要调整）
+        end_date = datetime.datetime(year=now.year - pk + 1, month=1, day=1) - datetime.timedelta(days=1)
+
+    # print(end_of_week)
+
+    if loginuser.is_merchandiser:
+        orders = Order.objects.filter(merchandiser=loginuser.merchandiser, handover_date_f__range=(start_date,end_date), status='SHIPPED')
+
+    elif loginuser.is_factory:
+        orders = Order.objects.filter(factory=loginuser.factory, handover_date_f__range=(start_date, end_date), status='SHIPPED')
+    else:
+        orders = Order.objects.filter(handover_date_f__range=(start_date, end_date), status='SHIPPED')
+    
+
+    if pk==999:
+        pk_before = 0
+    else:
+        pk_before = pk+1
+
+    return render(request, 'order_list.html', {'orders': orders, 'shipbyyear': 'shipbyyear', 'pk': pk, 'pk_before': pk_before, 'listtype':'shipped'})
+
+
 
 
 # 订单列表-本周出货

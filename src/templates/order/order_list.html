@@ -21,23 +21,6 @@
 
     {% if  listtype == 'shipped'%}
     <p style="font-weight: bolder;">当前位置: 已出货订单</p>
-    <div class="row mb-3">
-      <div class=" col-2">
-        <div class="form-group">
-          <a class="btn btn-block btn-outline-primary"  href="{% url 'order:orderlistshipped' %}">最近半年</a>
-        </div>
-      </div>
-      <div class=" col-2">
-        <div class="form-group">
-          <a class="btn btn-block btn-outline-primary"  href="{% url 'order:orderlistshippedoneyear' %}">最近一年</a>
-        </div>
-      </div>
-      <div class=" col-2">
-        <div class="form-group">
-          <a class="btn btn-block btn-outline-primary"  href="{% url 'order:orderlistshippedall' %}">全部</a>
-        </div>
-      </div>
-    </div>
     {% endif %}
 
   </div>
@@ -93,6 +76,31 @@
             </div>
           </div>
         {% endif %}
+
+        {% if  listtype == 'shipped'%}
+        <div class="form-group">
+          <div class="row mb-3">
+
+            {% if  shipbyyear == 'shipbyyear'%}
+            <div class=" col-2">
+              <div class="form-group">
+                <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyyear'  0 %}">本年度订单</a>
+              </div>
+            </div>
+            <div class=" col-2">
+              <div class="form-group">
+                <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyyear'  999 %}">全部订单</a>
+              </div>
+            </div>
+            <div class=" col-2">
+              <div class="form-group">
+                <a class="btn btn-block btn-outline-primary"  href="{% url 'order:ordershipbyyear'  pk_before %}">上一年度</a>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
 
         <table id="orderlistnew" class="table table-hover">
           <thead>
