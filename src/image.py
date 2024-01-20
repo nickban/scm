@@ -6,8 +6,8 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-input_folder = os.path.join(BASE_DIR, 'src/media/sample/os_avatar/')
-output_folder = os.path.join(BASE_DIR, 'src/media/sample/os_avatar1/')
+input_folder = os.path.join(BASE_DIR, 'src/media/order/avatar/')
+output_folder = os.path.join(BASE_DIR, 'src/media/order/avatar1/')
 new_size = (100, 100)
  
 for filename in os.listdir(input_folder):
