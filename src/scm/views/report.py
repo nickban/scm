@@ -376,6 +376,11 @@ class Factory_Qty_ViewData(APIView):
             "datahy1": datahy1,
             "datawr": datawr,
             "datajxc": datajxc,
+            "datatyf": datatyf,
+            "dataxxmz": dataxxmz,
+            "datahgmz ": datahgmz,
+            "datayyfs": datayyfs,
+
 
         }   
 
