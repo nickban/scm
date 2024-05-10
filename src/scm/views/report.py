@@ -177,6 +177,10 @@ class Factory_Qty_ViewData(APIView):
         datahy1 = []
         datawr = []
         datajxc = []
+        datatyf = []
+        dataxxmz = []
+        datahgmz = []
+        datayyfs = []
         for month in range(1,13):
             # ZP
             user = User.objects.get(username='卓品服饰')
@@ -200,6 +204,42 @@ class Factory_Qty_ViewData(APIView):
                 totalqtysc = totalqtysc + qty_number
             datasc.append(totalqtysc)
             
+
+            # 彤雨斐服饰
+            user = User.objects.get(username='彤雨斐服饰')
+            factory = user.factory
+            ordersall = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(factory=factory))
+            totalqtysc = 0
+            for order in ordersall:
+                qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                qty_number = qty['orderqty']
+                totalqtysc = totalqtysc + qty_number
+            datatyf.append(totalqtysc)
+
+
+            # 洵洵毛织
+            user = User.objects.get(username='洵洵毛织')
+            factory = user.factory
+            ordersall = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(factory=factory))
+            totalqtysc = 0
+            for order in ordersall:
+                qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                qty_number = qty['orderqty']
+                totalqtysc = totalqtysc + qty_number
+            dataxxmz.append(totalqtysc)
+            
+            
+            # 华冠毛织
+            user = User.objects.get(username='华冠毛织')
+            factory = user.factory
+            ordersall = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(factory=factory))
+            totalqtysc = 0
+            for order in ordersall:
+                qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                qty_number = qty['orderqty']
+                totalqtysc = totalqtysc + qty_number
+            datahgmz.append(totalqtysc)
+
             # 启先
             user = User.objects.get(username='启先')
             factory = user.factory
@@ -210,6 +250,17 @@ class Factory_Qty_ViewData(APIView):
                 qty_number = qty['orderqty']
                 totalqtyqx = totalqtyqx + qty_number
             dataqx.append(totalqtyqx)
+
+            # 洋億服饰有限公司
+            user = User.objects.get(username='洋億服饰有限公司')
+            factory = user.factory
+            ordersall = Order.objects.filter((Q(status="SENT_FACTORY") | Q(status="CONFIRMED")), Q(handover_date_f__month=month), Q(handover_date_f__year=year), Q(factory=factory))
+            totalqtysc = 0
+            for order in ordersall:
+                qty = order.colorqtys.aggregate(orderqty=Sum('qty', output_field=DecimalField()))
+                qty_number = qty['orderqty']
+                totalqtysc = totalqtysc + qty_number
+            datayyfs.append(totalqtysc)
 
             # 标准
             user = User.objects.get(username='标准')
