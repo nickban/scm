@@ -66,18 +66,18 @@ table input[type="date"] {
     color: #007BFF;
 }
 
-/* Specifically for WebKit browsers (Chrome, Safari) */
-/* table input[type="date"]::-webkit-datetime-edit {
+/* Specifically for WebKit browsers (Chrome, Safari) */ */
+table input[type="date"]::-webkit-datetime-edit {
     color: blue;
-} */
+}
 
 /* For Firefox */
-/* table input[type="date"]::-moz-datetime-edit {
+table input[type="date"]::-moz-datetime-edit {
     color: blue;
-} */
+}
 
 /* For Edge */
-/* table input[type="date"]::-ms-value {
+table input[type="date"]::-ms-value {
     color: blue;
-} */
- 
+}
+
