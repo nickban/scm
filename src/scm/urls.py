@@ -69,6 +69,7 @@ urlpatterns = [
 
         # 订单新增
         path('add/', order.OrderAdd.as_view(), name='orderadd'),
+
         # 订单编辑，详情，删除
         path('<int:pk>/', order.OrderEdit.as_view(), name='orderedit'),
         path('<int:pk>/delete/', order.OrderDelete.as_view(), name='orderdelete'),
@@ -110,6 +111,10 @@ urlpatterns = [
         path('<int:pk>/reset/', order.orderreset, name='orderreset'),
         # 测试用-翻单
         path('<int:pk>/copy/', order.ordercopy, name='ordercopy'),
+        # 订单状态新增
+        path('<int:pk>/prstatusdelete', order.orderprstatusdelete, name='orderprstatusdelete'),
+        path('<int:pk>/prstatusadd/', order.orderprstatusadd, name='orderprstatusadd'),
+        path('update-status/', order.update_status, name='update_status'),
 
         # 生产板进度增删改
         path('<int:pk>/progress/fs/', order.fittingsample, name='fittingsample'),
@@ -160,7 +165,8 @@ urlpatterns = [
         path('invoice/<int:pk>/reset/', order.invoicereset, name='invoicereset'),
         path('invoice/list/', order.invoicelist, name='invoicelist'),
         path('invoice/<int:pk>/attachadd/', order.invoiceattachadd, name='invoiceattachadd'),
-
+        # 账务查询
+        path('handoverlist/', order.handoverlist, name='handoverlist'),
 
         # 订单上传资料通用功能
         path('<int:pk>/<str:attachtype>/add/', order.orderattachadd, name='orderattachadd'),

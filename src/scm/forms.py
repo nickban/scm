@@ -12,6 +12,8 @@ from .models import (User, Factory,
                      Order_packing_ctn, Invoice, Order_fitting_sample,
                      Order_bulk_fabric, Order_shipping_sample, Order_packing_status, Order_production,
                      Mainlabel, Maintag, Additiontag, Order_Barcode, Check_record_pics,
+                     Fabric_cut_att, Product_plan, Process_att1, Process_att2, Process_att3, Process_att4,
+                     Pre_sample,All_col_size_check, SS_check,Fin_check,
                      Qc_report)
 from django.db import transaction
 from tempus_dominus.widgets import DatePicker
@@ -178,9 +180,10 @@ class SampleForm(forms.ModelForm):
         model = Sample
         fields = ('has_os_sample', 'sample_no', 'brand',
                   'merchandiser', 'designer', 'factory', 'style', 'qutation',
-                  'parcel_date', 'estimate_finish_date','alteration')
+                  'parcel_date', 'estimate_finish_date','alteration','comments')
         widgets = {
                   'alteration': forms.Textarea(attrs={'rows': 6}),
+                  'comments': forms.Textarea(attrs={'rows': 6}),
                   }
 
 
@@ -282,6 +285,7 @@ class OrderForm(forms.ModelForm):
         self.fields['PHangingtape'].empty_label = '请选择'
         self.fields['PSparebutton'].empty_label = '请选择'
         self.fields['PWashinglabel'].empty_label = '请选择'
+        self.fields['related_po'].empty_label = '请选择'
 
     class Meta:
         model = Order
@@ -292,7 +296,7 @@ class OrderForm(forms.ModelForm):
                   'parent', 'invoice', 'main_label', 'main_tag', 'addition_tag',
                   'packing_type', 'destination', 'labeltype', 'childorder', 'season_code', 'pgr_code',
                   'itemgroup_code', 'PShippingsample', 'PHangingtape', 'PSparebutton',
-                  'PWashinglabel', 'matchcolor','ziliao')
+                  'PWashinglabel', 'matchcolor','ziliao','related_po')
         widgets = {
                   'comments': forms.Textarea(attrs={'rows': 1}),
                   'matchcolor': forms.Textarea(attrs={'rows': 1}),
@@ -388,6 +392,11 @@ class InvoiceSearchForm(forms.Form):
     start_handover_date_f = forms.DateField(widget=DatePicker(), label="工厂交期", required=False)
     end_handover_date_f = forms.DateField(widget=DatePicker(), label="客人交期", required=False)
     factory = forms.ModelChoiceField(queryset=Factory.objects.all(), empty_label="请选择", required=False)
+
+# 账务查询表单
+class HandoverSearchForm(forms.Form):
+    start_handover_date_f = forms.DateField(widget=DatePicker(), label="开始日期", required=False)
+    end_handover_date_f = forms.DateField(widget=DatePicker(), label="结束日期", required=False)
 
 
 # 订单生产办进度
@@ -561,4 +570,56 @@ class QcreportForm(forms.ModelForm):
                         'required': "必填字段！",
                     },
                 }
+        
 
+# #生产进度
+
+class FabriccutattForm(forms.ModelForm):
+    class Meta:
+        model = Fabric_cut_att
+        fields = ('file',)
+
+class ProductplanForm(forms.ModelForm):
+    class Meta:
+        model = Product_plan
+        fields = ('file',)
+
+class Processatt1Form(forms.ModelForm):
+    class Meta:
+        model = Process_att1
+        fields = ('file',)
+
+class Processatt2Form(forms.ModelForm):
+    class Meta:
+        model = Process_att2
+        fields = ('file',)
+
+class Processatt3Form(forms.ModelForm):
+    class Meta:
+        model = Process_att3
+        fields = ('file',)
+
+class Processatt4Form(forms.ModelForm):
+    class Meta:
+        model = Process_att4
+        fields = ('file',)
+
+class PresampleForm(forms.ModelForm):
+    class Meta:
+        model = Pre_sample
+        fields = ('file',)
+
+class AllcolsizecheckForm(forms.ModelForm):
+    class Meta:
+        model = All_col_size_check
+        fields = ('file',)
+
+class SScheckForm(forms.ModelForm):
+    class Meta:
+        model = SS_check
+        fields = ('file',)
+
+class FincheckForm(forms.ModelForm):
+    class Meta:
+        model = Fin_check
+        fields = ('file',)

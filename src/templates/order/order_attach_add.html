@@ -20,10 +20,12 @@
             <label for="fileupload"><a class="btn btn-outline-primary" role="button">请选择文件..</a></label>
         </div>
         {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
-        <a class="col-1 btn btn-outline-primary" href="{% url 'order:orderedit' order.pk %}" role="button">返回</a>
+        <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderedit' order.pk %}" role="button">返回</a>
         {% else %}
-        <a class="col-1 btn btn-outline-primary" href="{% url 'order:orderdetail' order.pk %}" role="button">返回</a>
+        <a class="btn btn-block btn-outline-primary" href="{% url 'order:orderdetail' order.pk %}" role="button">返回</a>
         {% endif %}
+        <a class="btn btn-block btn-outline-primary" role="button" href="#" onclick="window.close();" >关闭</a>
+        
     </form>
 {% endblock %}
 

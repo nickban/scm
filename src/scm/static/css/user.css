@@ -24,3 +24,59 @@ body {
 .step {
   background-color: #F7F7F7;
 }
+
+
+/* Style for the custom alert box */
+.custom-alert {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+  z-index: 9999;
+  width: 200px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+/* Hide the custom alert by default */
+.hidden {
+  display: none;
+}
+
+/* Style the button */
+.custom-alert button {
+  padding: 5px 10px;
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.custom-alert button:hover {
+  background-color: #007BFF;
+}
+
+
+table input[type="text"],
+table input[type="date"] {
+    color: #007BFF;
+}
+
+/* Specifically for WebKit browsers (Chrome, Safari) */
+/* table input[type="date"]::-webkit-datetime-edit {
+    color: blue;
+} */
+
+/* For Firefox */
+/* table input[type="date"]::-moz-datetime-edit {
+    color: blue;
+} */
+
+/* For Edge */
+/* table input[type="date"]::-ms-value {
+    color: blue;
+} */

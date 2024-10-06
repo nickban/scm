@@ -8,7 +8,7 @@ from django.conf import settings
 import os
 from datetime import date
 from PIL import Image
-
+from django.db.models import Sum
 
 # 系统登录用户模块，用于分配用户角色
 class User(AbstractUser):
@@ -196,6 +196,7 @@ class Sample(models.Model):
                                    decimal_places=2,
                                    null=True, blank=True)
     alteration = models.TextField('做板评语', blank=True)
+    comments = models.TextField('跟单备注', blank=True)
     status = models.CharField('样板状态',
                               max_length=50,
                               choices=SAMPLE_STATUS,
@@ -252,7 +253,7 @@ class Sample_os_avatar(models.Model):
         super().save(*args, **kwargs)
 
         img = Image.open(self.file.path)
-        max_size = (100, 100)
+        max_size = (400, 400)
         img.thumbnail(max_size)
         img.save(self.file.path)
 
@@ -693,12 +694,54 @@ class Order(models.Model):
                                verbose_name='包装要求',
                                blank=True,
                                null=True)
-
+    # Add a self-referencing ForeignKey for related PO
+    related_po = models.OneToOneField(
+        
+        'self',  # Self-referencing ForeignKey
+        on_delete=models.SET_NULL,  # You can choose CASCADE, PROTECT, etc. depending on your needs
+        null=True,  # Related PO can be optional
+        blank=True,
+        related_name='related_order',  # Reverse relationship name
+        verbose_name='关联订单',
+    )
 
     def __str__(self):
-        ordername = '订单号' + self.po + '/' + '款号' + self.style_no
+        # ordername = '订单号' + self.po + '/' + '款号' + self.style_no
+        ordername = self.po
         return ordername
+    
 
+
+
+    @property
+    def days_till(self):
+    # Calculate days left
+        today = date.today()
+        if self.handover_date_f:
+            days_left = (self.handover_date_f - today).days
+        else:
+            days_left = None  # Handle case where no handover date exists
+        return days_left
+
+    @property
+    def total_qty(self):
+    # order and related order qty to string
+        order_qty = self.colorqtys.aggregate(total=Sum('qty'))['total'] or 0
+        print(order_qty)
+
+        return f"{order_qty}"
+    
+    @property
+    def related_po_qty(self):
+    # order and related order qty to string
+        if self.related_po:
+            related_order = self.related_po
+            relatedpoqty = related_order.colorqtys.aggregate(total=Sum('qty'))['total'] or 0
+            print('related_po_qty',relatedpoqty)
+        else:
+            relatedpoqty=0
+
+        return f"{relatedpoqty}"
 
 @receiver(models.signals.post_save, sender=Order)
 def create_order_packing_status(sender, instance, created, **kwargs):
@@ -714,7 +757,7 @@ class Order_avatar(models.Model):
         super().save(*args, **kwargs)
 
         img = Image.open(self.file.path)
-        max_size = (100, 100)
+        max_size = (400, 400)
         img.thumbnail(max_size)
         img.save(self.file.path)
 
@@ -1089,3 +1132,101 @@ class Check_record_pics(models.Model):
     checkrecord = models.ForeignKey(Check_record,
                                 on_delete=models.CASCADE,
                                 related_name='pics')
+
+
+# #生产状态
+class Product_status(models.Model):
+    order = models.OneToOneField(Order,
+                                 on_delete=models.CASCADE,
+                                 related_name='product_status')
+    
+    fabric_order_date = models.DateTimeField('面料订购日期', null=True, blank=True)
+    fabric_est_date = models.DateTimeField('预计到厂日期', null=True, blank=True)
+    fabric_act_date = models.DateTimeField('实际到厂日期', null=True, blank=True)
+    fabric_cut_date = models.DateTimeField('验布裁布日期', null=True, blank=True)
+
+    est_start_date = models.DateTimeField('预计开货日期', null=True, blank=True)
+    est_period = models.PositiveIntegerField(null=True, blank=True)
+
+    start_date= models.DateTimeField('实际开货日期', null=True, blank=True)
+    est_fin_date= models.DateTimeField('预计完成日期', null=True, blank=True)
+    
+    process_date1 = models.DateTimeField('检查进度日期', null=True, blank=True)
+    fin_pcs1 = models.PositiveIntegerField(null=True, blank=True)
+
+    process_date2 = models.DateTimeField('检查进度日期', null=True, blank=True)
+    fin_pcs2 = models.PositiveIntegerField(null=True, blank=True)
+
+    process_date3 = models.DateTimeField('检查进度日期', null=True, blank=True)
+    fin_pcs3 = models.PositiveIntegerField(null=True, blank=True)
+
+    process_date4 = models.DateTimeField('检查进度日期', null=True, blank=True)
+    fin_pcs4 = models.PositiveIntegerField(null=True, blank=True)
+
+    factory_code = models.CharField(max_length=50, blank=True, null=True)
+    # 表明这个订单有问题
+    is_undercontrol= models.CharField(max_length=50, blank=True, null=True)
+
+
+class Fabric_cut_att(models.Model):
+    file = models.FileField(upload_to='order/fabriccutatt/', blank=True)
+    order = models.ForeignKey(Order,
+                               on_delete=models.CASCADE,
+                               related_name='fabriccutatts')
+    
+
+class Product_plan(models.Model):
+    file = models.FileField(upload_to='order/productplan/', blank=True)
+    order = models.ForeignKey(Order,
+                               on_delete=models.CASCADE,
+                               related_name='productplans')
+    
+class Process_att1(models.Model):
+    file = models.FileField(upload_to='order/processatt/', blank=True)
+    order = models.ForeignKey(Order,
+                               on_delete=models.CASCADE,
+                               related_name='processatt1s')
+
+class Process_att2(models.Model):
+    file = models.FileField(upload_to='order/processatt/', blank=True)
+    order = models.ForeignKey(Order,
+                               on_delete=models.CASCADE,
+                               related_name='processatt2s')
+    
+class Process_att3(models.Model):
+    file = models.FileField(upload_to='order/processatt/', blank=True)
+    order = models.ForeignKey(Order,
+                               on_delete=models.CASCADE,
+                               related_name='processatt3s')
+class Process_att4(models.Model):
+    file = models.FileField(upload_to='order/processatt/',  blank=True)
+    order = models.ForeignKey(Order,
+                               on_delete=models.CASCADE,
+                               related_name='processatt4s')
+
+class Pre_sample(models.Model):
+    file = models.FileField(upload_to='order/presample/',  blank=True)
+    order = models.ForeignKey(Order,
+                               on_delete=models.CASCADE,
+                               related_name='presamples')
+
+class All_col_size_check(models.Model):
+    file = models.FileField(upload_to='order/allcolsizecheck/', blank=True)
+    order = models.ForeignKey(Order,
+                               on_delete=models.CASCADE,
+                               related_name='allcolsizechecks')
+    
+class SS_check(models.Model):
+    file = models.FileField(upload_to='order/sscheck/',  blank=True)
+    order = models.ForeignKey(Order,
+                               on_delete=models.CASCADE,
+                               related_name='sschecks')
+    
+class Fin_check(models.Model):
+    file = models.FileField(upload_to='order/fincheck/',  blank=True)
+    order = models.ForeignKey(Order,
+                               on_delete=models.CASCADE,
+                               related_name='finchecks')
+    
+
+    

@@ -8,7 +8,10 @@ from scm.models import (User, Order, Order_color_ratio_qty, Order_avatar,
                         Order_shipping_pics, Order_packing_ctn, Invoice,
                         Order_fitting_sample, Order_bulk_fabric, Order_shipping_sample, Order_production,
                         Order_packing_status, Order_Barcode, PPackingway, Check_item, Check_point, Qc_report,
-                        Check_record, Check_record_pics)
+                        Check_record, Check_record_pics, 
+                        Product_status,Fabric_cut_att,Product_plan,Process_att1,Process_att2,Process_att3,
+                        Process_att4,Pre_sample,All_col_size_check,SS_check,Fin_check,
+                        )
 from scm.forms import (
                        OrderForm, Order_color_ratio_qty_Form,
                        OrderavatarForm, OrdersizespecsForm,
@@ -16,7 +19,11 @@ from scm.forms import (
                        OrderpackingctnForm, InvoiceSearchForm, InvoiceForm,
                        OrderfittingsampleForm, OrderbulkfabricForm, OrderproductionForm,
                        OrdershippingsampleForm, OrderpackingstatusForm,
-                       OrderbarcodeForm, CheckrecordpicsForm, QcreportForm)
+                       OrderbarcodeForm, CheckrecordpicsForm, QcreportForm, 
+                       FabriccutattForm, ProductplanForm, Processatt1Form, Processatt2Form,
+                       Processatt3Form, Processatt4Form, PresampleForm, AllcolsizecheckForm,
+                       SScheckForm,HandoverSearchForm,FincheckForm
+                       )
 from django.contrib.auth.decorators import login_required
 from scm.decorators import (m_mg_or_required, factory_required, office_required,
                             order_is_shipped, packinglist_is_sented, o_m_mg_or_required,
@@ -177,8 +184,6 @@ class OrderListShippedlastyear(ListView):
         today = datetime.datetime.today() 
         one_year = datetime.datetime.today() - datetime.timedelta(days=365)
 
-
-
         if loginuser.is_merchandiser:
             return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
                                         Q(handover_date_f__range=(one_year,today)),
@@ -226,7 +231,6 @@ class OrderListShippedall(ListView):
         return super().get_context_data(**kwargs)
 
 # 订单列表-出货按周统计
-
 @login_required
 def ordershipbyweek(request, pk):
 
@@ -246,13 +250,11 @@ def ordershipbyweek(request, pk):
     if pk==999:
         beginning_of_week = beginning_of_week + timedelta(days=-300*7)
         end_of_week = end_of_week - timedelta(days=7)
-        # print(beginning_of_week)
-        # print(end_of_week)
+
     if pk>0 and pk!=999:
         beginning_of_week = beginning_of_week + timedelta(days=pk*7)
         end_of_week = end_of_week + timedelta(days=pk*7)
 
-    # print(end_of_week)
 
     if loginuser.is_merchandiser:
         orders = Order.objects.filter(merchandiser=loginuser.merchandiser, handover_date_f__range=(beginning_of_week,end_of_week), status='CONFIRMED')
@@ -304,7 +306,6 @@ def ordershipbyyear(request, pk):
         # 设置本年度的结束日期为12月31号（根据需要调整）
         end_date = datetime.datetime(year=now.year - pk + 1, month=1, day=1) - datetime.timedelta(days=1)
 
-    # print(end_of_week)
 
     if loginuser.is_merchandiser:
         orders = Order.objects.filter(merchandiser=loginuser.merchandiser, handover_date_f__range=(start_date,end_date), status='SHIPPED')
@@ -321,8 +322,6 @@ def ordershipbyyear(request, pk):
         pk_before = pk+1
 
     return render(request, 'order_list.html', {'orders': orders, 'shipbyyear': 'shipbyyear', 'pk': pk, 'pk_before': pk_before, 'listtype':'shipped'})
-
-
 
 
 # 订单列表-本周出货
@@ -342,7 +341,7 @@ class OrderListShipThisWeek(ListView):
 
         to_end_of_week = datetime.timedelta(days=6 - day_of_week)
         end_of_week = today + to_end_of_week
-        # print(end_of_week)
+
 
         if loginuser.is_merchandiser:
             qs = Order.objects.filter(merchandiser=loginuser.merchandiser, handover_date_f__range=(beginning_of_week,end_of_week), status='CONFIRMED')
@@ -360,7 +359,6 @@ class OrderListShipThisWeek(ListView):
         return super().get_context_data(**kwargs)
 
 
-
 # 订单列表-下周出货
 @method_decorator([login_required], name='dispatch')
 class OrderListShipNextWeek(ListView):
@@ -376,11 +374,11 @@ class OrderListShipNextWeek(ListView):
         to_beginning_of_week = datetime.timedelta(days=day_of_week)
         beginning_of_week = today - to_beginning_of_week
         beginning_of_week = beginning_of_week + timedelta(days=7)
-        # print(beginning_of_week)
+
         to_end_of_week = datetime.timedelta(days=6 - day_of_week)
         end_of_week = today + to_end_of_week
         end_of_week = end_of_week + timedelta(days=7)
-        # print(end_of_week)
+
 
         if loginuser.is_merchandiser:
             qs = Order.objects.filter(merchandiser=loginuser.merchandiser, handover_date_f__range=(beginning_of_week,end_of_week), status='CONFIRMED')
@@ -413,11 +411,10 @@ class OrderListShipNextNextWeek(ListView):
         to_beginning_of_week = datetime.timedelta(days=day_of_week)
         beginning_of_week = today - to_beginning_of_week
         beginning_of_week = beginning_of_week + timedelta(days=14)
-        # print(beginning_of_week)
+
         to_end_of_week = datetime.timedelta(days=6 - day_of_week)
         end_of_week = today + to_end_of_week
         end_of_week = end_of_week + timedelta(days=14)
-        # print(end_of_week)
 
         if loginuser.is_merchandiser:
             qs = Order.objects.filter(merchandiser=loginuser.merchandiser, handover_date_f__range=(beginning_of_week,end_of_week), status='CONFIRMED')
@@ -433,7 +430,6 @@ class OrderListShipNextNextWeek(ListView):
     def get_context_data(self, **kwargs):
         kwargs['listtype'] = 'confirmed'
         return super().get_context_data(**kwargs)
-
 
 
 # 订单新建
@@ -667,6 +663,8 @@ def ordershipped(request, pk):
     messages.success(request, '订单已出货, 请在出货订单列表查找!')
     return redirect('order:orderedit', pk=order.pk)
 
+
+
 # 订单重置
 @login_required
 @m_mg_or_required
@@ -682,6 +680,7 @@ def orderreset(request, pk):
 @login_required
 def orderattachadd(request, pk, attachtype):
     order = get_object_or_404(Order, pk=pk)
+
     if attachtype == 'avatar':
         if request.FILES:
             try:
@@ -700,8 +699,32 @@ def orderattachadd(request, pk, attachtype):
         form = OrdersizespecsForm(request.POST, request.FILES)
     elif attachtype == 'swatch':
         form = OrderswatchForm(request.POST, request.FILES)
+
+# 生产进度
+    elif attachtype == 'fabriccutatt':
+        form = FabriccutattForm(request.POST, request.FILES)
+    elif attachtype == 'productplan':
+        form = ProductplanForm(request.POST, request.FILES)
+    elif attachtype == 'processatt1':
+        form = Processatt1Form(request.POST, request.FILES)
+    elif attachtype == 'processatt2':
+        form = Processatt2Form(request.POST, request.FILES)
+    elif attachtype == 'processatt3':
+        form = Processatt3Form(request.POST, request.FILES)
+    elif attachtype == 'processatt4':
+        form = Processatt4Form(request.POST, request.FILES)
+    elif attachtype == 'presample':
+        form = PresampleForm(request.POST, request.FILES)
+    elif attachtype == 'allcolsizecheck':
+        form = AllcolsizecheckForm(request.POST, request.FILES)
+    elif attachtype == 'sscheck':
+        form = SScheckForm(request.POST, request.FILES)
+    elif attachtype == 'fincheck':
+        form = FincheckForm(request.POST, request.FILES)
+
     else:
         form = OrdershippingpicsForm(request.POST, request.FILES)
+
     if request.method == 'POST':
         if form.is_valid():
             with transaction.atomic():
@@ -767,6 +790,50 @@ def orderattachdelete(request, pk, attachtype, attach_pk):
         attach = get_object_or_404(Order_swatches, pk=attach_pk)
         attach.delete()
         return redirect('order:orderattachcollection', pk=order.pk, attachtype=attachtype)
+    # 生产进度
+    elif attachtype == 'fabriccutatt':
+        attach = get_object_or_404(Fabric_cut_att, pk=attach_pk)
+        attach.delete()
+        return redirect('order:orderattachcollection', pk=order.pk, attachtype=attachtype)
+    elif attachtype == 'productplan':
+        attach = get_object_or_404(Product_plan, pk=attach_pk)
+        attach.delete()
+        return redirect('order:orderattachcollection', pk=order.pk, attachtype=attachtype)
+    elif attachtype == 'processatt1':
+        attach = get_object_or_404(Process_att1, pk=attach_pk)
+        attach.delete()
+        return redirect('order:orderattachcollection', pk=order.pk, attachtype=attachtype)     
+    elif attachtype == 'processatt2':
+        attach = get_object_or_404(Process_att2, pk=attach_pk)
+        attach.delete()
+        return redirect('order:orderattachcollection', pk=order.pk, attachtype=attachtype)     
+    elif attachtype == 'processatt3':
+        attach = get_object_or_404(Process_att3, pk=attach_pk)
+        attach.delete()
+        return redirect('order:orderattachcollection', pk=order.pk, attachtype=attachtype)    
+    elif attachtype == 'processatt4':
+        attach = get_object_or_404(Process_att4, pk=attach_pk)
+        attach.delete()
+        return redirect('order:orderattachcollection', pk=order.pk, attachtype=attachtype)  
+    elif attachtype == 'presample':
+        attach = get_object_or_404(Pre_sample, pk=attach_pk)
+        attach.delete()
+        return redirect('order:orderattachcollection', pk=order.pk, attachtype=attachtype)  
+    elif attachtype == 'allcolsizecheck':
+        attach = get_object_or_404(All_col_size_check, pk=attach_pk)
+        attach.delete()
+        return redirect('order:orderattachcollection', pk=order.pk, attachtype=attachtype)  
+    elif attachtype == 'sscheck':
+        attach = get_object_or_404(SS_check, pk=attach_pk)
+        attach.delete()
+        return redirect('order:orderattachcollection', pk=order.pk, attachtype=attachtype)  
+    elif attachtype == 'fincheck':
+        attach = get_object_or_404(Fin_check, pk=attach_pk)
+        attach.delete()
+        return redirect('order:orderattachcollection', pk=order.pk, attachtype=attachtype)  
+
+
+
     else:
         attach = get_object_or_404(Order_shipping_pics, pk=attach_pk)
         attach.delete()
@@ -779,11 +846,33 @@ def orderattachcollection(request, pk, attachtype):
     attachtype = attachtype
     if attachtype == 'swatch':
         attaches = order.swatches.all()
+    # 生产进度
+    elif attachtype == 'fabriccutatt':
+        attaches = order.fabriccutatts.all()
+    elif attachtype == 'productplan':
+        attaches = order.productplans.all()
+    elif attachtype == 'processatt1':
+        attaches = order.processatt1s.all()
+    elif attachtype == 'processatt2':
+        attaches = order.processatt2s.all()
+    elif attachtype == 'processatt3':
+        attaches = order.processatt3s.all()
+    elif attachtype == 'processatt4':
+        attaches = order.processatt4s.all()
+    elif attachtype == 'presample':
+        attaches = order.presamples.all()
+    elif attachtype == 'allcolsizecheck':
+        attaches = order.allcolsizechecks.all()
+    elif attachtype == 'sscheck':
+        attaches = order.sschecks.all()
+    elif attachtype == 'fincheck':
+        attaches = order.finchecks.all()
+
+
     else:
         attaches = order.shippingpics.all()
     return render(request, 'order_attach_collection.html', {'order': order,
                   'attachtype': attachtype, 'attaches': attaches})
-
 
 # 装箱单查找，暂时不用，供今后参考
 # def plsearch(request):
@@ -1236,6 +1325,29 @@ def invoicelist(request):
         return render(request, 'invoice_list.html',  {'invoiceqs': invoiceqs, 'orderqs': orderqs, 'form': form})
 
 
+
+
+# 账务查询
+@login_required
+@o_m_mg_or_required
+def handoverlist(request):
+    if request.method == 'POST':
+        if request.POST.get('start_handover_date_f') and request.POST.get('end_handover_date_f'):
+            form = HandoverSearchForm(request.POST)
+            if form.is_valid():
+                start_handover_date_f = form.cleaned_data['start_handover_date_f']
+                end_handover_date_f = form.cleaned_data['end_handover_date_f']
+                orderqs = Order.objects.filter(Q(status='SHIPPED'), handover_date_f__range=(start_handover_date_f, end_handover_date_f))
+        else:
+            messages.warning(request, '请选择开始和结束工厂入仓日期！')
+            return redirect('order:handoverlist')
+    else:
+            form = HandoverSearchForm()
+            orderqs = None
+
+    return render(request, 'handoversearch.html',  {'orderqs': orderqs, 'form': form})
+
+
 # 发票已付款
 def invoicepay(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
@@ -1456,7 +1568,6 @@ def production(request, pk):
     pk = pk
     data = dict()
     order = get_object_or_404(Order, pk=pk)
-    print(order)
     if request.method == 'POST':
         form = OrderproductionForm(request.POST)
         if form.is_valid():
@@ -1655,7 +1766,7 @@ def ordercopy(request, pk):
 
 # 创建ALLY订单资料汇总
 @login_required
-@m_mg_qc_or_required
+# @m_mg_qc_or_required
 def orderlistinfo(request):
     packingway_dict = {}
     colorqtys_dict={}
@@ -1717,7 +1828,6 @@ def updateqcreport(request,pk):
             new_report.color = form.cleaned_data['color']
             new_report.ratio = form.cleaned_data['ratio']
             new_report.save()
-            # print(new_report.product_status)
             
             return redirect('order:editqcreport', pk=new_report.pk, checkitem_number=0)
         else:
@@ -2065,3 +2175,76 @@ def qcreportlist(request):
     template_name = 'qcreport_list.html'
     
     return render(request, template_name, {'qcreports': qcreports, 'gradesum':gradesum}) 
+
+
+
+# 创建订单状态信息
+@login_required
+@o_m_mg_or_required
+def orderprstatusadd(request, pk):
+    # Try to fetch the Order instance by primary key
+    order = Order.objects.get(pk=pk)
+    # Use get_or_create to fetch or create an OrderStatus linked to the Order
+    product_status, created = Product_status.objects.get_or_create(order=order)
+
+    if created:
+        messages.success(request, '订单状态信息已创建!')
+    else:
+        messages.success(request, '订单状态信息已存在，无需重新创建!')
+    
+    return redirect('order:orderedit', pk=order.pk)
+
+
+
+# 删除订单状态信息
+@login_required
+@o_m_mg_or_required
+def orderprstatusdelete(request, pk):
+    order = Order.objects.get(pk=pk)
+    try:
+        # Check if order has a status
+        if hasattr(order, 'product_status'):
+            # If status exists, delete it
+            order.product_status.delete()
+            # Redirect to success page or return an appropriate response
+            messages.success(request, '订单状态信息已删除!')
+        else:
+            # If no status, return without action
+            messages.success(request, '没有可删除的订单状态!')
+            
+    except order.product_status.DoesNotExist:
+        # If the status does not exist, return
+        messages.success(request, '没有可删除的订单状态!')
+
+    return redirect('order:orderedit', pk=order.pk)
+
+
+
+def update_status(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        order_id = data.get('order_id')
+        field = data.get('field')
+        new_value = data.get('value')
+
+        try:
+            # Get the order and associated status
+            order = Order.objects.get(pk=order_id)
+            product_status = order.product_status  # Assuming OneToOne relation from Order to Status
+
+            # Dynamically update the specific field
+
+            if hasattr(product_status, field):
+                setattr(product_status, field, new_value)  # Set the new value for the field
+                product_status.save()  # Save changes to the database
+
+            return JsonResponse({'success': True})
+
+        except Order.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Order not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
