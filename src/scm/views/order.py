@@ -10,7 +10,7 @@ from scm.models import (User, Order, Order_color_ratio_qty, Order_avatar,
                         Order_packing_status, Order_Barcode, PPackingway, Check_item, Check_point, Qc_report,
                         Check_record, Check_record_pics, 
                         Product_status,Fabric_cut_att,Product_plan,Process_att1,Process_att2,Process_att3,
-                        Process_att4,Pre_sample,All_col_size_check,SS_check,Fin_check,
+                        Process_att4,Pre_sample,All_col_size_check,SS_check,Fin_check,PStatus_alert,
                         )
 from scm.forms import (
                        OrderForm, Order_color_ratio_qty_Form,
@@ -52,6 +52,8 @@ import json
 import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
+from django.utils import timezone
+
 
 
 # 订单列表-未确认(新建，已送工厂状态)
@@ -2229,6 +2231,18 @@ def update_status(request):
         new_value = data.get('value')
 
         try:
+            # Attempt to parse the input as a date
+            date_value = datetime.datetime.strptime(new_value, '%Y-%m-%d')
+
+            # If successful, convert it to timezone-aware datetime
+            if timezone.is_naive(date_value):
+                new_value = timezone.make_aware(date_value)
+
+        except ValueError:
+            # If parsing fails, assume the input is text
+            new_value = new_value
+
+        try:
             # Get the order and associated status
             order = Order.objects.get(pk=order_id)
             product_status = order.product_status  # Assuming OneToOne relation from Order to Status
@@ -2248,3 +2262,40 @@ def update_status(request):
 
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
+# 订单进度问题提醒
+@method_decorator([login_required], name='dispatch')
+class AlertsList(ListView):
+    model = PStatus_alert
+    ordering = ('-created_date', )
+    context_object_name = 'alerts'
+    template_name = 'alerts_list.html'
+
+    def get_queryset(self):
+        loginuser = self.request.user
+
+        if loginuser.is_factory:
+            return PStatus_alert.objects.filter(order__factory=loginuser.factory)
+        else:
+            return PStatus_alert.objects.filter()
+
+
+
+
+@login_required
+def confirm_alert(request, pk):
+    # Get the specific alert
+    alert = get_object_or_404(PStatus_alert, id=pk)
+
+    loginuser = request.user
+    # Update the status field based on the logged-in user
+    if loginuser.is_factory:
+        alert.factory_confirmed = True
+    if loginuser.is_merchandiser:
+        alert.mer_confirmed = True
+    if loginuser.is_qc:
+        alert.qc_confirmed = True
+
+    alert.save()
+
+    # Redirect back to the alerts list or another page
+    return redirect('order:alertslist')  # Ensure this URL is defined for your alerts list

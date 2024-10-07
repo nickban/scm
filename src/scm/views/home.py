@@ -7,7 +7,8 @@ from scm.models import (Order, Order_bulk_fabric, Order_fitting_sample,
                         Sample_os_pics, Mainlabel, Maintag, Additiontag,
                      Sample_size_specs, Sample_os_avatar,
                      Sample_swatches, Sample_quotation_form,
-                     Sample_pics_factory, Sample_size_spec_factory)
+                     Sample_pics_factory, Sample_size_spec_factory,
+                     PStatus_alert)
 from scm.forms import (SignUpForm, NewpostForm, PostAttachmentForm, FactoryForm,
                     NewsampleForm, SampleForm, SamplesizespecsForm,
                     SampleosavatarForm, SampleospicsForm,
@@ -28,6 +29,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.contrib import messages
+import datetime
+from django.utils import timezone
 
 
 @login_required
@@ -54,6 +57,40 @@ def home(request):
     production_p = Order_production.objects.filter(status="WARNING").values_list('order', flat=True)
     # 有船大货问题的订单
     orders_production_p = Order.objects.filter(pk__in=production_p)
+    # 有生产进度问题的订单
+    today = timezone.now().date()
+    cmforders=Order.objects.filter(status='CONFIRMED')
+
+    for order in cmforders:
+        if hasattr(order, 'product_status'):  # Check if the order has a status associated with it
+
+            fabric_est_date = timezone.localtime(order.product_status.fabric_est_date).date()  # Get the status's date1
+            est_start_date = timezone.localtime(order.product_status.est_start_date).date()   # Get the status's date1
+
+            # Step 3: Check if today is 1 day before date1
+            if fabric_est_date - today == timezone.timedelta(days=1):
+
+                # Step 4: Check if an alert for this order has already been created today
+                alert_exists = PStatus_alert.objects.filter(order=order, created_at__date=today).exists()
+
+                if not alert_exists:
+
+                    # Step 5: Create an Alert object only if no alert exists for today
+                    alert_message = f"面料预计到厂日期: {fabric_est_date},请确认进度！"
+                    PStatus_alert.objects.create(order=order, message=alert_message)
+                            # Step 3: Check if today is 1 day before date1
+            if est_start_date - today == timezone.timedelta(days=1):
+                # Step 4: Check if an alert for this order has already been created today
+                alert_exists = PStatus_alert.objects.filter(order=order, created_at__date=today).exists()
+
+                if not alert_exists:
+                    # Step 5: Create an Alert object only if no alert exists for today
+                    alert_message = f"预计开货日期:{est_start_date},请确认进度！！"
+                    PStatus_alert.objects.create(order=order, message=alert_message)
+    
+
+
+
 
     # print(orders_production_p)
     # print(production_p)
@@ -72,6 +109,10 @@ def home(request):
 
         orders_production_p = orders_production_p.filter(factory=loginuser.factory)
         orders_production_p_number = orders_production_p.count()
+        alerts = PStatus_alert.objects.filter(order__factory=loginuser.factory,factory_confirmed=False)
+        alerts_number = alerts.count()
+
+
 
     elif loginuser.is_merchandiser:
         samples = Sample.objects.filter(Q(merchandiser=loginuser.merchandiser), (Q(status="NEW") | Q(status="SENT_F")))
@@ -87,7 +128,24 @@ def home(request):
 
         orders_production_p = orders_production_p.filter(merchandiser=loginuser.merchandiser)
         orders_production_p_number = orders_production_p.count()
+        alerts = PStatus_alert.objects.filter(mer_confirmed=False)
+        alerts_number = alerts.count()
 
+    
+    elif loginuser.is_qc:
+        samples = Sample.objects.filter(Q(status="NEW") | Q(status="SENT_F"))
+        samplesnumber = samples.count()
+        ordersnotc = Order.objects.filter(Q(status='NEW') | Q(status='SENT_FACTORY'))
+        ordernumbernotc = ordersnotc.count()
+        orders_bulk_fabric_p_number = orders_bulk_fabric_p.count()
+        orders_fitting_p_number = orders_fitting_p.count()
+        orders_shipping_p_number = orders_shipping_p.count()
+
+        orders_production_p_number = orders_production_p.count()
+        alerts = PStatus_alert.objects.filter(qc_confirmed=False)
+        alerts_number = alerts.count()
+
+    
     else:
         samples = Sample.objects.filter(Q(status="NEW") | Q(status="SENT_F"))
         samplesnumber = samples.count()
@@ -98,6 +156,9 @@ def home(request):
         orders_shipping_p_number = orders_shipping_p.count()
 
         orders_production_p_number = orders_production_p.count()
+        alerts = PStatus_alert.objects.filter()
+        alerts_number = alerts.count()
+
 
     return render(request, 'home.html', {'samplesnumber': samplesnumber,
                                          'ordernumbernotc': ordernumbernotc,
@@ -105,6 +166,7 @@ def home(request):
                                          'orders_bulk_fabric_p_number': orders_bulk_fabric_p_number,
                                          'orders_fitting_p_number': orders_fitting_p_number,
                                          'orders_production_p_number': orders_production_p_number,
+                                         'alerts_number':alerts_number,
                                          'orders_shipping_p_number': orders_shipping_p_number})
 
 

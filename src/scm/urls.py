@@ -49,6 +49,9 @@ urlpatterns = [
 
     # 订单地址导航
     path('order/', include(([
+        # 订单状态提醒
+        path('alertslist/', order.AlertsList.as_view(), name='alertslist'),
+        path('/confirm_alert/<int:pk>/', order.confirm_alert, name='confirm_alert'),
         # 未确认,已确认,已出货订单列表
         path('new/', order.OrderListNew.as_view(), name='orderlistnew'),
         path('confirmed/', order.OrderListConfrimed.as_view(), name='orderlistconfirmed'),

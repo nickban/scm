@@ -167,7 +167,7 @@ class SampleAddStep2(UpdateView):
         return super().get_context_data(**kwargs)
 
 # 样板更新
-@method_decorator([login_required, sample_is_completed, o_m_mg_or_required], name='dispatch')
+@method_decorator([login_required, o_m_mg_or_required], name='dispatch')
 class SampleEdit(UpdateView):
     model = Sample
     form_class = SampleForm

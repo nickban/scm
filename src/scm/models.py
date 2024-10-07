@@ -9,6 +9,8 @@ import os
 from datetime import date
 from PIL import Image
 from django.db.models import Sum
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 
 # 系统登录用户模块，用于分配用户角色
 class User(AbstractUser):
@@ -727,7 +729,7 @@ class Order(models.Model):
     def total_qty(self):
     # order and related order qty to string
         order_qty = self.colorqtys.aggregate(total=Sum('qty'))['total'] or 0
-        print(order_qty)
+        # print(order_qty)
 
         return f"{order_qty}"
     
@@ -737,7 +739,7 @@ class Order(models.Model):
         if self.related_po:
             related_order = self.related_po
             relatedpoqty = related_order.colorqtys.aggregate(total=Sum('qty'))['total'] or 0
-            print('related_po_qty',relatedpoqty)
+            # print('related_po_qty',relatedpoqty)
         else:
             relatedpoqty=0
 
@@ -1168,6 +1170,13 @@ class Product_status(models.Model):
     is_undercontrol= models.CharField(max_length=50, blank=True, null=True)
 
 
+
+# Signal handler function
+@receiver(pre_delete, sender=Product_status)
+def delete_related_alerts(sender, instance, **kwargs):
+    # Delete all related PrAlert instances for this order
+    instance.order.pstatusalerts.all().delete()
+
 class Fabric_cut_att(models.Model):
     file = models.FileField(upload_to='order/fabriccutatt/', blank=True)
     order = models.ForeignKey(Order,
@@ -1229,4 +1238,12 @@ class Fin_check(models.Model):
                                related_name='finchecks')
     
 
-    
+class PStatus_alert(models.Model):
+    order = models.ForeignKey(Order,
+                               on_delete=models.CASCADE,
+                               related_name='pstatusalerts')
+    factory_confirmed = models.BooleanField(default=False)
+    mer_confirmed = models.BooleanField(default=False)
+    qc_confirmed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    message = models.TextField()
