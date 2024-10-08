@@ -1168,6 +1168,8 @@ class Product_status(models.Model):
     factory_code = models.CharField(max_length=50, blank=True, null=True)
     # 表明这个订单有问题
     is_undercontrol= models.CharField(max_length=50, blank=True, null=True)
+    # 订单备注
+    comments= models.CharField(max_length=150, blank=True, null=True)
 
 
 

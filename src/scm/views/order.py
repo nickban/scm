@@ -1678,9 +1678,10 @@ def progessplist(request, type):
     orders_fitting_p = Order.objects.filter(pk__in=fitting_p)
     # 有问题的船头板进度记录对应的订单列表['orderid']
     shipping_p = Order_shipping_sample.objects.filter(status="WARNING").values_list('order', flat=True)
+    print('shipping_p',shipping_p)
     # 有船头板问题的订单
     orders_shipping_p = Order.objects.filter(pk__in=shipping_p)
-
+    print('orders_shipping_p',orders_shipping_p)
     # 有问题的大货进度记录对应的订单列表['orderid']
     production_p = Order_production.objects.filter(status="WARNING").values_list('order', flat=True)
     # 有大货问题的订单
@@ -1704,7 +1705,8 @@ def progessplist(request, type):
             orders = orders_bulk_fabric_p
         return render(request, 'order_list.html', {'orders': orders})
 
-    elif type == 'shipingsample':
+    elif type == 'shipping':
+        print(999)
         if loginuser.is_factory:
             orders = orders_shipping_p.filter(factory=loginuser.factory)
         elif loginuser.is_merchandiser:
