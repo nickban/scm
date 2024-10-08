@@ -638,12 +638,21 @@
                           class="dateInput empty" 
                           data-placeholder="" >
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;预计到厂
+                          {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc%}
                           <input type="date" 
                           id="fabric_est_date_{{ order.pk }}" 
                           value="{{ order.product_status.fabric_est_date|date:'Y-m-d' }}" 
                           onchange="updateStatus({{ order.pk }}, 'fabric_est_date')" 
                           class="dateInput empty" 
                           data-placeholder="" >
+                          {% else %}
+                          <input type="text" 
+                          size="15"
+                          id="fabric_est_date_{{ order.pk }}" 
+                          value="{{ order.product_status.fabric_est_date|date:'Y-m-d' }}" 
+                          class="dateInput empty" 
+                          data-placeholder="" >
+                          {% endif %}
                         </td>
                     </tr>
                     <tr>
@@ -709,12 +718,21 @@
                     <tr>
                       <td>
                         预计开货
+                        {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc%}
                         <input type="date" 
                         id="est_start_date_{{ order.pk }}" 
                         value="{{ order.product_status.est_start_date|date:'Y-m-d'}}" 
                         onchange="updateStatus({{ order.pk }}, 'est_start_date')" 
                         class="dateInput empty" 
                         data-placeholder="" >
+                        {% else %}
+                        <input type="text" 
+                        size="15"
+                        id="est_start_date_{{ order.pk }}" 
+                        value="{{ order.product_status.est_start_date|date:'Y-m-d'}}" 
+                        class="dateInput empty" 
+                        data-placeholder="" >
+                        {% endif %}
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;预计生产
                         <input type="text" 
                         size="5"
