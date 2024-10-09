@@ -516,6 +516,7 @@
               <th style="min-width: 50px;">订单号</th>
               <th style="min-width: 50px;">款号</th>
               <th style="min-width: 70px;">款式图</th>
+              <th style="min-width: 50px;">资料</th>
               <!-- <th style="min-width: 50px;">跟单</th> -->
               <th style="min-width: 50px;">工厂</th>
               <th style="min-width: 50px;">外发厂</th>
@@ -549,6 +550,7 @@
                 {% endif %}
                 <td>{{ order.style_no }}</td>
                 <td><img src="{{ order.avatar.file.url }}" width=100px, height=100px></td>
+                <td>{{ order.get_ziliao_display }}</td>
                 <!-- <td>{{ order.merchandiser }}</td> -->
                 {% if order.factory == None %}
                 <td></td>
