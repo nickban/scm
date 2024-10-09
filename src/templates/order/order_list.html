@@ -198,6 +198,9 @@
               <!-- <th>目的地</th> -->
               <!-- <th>小单</th> -->
               <th>资料</th>
+              {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
+              <th>生产进度</th>
+              {% endif %}
               <!-- <th>状态</th> -->
             </tr>
           </thead>
@@ -271,6 +274,13 @@
                 <!-- <td>{{ order.get_childorder_display }}</td> -->
                 <td>{{ order.get_ziliao_display }}</td>
                 <!-- <td>{{ order.get_status_display }}</td> -->
+                {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
+                {% if order.product_status%}
+                <td>已创建</td>
+                {% else %}
+                <td></td>
+                {% endif %}
+                {% endif %}
               </tr>
             {% endfor %}
           </tbody>
