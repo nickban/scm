@@ -2231,14 +2231,16 @@ def update_status(request):
         order_id = data.get('order_id')
         field = data.get('field')
         new_value = data.get('value')
+        print(new_value)
 
         try:
             # Attempt to parse the input as a date
-            date_value = datetime.datetime.strptime(new_value, '%Y-%m-%d')
+            if new_value:
+                date_value = datetime.datetime.strptime(new_value, '%Y-%m-%d')
 
-            # If successful, convert it to timezone-aware datetime
-            if timezone.is_naive(date_value):
-                new_value = timezone.make_aware(date_value)
+                # If successful, convert it to timezone-aware datetime
+                if timezone.is_naive(date_value):
+                    new_value = timezone.make_aware(date_value)
 
         except ValueError:
             # If parsing fails, assume the input is text
