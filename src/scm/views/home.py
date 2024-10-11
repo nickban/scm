@@ -64,33 +64,36 @@ def home(request):
     for order in cmforders:
         if hasattr(order, 'product_status'):  # Check if the order has a status associated with it
 
-            fabric_est_date = timezone.localtime(order.product_status.fabric_est_date).date()  # Get the status's date1
-            est_start_date = timezone.localtime(order.product_status.est_start_date).date()   # Get the status's date1
+            if order.product_status.fabric_est_date is not None:
+                fabric_est_date = timezone.localtime(order.product_status.fabric_est_date).date()  # Get the status's date1
+                print('fabric_est_date',fabric_est_date)
+                # Step 3: Check if today is 1 day before date1
+                if fabric_est_date - today == timezone.timedelta(days=1):
+                    print(1)
 
-            # Step 3: Check if today is 1 day before date1
-            if fabric_est_date - today == timezone.timedelta(days=1):
+                    # Step 4: Check if an alert for this order has already been created today
+                    alert_exists = PStatus_alert.objects.filter(order=order, created_at__date=today).exists()
+                    print(alert_exists)
+                    if not alert_exists:
+                        print(2)
+                        # Step 5: Create an Alert object only if no alert exists for today
+                        alert_message = f"面料预计到厂日期: {fabric_est_date},请确认进度！"
+                        PStatus_alert.objects.create(order=order, message=alert_message)
+                                # Step 3: Check if today is 1 day before date1
+            if order.product_status.est_start_date is not None:
+                est_start_date = timezone.localtime(order.product_status.est_start_date).date()   # Get the status's date1
+                print('est_start_date',est_start_date)
+                if est_start_date - today == timezone.timedelta(days=1):
+                    # Step 4: Check if an alert for this order has already been created today
+                    print(2)
+                    alert_exists = PStatus_alert.objects.filter(order=order, created_at__date=today).exists()
 
-                # Step 4: Check if an alert for this order has already been created today
-                alert_exists = PStatus_alert.objects.filter(order=order, created_at__date=today).exists()
-
-                if not alert_exists:
-
-                    # Step 5: Create an Alert object only if no alert exists for today
-                    alert_message = f"面料预计到厂日期: {fabric_est_date},请确认进度！"
-                    PStatus_alert.objects.create(order=order, message=alert_message)
-                            # Step 3: Check if today is 1 day before date1
-            if est_start_date - today == timezone.timedelta(days=1):
-                # Step 4: Check if an alert for this order has already been created today
-                alert_exists = PStatus_alert.objects.filter(order=order, created_at__date=today).exists()
-
-                if not alert_exists:
-                    # Step 5: Create an Alert object only if no alert exists for today
-                    alert_message = f"预计开货日期:{est_start_date},请确认进度！！"
-                    PStatus_alert.objects.create(order=order, message=alert_message)
+                    if not alert_exists:
+                        print(3)
+                        # Step 5: Create an Alert object only if no alert exists for today
+                        alert_message = f"预计开货日期:{est_start_date},请确认进度！！"
+                        PStatus_alert.objects.create(order=order, message=alert_message)
     
-
-
-
 
     # print(orders_production_p)
     # print(production_p)
