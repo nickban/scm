@@ -687,7 +687,7 @@
                     </tr>
                     <tr>
                         <td>
-                            附件(验布裁床信息)：<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='fabriccutatt' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='fabriccutatt'%}"  target="_blank">查看</a>
+                            附件(验布裁床信息)&nbsp;&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='fabriccutatt' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='fabriccutatt'%}"  target="_blank">查看</a>
                         </td>
                     </tr>
                 
@@ -695,11 +695,11 @@
                         <th rowspan="5">生产计划</th>
                         <td>生产计划
                           {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
-                          <a href="{% url 'order:orderattachadd' pk=order.pk attachtype='productplan' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='productplan'%}"  target="_blank">查看</a>
+                          &nbsp;&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='productplan' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='productplan'%}"  target="_blank">查看</a>
                           {% else %}
                           &nbsp;&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='productplan'%}"  target="_blank">查看</a>
                           {% endif %}
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;外发厂代码
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;外发厂代码
                           <input type="text" 
                           size="8"
                           id="factory_code_{{ order.pk }}" 
