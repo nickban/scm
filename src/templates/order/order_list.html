@@ -640,7 +640,7 @@
                   <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                   <table >
                     <tr style="min-width: 600px;">
-                        <th rowspan="3" style="min-width: 65px;">面料订购</th>
+                        <th rowspan="2" style="min-width: 65px;">面料订购</th>
                         <td style="min-width: 535px;">
                           面料订购
                           <input type="date" 
@@ -685,23 +685,23 @@
                         data-placeholder="" >
                       </td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td>
                             附件(验布裁床信息)&nbsp;&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='fabriccutatt' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='fabriccutatt'%}"  target="_blank">查看</a>
                         </td>
-                    </tr>
+                    </tr> -->
                 
                     <tr>
-                        <th rowspan="5">生产计划</th>
+                        <th rowspan="3">生产计划</th>
                         <td>生产计划
                           {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
                           &nbsp;&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='productplan' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='productplan'%}"  target="_blank">查看</a>
                           {% else %}
                           &nbsp;&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='productplan'%}"  target="_blank">查看</a>
                           {% endif %}
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;外发厂代码
+                          &nbsp;&nbsp;&nbsp;&nbsp;外发厂代码
                           <input type="text" 
-                          size="8"
+                          size="7"
                           id="factory_code_{{ order.pk }}" 
                           value="{{ order.product_status.factory_code|default_if_none:'' }}" 
                           onchange="updateStatus({{ order.pk }}, 'factory_code')" 
@@ -710,7 +710,7 @@
                           {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc%}
                           &nbsp;&nbsp;&nbsp;&nbsp;预警
                           <input type="text" 
-                          size="5"
+                          size="6"
                           id="is_undercontrol_{{ order.pk }}" 
                           value="{{ order.product_status.is_undercontrol|default_if_none:'' }}" 
                           onchange="updateStatus({{ order.pk }}, 'is_undercontrol')" 
@@ -720,7 +720,7 @@
                         </td>
                     </tr>
 
-                    <tr>
+                    <!-- <tr>
                       <td>
                         查产前板&nbsp;&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='presample' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='presample'%}"  target="_blank">查看</a>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;查船头板&nbsp;&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='sscheck' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='sscheck'%}"  target="_blank">查看</a>
@@ -730,7 +730,7 @@
                         车间查(齐色齐码)&nbsp;&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='allcolsizecheck' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='allcolsizecheck'%}"  target="_blank">查看</a>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;尾查(整烫包装后)&nbsp;&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='fincheck' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='fincheck'%}"  target="_blank">查看</a>
                       </td>
-                    </tr>
+                    </tr> -->
 
                     <tr>
                       <td>
@@ -779,7 +779,7 @@
                       </td>
                     </tr>
                     <tr>
-                        <th rowspan="4">进度跟进</th>
+                        <th rowspan="2">进度(整件)</th>
                         <td>
                           检查日期
                           <input type="date" 
@@ -788,15 +788,15 @@
                           onchange="updateStatus({{ order.pk }}, 'process_date1')" 
                           class="dateInput empty" 
                           data-placeholder="" >
-                          完成件数
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总完成件数
                           <input type="text" 
-                          size="7"
+                          size="11"
                           id="fin_pcs1_{{ order.pk }}" 
                           value="{{ order.product_status.fin_pcs1|default_if_none:''  }}" 
                           onchange="updateStatus({{ order.pk }}, 'fin_pcs1')" 
                           class="dateInput empty" 
-                          data-placeholder="" >
-                          附件&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='processatt1' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='processatt1'%}"  target="_blank">查看</a>
+                          data-placeholder="" >件
+                          <!-- 附件&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='processatt1' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='processatt1'%}"  target="_blank">查看</a> -->
                         </td>
                     </tr>
                     <tr>
@@ -808,38 +808,39 @@
                         onchange="updateStatus({{ order.pk }}, 'process_date2')" 
                         class="dateInput empty" 
                         data-placeholder="" >
-                        完成件数
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总完成件数
                         <input type="text" 
-                        size="7"
+                        size="11"
                         id="fin_pcs2_{{ order.pk }}" 
                         value="{{ order.product_status.fin_pcs2|default_if_none:''  }}" 
                         onchange="updateStatus({{ order.pk }}, 'fin_pcs2')" 
                         class="dateInput empty" 
-                        data-placeholder="" >
-                        附件&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='processatt2' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='processatt2'%}"  target="_blank">查看</a>
+                        data-placeholder="" >件
+                        <!-- 附件&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='processatt2' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='processatt2'%}"  target="_blank">查看</a> -->
                       </td>
                     </tr>
                     <tr>
+                      <th rowspan="1">进度(流水)</th>
                       <td>
-                        检查日期
+                        成品日期
                         <input type="date" 
                         id="process_date3_{{ order.pk }}" 
                         value="{{ order.product_status.process_date3|date:'Y-m-d'}}" 
                         onchange="updateStatus({{ order.pk }}, 'process_date3')" 
                         class="dateInput empty" 
                         data-placeholder="" >
-                        完成件数
+                        <!-- 完成件数
                         <input type="text" 
                         size="7"
                         id="fin_pcs3_{{ order.pk }}" 
                         value="{{ order.product_status.fin_pcs3|default_if_none:''  }}" 
                         onchange="updateStatus({{ order.pk }}, 'fin_pcs3')" 
                         class="dateInput empty" 
-                        data-placeholder="" >
-                        附件&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='processatt3' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='processatt3'%}"  target="_blank">查看</a>
+                        data-placeholder="" > -->
+                        <!-- 附件&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='processatt3' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='processatt3'%}"  target="_blank">查看</a> -->
                       </td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                       <td>
                         检查日期
                         <input type="date" 
@@ -858,8 +859,7 @@
                         data-placeholder="" >
                         附件&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='processatt4' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='processatt4'%}"  target="_blank">查看</a>
                       </td>
-                    </tr>
-
+                    </tr> -->
                     <tr>
                       <th >备注</th>
                       <td>
