@@ -526,10 +526,10 @@
               <th style="min-width: 50px;">订单号</th>
               <th style="min-width: 50px;">款号</th>
               <th style="min-width: 70px;">款式图</th>
-              <th style="min-width: 50px;">资料</th>
+              <!-- <th style="min-width: 50px;">资料</th> -->
               <!-- <th style="min-width: 50px;">跟单</th> -->
               <th style="min-width: 50px;">工厂</th>
-              <th style="min-width: 50px;">外发厂</th>
+              <!-- <th style="min-width: 50px;">外发厂</th> -->
               <th style="min-width: 50px;">预警</th>
               <th style="min-width: 80px;">距离出货</th>
               <th style="min-width: 80px;">订单数量</th>
@@ -560,7 +560,7 @@
                 {% endif %}
                 <td>{{ order.style_no }}</td>
                 <td><img src="{{ order.avatar.file.url }}" width=100px, height=100px></td>
-                <td>{{ order.get_ziliao_display }}</td>
+                <!-- <td>{{ order.get_ziliao_display }}</td> -->
                 <!-- <td>{{ order.merchandiser }}</td> -->
                 {% if order.factory == None %}
                 <td></td>
@@ -568,12 +568,12 @@
                 <td>{{ order.factory }}</td>
                 {% endif %}
                 <!-- 外发厂 -->
-                {% if order.product_status.factory_code == None %}
+                <!-- {% if order.product_status.factory_code == None %}
                 <td></td>
                 {% else %}
                 <td>{{ order.product_status.factory_code  }}</td>
-                {% endif %}
-                <!-- 预警 -->
+                {% endif %} -->
+                预警
                 {% if order.product_status.is_undercontrol == None %}
                 <td></td>
                 {% else %}

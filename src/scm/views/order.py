@@ -1735,21 +1735,25 @@ class FunctionList(TemplateView):
 @m_mg_or_required
 def ordercopy(request, pk):
     order = get_object_or_404(Order, pk=pk)
-    order_avatar =  order.avatar
+    
     order_size_specs = order.sizespecs.all()
     order_swatches = order.swatches.all()
     order_packingways = order.PPackingways.all()
+    ordere_colorqtys = order.colorqtys.all()
 
     order.pk = None
     order.status = "NEW"
     order.save()
 
-    new_file = ContentFile(order_avatar.file.read())
-    new_file_name = order_avatar.file.name.split(".")[0] + str(order_avatar.pk) + '.' + order_avatar.file.name.split(".")[1]
-    order_avatar.pk = None
-    order_avatar.order = order
-    order_avatar.file.save(new_file_name, new_file) 
-    order_avatar.save()
+    if hasattr(order, 'avatar'):
+        print(1)
+        order_avatar =  order.avatar    
+        new_file = ContentFile(order_avatar.file.read())
+        new_file_name = order_avatar.file.name.split(".")[0] + str(order_avatar.pk) + '.' + order_avatar.file.name.split(".")[1]
+        order_avatar.pk = None
+        order_avatar.order = order
+        order_avatar.file.save(new_file_name, new_file) 
+        order_avatar.save()
 
     for sizespec in order_size_specs:
         sizespec.pk = None
@@ -1763,6 +1767,11 @@ def ordercopy(request, pk):
 
     for packingway in order_packingways:
         order.PPackingways.add(packingway)
+    
+    for colorqty in ordere_colorqtys:
+        colorqty.pk = None
+        colorqty.order = order
+        colorqty.save()
 
     return redirect('order:orderlistnew')
 
