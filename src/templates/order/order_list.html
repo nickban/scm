@@ -640,8 +640,8 @@
                   <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                   <table >
                     <tr style="min-width: 600px;">
-                        <th rowspan="2" style="min-width: 70px;">面料订购</th>
-                        <td style="min-width: 535px;">
+                        <th rowspan="2" style="min-width: 70px;">面料</th>
+                        <!-- <td style="min-width: 535px;">
                           面料订购
                           <input type="date" 
                           id="fabric_order_date_{{ order.pk }}" 
@@ -665,7 +665,7 @@
                           class="dateInput empty" 
                           data-placeholder="" >
                           {% endif %}
-                        </td>
+                        </td> -->
                     </tr>
                     <tr>
                       <td>
@@ -692,8 +692,8 @@
                     </tr> -->
                 
                     <tr>
-                        <th rowspan="3">生产计划</th>
-                        <td>生产计划
+                        <th rowspan="3">生产</th>
+                        <!-- <td>生产计划
                           {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
                           &nbsp;&nbsp;&nbsp;<a href="{% url 'order:orderattachadd' pk=order.pk attachtype='productplan' %}" role="button" target="_blank">上传</a>&nbsp;<a href="{% url 'order:orderattachcollection' pk=order.pk attachtype='productplan'%}"  target="_blank">查看</a>
                           {% else %}
@@ -717,7 +717,7 @@
                           class="dateInput empty" 
                           data-placeholder="" >
                           {% endif %}
-                        </td>
+                        </td> -->
                     </tr>
 
                     <!-- <tr>
@@ -733,7 +733,7 @@
                     </tr> -->
 
                     <tr>
-                      <td>
+                      <!-- <td>
                         预计开货
                         {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc%}
                         <input type="date" 
@@ -758,7 +758,7 @@
                         onchange="updateStatus({{ order.pk }}, 'est_period')" 
                         class="dateInput empty" 
                         data-placeholder="" >天
-                      </td>
+                      </td> -->
                     </tr>
                     <tr>
                       <td>
@@ -829,6 +829,17 @@
                         onchange="updateStatus({{ order.pk }}, 'process_date3')" 
                         class="dateInput empty" 
                         data-placeholder="" >
+
+                        {% if request.user.is_merchandiser or request.user.is_merchandiser_manager or request.user.is_qc%}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;预警
+                        <input type="text" 
+                        size="6"
+                        id="is_undercontrol_{{ order.pk }}" 
+                        value="{{ order.product_status.is_undercontrol|default_if_none:'' }}" 
+                        onchange="updateStatus({{ order.pk }}, 'is_undercontrol')" 
+                        class="dateInput empty" 
+                        data-placeholder="" >
+                        {% endif %}
                         <!-- 完成件数
                         <input type="text" 
                         size="7"
