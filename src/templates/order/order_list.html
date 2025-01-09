@@ -331,9 +331,9 @@
             <th style="min-width: 70px;">客人交期</th>
             {% endif %}
             <th style="min-width: 70px;">款式图</th>
-            <th style="min-width: 300px;">生产板</th>
-            <th style="min-width: 200px;">大货布</th>
-            <th style="min-width: 200px;">船头板</th>
+            <th style="min-width: 450px;">生产板</th>
+            <th style="min-width: 250px;">大货布</th>
+            <!-- <th style="min-width: 200px;">船头板</th> -->
             <!-- <th style="min-width: 50px;">状态</th> -->
           </tr>
         </thead>
@@ -440,24 +440,24 @@
               </ul>
             </td>
             <!-- 船头板列表 -->
-            <td>
+            <!-- <td> -->
               <!-- 通过class:js-create-ss激活js -->
-              {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
+              <!-- {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
               <i class="fas fa-plus-circle fa-1x js-create-ss"></i>
-              {% endif%}
+              {% endif%} -->
               <!-- 设置唯一id, 传值给js, 因为页面有多个进度种类,前面加类别fs -->
-              <ul id=ss{{order.pk}} class="list-unstyled">
-                  {% if order.shippingsamples.count > 0 %}
+              <!-- <ul id=ss{{order.pk}} class="list-unstyled">
+                  {% if order.shippingsamples.count > 0 %} -->
                     <!-- 每个订单只显示最近3条进度记录 -->
-                    {% for each in order.shippingsamples.all|slice:":3" %}
-                      {% if each.status == 'WARNING' %}
-                      <li style="color:red;">{{each.shipping_sample}}
-                      {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
+                    <!-- {% for each in order.shippingsamples.all|slice:":3" %} -->
+                      <!-- {% if each.status == 'WARNING' %} -->
+                      <!-- <li style="color:red;">{{each.shipping_sample}} -->
+                      <!-- {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%} -->
                         <!-- 删除进度图标, 设置id,传值js, ss-delete 用于js事件 -->
-                        <i id=ssd{{each.pk}} class="mx-2 ss-delete far fa-trash-alt fa-1x"></i>
+                        <!-- <i id=ssd{{each.pk}} class="mx-2 ss-delete far fa-trash-alt fa-1x"></i> -->
                         <!-- 编辑进度图标, 设置id,传值js, ss-edit 用于js事件 -->
-                        <i id=sse{{each.pk}} class="ss-edit fas fa-edit fa-1x"></i>
-                      {% endif %}
+                        <!-- <i id=sse{{each.pk}} class="ss-edit fas fa-edit fa-1x"></i> -->
+                      <!-- {% endif %}
                       </li>
                       {% else %}
                       <li >{{each.shipping_sample}}
@@ -469,8 +469,8 @@
                       {% endif %}
                     {% endfor %}
                   {% endif %}
-              </ul>
-            </td>
+              </ul> -->
+            <!-- </td> -->
             <!-- <td>{{ order.get_status_display }}</td> -->
           </tr>
           {% endfor %}
