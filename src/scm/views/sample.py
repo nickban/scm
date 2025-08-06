@@ -214,7 +214,7 @@ def samplesentfactory(request, pk):
             encoded = base64.b64encode(open(os_avatar_file.path, "rb").read()).decode()
         except ObjectDoesNotExist:
             encoded = ''
-        sender_email = 'SCM<scm@monayoung.com.au>'
+        sender_email = 'admin@yuansefashion.com'
         receiver_email = factoryemail
         message = MIMEMultipart("alternative")
         message["Subject"] = "缘色SCM-新样板通知"
@@ -237,8 +237,9 @@ def samplesentfactory(request, pk):
             """
         part = MIMEText(html, "html")
         message.attach(part)
-        with smtplib.SMTP(config('EMAIL_HOST'), config('EMAIL_PORT', cast=int)) as server:
+        with smtplib.SMTP_SSL(config('EMAIL_HOST'), config('EMAIL_PORT')) as server:
             server.login(config('EMAIL_HOST_USER'), config('EMAIL_HOST_PASSWORD'))
+            print("Login successful!")
             server.sendmail(
                 sender_email, receiver_email, message.as_string()
             )

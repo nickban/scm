@@ -607,7 +607,7 @@ def ordersentfactory(request, pk):
             encoded = base64.b64encode(open(avatar_file.path, "rb").read()).decode()
         except ObjectDoesNotExist:
             encoded = ''
-        sender_email = 'SCM@monayoung.com.au'
+        sender_email = 'admin@yuansefashion.com'
         receiver_email = factoryemail
         message = MIMEMultipart("alternative")
         message["Subject"] = "缘色SCM-新订单通知"
@@ -632,8 +632,17 @@ def ordersentfactory(request, pk):
             """
         part = MIMEText(html, "html")
         message.attach(part)
-        with smtplib.SMTP(config('EMAIL_HOST'), config('EMAIL_PORT', cast=int)) as server:
+
+        # try:
+        #     with smtplib.SMTP_SSL('smtp.qiye.163.com', 465) as server:
+        #         server.login('admin@yuansefashion.com', 'vMfj7BMscu7kENxn')
+        #         print("Login successful!")
+        # except Exception as e:
+        #     print(f"Error: {e}")
+
+        with smtplib.SMTP_SSL(config('EMAIL_HOST'), config('EMAIL_PORT')) as server:
             server.login(config('EMAIL_HOST_USER'), config('EMAIL_HOST_PASSWORD'))
+            print("Login successful!")
             server.sendmail(
                 sender_email, receiver_email, message.as_string()
             )
@@ -1057,7 +1066,7 @@ def packinglistsubmit(request, pk):
         encoded = base64.b64encode(open(avatar_file.path, "rb").read()).decode()
     except ObjectDoesNotExist:
         encoded = ''
-    sender_email = 'SCM@monayoung.com.au'
+    sender_email = 'admin@yuansefashion.com'
     message = MIMEMultipart("alternative")
     message["Subject"] = "缘色SCM-装箱单提交！"
     message["From"] = sender_email
@@ -1080,8 +1089,10 @@ def packinglistsubmit(request, pk):
         """
     part = MIMEText(html, "html")
     message.attach(part)
-    with smtplib.SMTP(config('EMAIL_HOST'), config('EMAIL_PORT', cast=int)) as server:
+
+    with smtplib.SMTP_SSL(config('EMAIL_HOST'), config('EMAIL_PORT')) as server:
         server.login(config('EMAIL_HOST_USER'), config('EMAIL_HOST_PASSWORD'))
+        print("Login successful!")
         for email in office_emails:
             message["To"] = email
             server.sendmail(
@@ -2027,7 +2038,7 @@ def sendqcreport(request, pk):
     merchandiser_m_email.append(factoryemail)
     merchandiser_m_email.append(merchandiseremail)
 
-    sender_email = 'SCM@monayoung.com.au'
+    sender_email = 'admin@yuansefashion.com'
     receiver_email = merchandiser_m_email
 
     message = MIMEMultipart("alternative")
@@ -2062,8 +2073,9 @@ def sendqcreport(request, pk):
         """
     part = MIMEText(html, "html")
     message.attach(part)
-    with smtplib.SMTP(config('EMAIL_HOST'), config('EMAIL_PORT', cast=int)) as server:
-        server.login(config('EMAIL_HOST_USER'), config('EMAIL_HOST_PASSWORD')) 
+    with smtplib.SMTP_SSL(config('EMAIL_HOST'), config('EMAIL_PORT')) as server:
+        server.login(config('EMAIL_HOST_USER'), config('EMAIL_HOST_PASSWORD'))
+        print("Login successful!")
         server.sendmail(sender_email, receiver_email, message.as_string()
             )
     messages.success(request, '邮件发送成功!')
