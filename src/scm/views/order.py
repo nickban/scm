@@ -252,13 +252,14 @@ class OrderListShippedall(ListView):
         qs = Order.objects.select_related('avatar', 'brand', 'designer', 'factory', 'merchandiser', 'style')
 
         if loginuser.is_merchandiser:
-            return qs.filter(Q(merchandiser=loginuser.merchandiser),
-                             Q(status='SHIPPED'))
+            queryset = qs.filter(Q(merchandiser=loginuser.merchandiser), Q(status='SHIPPED'))
         elif loginuser.is_factory:
-            return qs.filter(Q(factory=loginuser.factory),
-                             Q(status='SHIPPED'))
+            queryset = qs.filter(Q(factory=loginuser.factory), Q(status='SHIPPED'))
         else:
-            return qs.filter(status='SHIPPED')
+            queryset = qs.filter(status='SHIPPED')
+        # 加上切片限制，防止历史数据过多直接撑爆服务器
+        return queryset.order_by('-created_date')[:5000]
+    
         # if loginuser.is_merchandiser:
         #     return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
         #                                 Q(status='SHIPPED'))
