@@ -116,18 +116,29 @@ class OrderListShipped(ListView):
         today = datetime.datetime.today() 
         half_year = datetime.datetime.today() - datetime.timedelta(days=180)
 
-
+        qs = Order.objects.select_related('avatar', 'brand', 'designer', 'factory', 'merchandiser', 'style')
 
         if loginuser.is_merchandiser:
-            return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
-                                        Q(handover_date_f__range=(half_year,today)),
-                                        Q(status='SHIPPED'))
+            return qs.filter(Q(merchandiser=loginuser.merchandiser),
+                             Q(handover_date_f__range=(half_year,today)),
+                             Q(status='SHIPPED'))
         elif loginuser.is_factory:
-            return Order.objects.filter(Q(factory=loginuser.factory),
-                                        Q(handover_date_f__range=(half_year,today)),
-                                        Q(status='SHIPPED'))
+            return qs.filter(Q(factory=loginuser.factory),
+                             Q(handover_date_f__range=(half_year,today)),
+                             Q(status='SHIPPED'))
         else:
-            return Order.objects.filter(handover_date_f__range=(half_year,today), status='SHIPPED')
+            return qs.filter(handover_date_f__range=(half_year,today), status='SHIPPED')
+
+        # if loginuser.is_merchandiser:
+        #     return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
+        #                                 Q(handover_date_f__range=(half_year,today)),
+        #                                 Q(status='SHIPPED'))
+        # elif loginuser.is_factory:
+        #     return Order.objects.filter(Q(factory=loginuser.factory),
+        #                                 Q(handover_date_f__range=(half_year,today)),
+        #                                 Q(status='SHIPPED'))
+        # else:
+        #     return Order.objects.filter(handover_date_f__range=(half_year,today), status='SHIPPED')
 
     def get_context_data(self, **kwargs):
 
@@ -151,18 +162,29 @@ class OrderListShippedoneyear(ListView):
         today = datetime.datetime.today() 
         one_year = datetime.datetime.today() - datetime.timedelta(days=365)
 
-
+        qs = Order.objects.select_related('avatar', 'brand', 'designer', 'factory', 'merchandiser', 'style')
 
         if loginuser.is_merchandiser:
-            return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
-                                        Q(handover_date_f__range=(one_year,today)),
-                                        Q(status='SHIPPED'))
+            return qs.filter(Q(merchandiser=loginuser.merchandiser),
+                             Q(handover_date_f__range=(one_year,today)),
+                             Q(status='SHIPPED'))
         elif loginuser.is_factory:
-            return Order.objects.filter(Q(factory=loginuser.factory),
-                                        Q(handover_date_f__range=(one_year,today)),
-                                        Q(status='SHIPPED'))
+            return qs.filter(Q(factory=loginuser.factory),
+                             Q(handover_date_f__range=(one_year,today)),
+                             Q(status='SHIPPED'))
         else:
-            return Order.objects.filter(handover_date_f__range=(one_year,today), status='SHIPPED')
+            return qs.filter(handover_date_f__range=(one_year,today), status='SHIPPED')
+
+        # if loginuser.is_merchandiser:
+        #     return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
+        #                                 Q(handover_date_f__range=(one_year,today)),
+        #                                 Q(status='SHIPPED'))
+        # elif loginuser.is_factory:
+        #     return Order.objects.filter(Q(factory=loginuser.factory),
+        #                                 Q(handover_date_f__range=(one_year,today)),
+        #                                 Q(status='SHIPPED'))
+        # else:
+        #     return Order.objects.filter(handover_date_f__range=(one_year,today), status='SHIPPED')
 
     def get_context_data(self, **kwargs):
 
@@ -186,16 +208,28 @@ class OrderListShippedlastyear(ListView):
         today = datetime.datetime.today() 
         one_year = datetime.datetime.today() - datetime.timedelta(days=365)
 
+        qs = Order.objects.select_related('avatar', 'brand', 'designer', 'factory', 'merchandiser', 'style')
+
         if loginuser.is_merchandiser:
-            return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
-                                        Q(handover_date_f__range=(one_year,today)),
-                                        Q(status='SHIPPED'))
+            return qs.filter(Q(merchandiser=loginuser.merchandiser),
+                             Q(handover_date_f__range=(one_year,today)),
+                             Q(status='SHIPPED'))
         elif loginuser.is_factory:
-            return Order.objects.filter(Q(factory=loginuser.factory),
-                                        Q(handover_date_f__range=(one_year,today)),
-                                        Q(status='SHIPPED'))
+            return qs.filter(Q(factory=loginuser.factory),
+                             Q(handover_date_f__range=(one_year,today)),
+                             Q(status='SHIPPED'))
         else:
-            return Order.objects.filter(handover_date_f__range=(one_year,today), status='SHIPPED')
+            return qs.filter(handover_date_f__range=(one_year,today), status='SHIPPED')
+        # if loginuser.is_merchandiser:
+        #     return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
+        #                                 Q(handover_date_f__range=(one_year,today)),
+        #                                 Q(status='SHIPPED'))
+        # elif loginuser.is_factory:
+        #     return Order.objects.filter(Q(factory=loginuser.factory),
+        #                                 Q(handover_date_f__range=(one_year,today)),
+        #                                 Q(status='SHIPPED'))
+        # else:
+        #     return Order.objects.filter(handover_date_f__range=(one_year,today), status='SHIPPED')
 
     def get_context_data(self, **kwargs):
 
@@ -215,15 +249,24 @@ class OrderListShippedall(ListView):
     def get_queryset(self):
         loginuser = self.request.user
 
+        qs = Order.objects.select_related('avatar', 'brand', 'designer', 'factory', 'merchandiser', 'style')
 
         if loginuser.is_merchandiser:
-            return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
-                                        Q(status='SHIPPED'))
+            return qs.filter(Q(merchandiser=loginuser.merchandiser),
+                             Q(status='SHIPPED'))
         elif loginuser.is_factory:
-            return Order.objects.filter(Q(factory=loginuser.factory),
-                                        Q(status='SHIPPED'))
+            return qs.filter(Q(factory=loginuser.factory),
+                             Q(status='SHIPPED'))
         else:
-            return Order.objects.filter(status='SHIPPED')
+            return qs.filter(status='SHIPPED')
+        # if loginuser.is_merchandiser:
+        #     return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
+        #                                 Q(status='SHIPPED'))
+        # elif loginuser.is_factory:
+        #     return Order.objects.filter(Q(factory=loginuser.factory),
+        #                                 Q(status='SHIPPED'))
+        # else:
+        #     return Order.objects.filter(status='SHIPPED')
 
     def get_context_data(self, **kwargs):
 
