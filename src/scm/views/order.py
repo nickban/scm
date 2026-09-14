@@ -249,7 +249,7 @@ class OrderListShippedall(ListView):
     def get_queryset(self):
         loginuser = self.request.user
 
-        qs = Order.objects.select_related('avatar', 'brand', 'designer', 'factory', 'merchandiser', 'style')
+        qs = Order.objects.select_related('brand', 'designer', 'factory', 'merchandiser')
 
         if loginuser.is_merchandiser:
             queryset = qs.filter(Q(merchandiser=loginuser.merchandiser), Q(status='SHIPPED'))
