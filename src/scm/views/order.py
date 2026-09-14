@@ -258,7 +258,7 @@ class OrderListShippedall(ListView):
         else:
             queryset = qs.filter(status='SHIPPED')
         # 加上切片限制，防止历史数据过多直接撑爆服务器
-        return queryset.order_by('-created_date')[:5000]
+        return queryset.order_by('-created_date')[:3000]
     
         # if loginuser.is_merchandiser:
         #     return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
