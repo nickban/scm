@@ -37,13 +37,24 @@ class SampleListNew(ListView):
 
     def get_queryset(self):
         loginuser = self.request.user
+        # 加上 select_related 预加载外键，避免 N+1 查询
+        qs = Sample.objects.select_related('brand', 'designer', 'merchandiser', 'factory', 'os_avatar')
+        
         if loginuser.is_merchandiser:
-            return Sample.objects.filter(Q(merchandiser=loginuser.merchandiser),
-                                         Q(status='NEW') | Q(status='SENT_F')).order_by('-created_date')
+            return qs.filter(Q(merchandiser=loginuser.merchandiser),
+                             Q(status='NEW') | Q(status='SENT_F')).order_by('-created_date')
         elif loginuser.is_factory:
-            return Sample.objects.filter(factory=loginuser.factory, status='SENT_F').order_by('-created_date')
+            return qs.filter(factory=loginuser.factory, status='SENT_F').order_by('-created_date')
         else:
-            return Sample.objects.filter(Q(status='NEW') | Q(status='SENT_F')).order_by('-created_date')
+            return qs.filter(Q(status='NEW') | Q(status='SENT_F')).order_by('-created_date')
+        
+        # if loginuser.is_merchandiser:
+        #     return Sample.objects.filter(Q(merchandiser=loginuser.merchandiser),
+        #                                  Q(status='NEW') | Q(status='SENT_F')).order_by('-created_date')
+        # elif loginuser.is_factory:
+        #     return Sample.objects.filter(factory=loginuser.factory, status='SENT_F').order_by('-created_date')
+        # else:
+        #     return Sample.objects.filter(Q(status='NEW') | Q(status='SENT_F')).order_by('-created_date')
 
     def get_context_data(self, **kwargs):
         kwargs['type'] = 'NEW'
@@ -63,16 +74,28 @@ class SampleListCompleted(ListView):
         today = datetime.datetime.today() 
         half_year = datetime.datetime.today() - datetime.timedelta(days=180)
 
+        qs = Sample.objects.select_related('brand', 'designer', 'merchandiser', 'factory', 'os_avatar')
+
         if loginuser.is_merchandiser:
-            return Sample.objects.filter(Q(merchandiser=loginuser.merchandiser),
-                                         Q(created_date__range=(half_year,today)),
-                                         Q(status='COMPLETED'))
+            return qs.filter(Q(merchandiser=loginuser.merchandiser),
+                             Q(created_date__range=(half_year, today)),
+                             Q(status='COMPLETED')).order_by('-created_date')
         elif loginuser.is_factory:
-            return Sample.objects.filter(Q(factory=loginuser.factory),
-                                         Q(created_date__range=(half_year,today)),
-                                         Q(status='COMPLETED'))
+            return qs.filter(Q(factory=loginuser.factory),
+                             Q(created_date__range=(half_year, today)),
+                             Q(status='COMPLETED')).order_by('-created_date')
         else:
-            return Sample.objects.filter(created_date__range=(half_year,today), status='COMPLETED')
+            return qs.filter(created_date__range=(half_year, today), status='COMPLETED').order_by('-created_date')
+        # if loginuser.is_merchandiser:
+        #     return Sample.objects.filter(Q(merchandiser=loginuser.merchandiser),
+        #                                  Q(created_date__range=(half_year,today)),
+        #                                  Q(status='COMPLETED'))
+        # elif loginuser.is_factory:
+        #     return Sample.objects.filter(Q(factory=loginuser.factory),
+        #                                  Q(created_date__range=(half_year,today)),
+        #                                  Q(status='COMPLETED'))
+        # else:
+        #     return Sample.objects.filter(created_date__range=(half_year,today), status='COMPLETED')
 
     def get_context_data(self, **kwargs):
         kwargs['type'] = 'COMPLETED'
@@ -93,17 +116,29 @@ class SampleListCompletedoneyear(ListView):
 
         today = datetime.datetime.today() 
         one_year = datetime.datetime.today() - datetime.timedelta(days=365)
+        qs = Sample.objects.select_related('brand', 'designer', 'merchandiser', 'factory', 'os_avatar')
 
         if loginuser.is_merchandiser:
-            return Sample.objects.filter(Q(merchandiser=loginuser.merchandiser),
-                                         Q(created_date__range=(one_year,today)),
-                                         Q(status='COMPLETED'))
+            return qs.filter(Q(merchandiser=loginuser.merchandiser),
+                             Q(created_date__range=(one_year, today)),
+                             Q(status='COMPLETED')).order_by('-created_date')
         elif loginuser.is_factory:
-            return Sample.objects.filter(Q(factory=loginuser.factory),
-                                         Q(created_date__range=(one_year,today)),
-                                         Q(status='COMPLETED'))
+            return qs.filter(Q(factory=loginuser.factory),
+                             Q(created_date__range=(one_year, today)),
+                             Q(status='COMPLETED')).order_by('-created_date')
         else:
-            return Sample.objects.filter(created_date__range=(one_year,today), status='COMPLETED')
+            return qs.filter(created_date__range=(one_year, today), status='COMPLETED').order_by('-created_date')
+        
+        # if loginuser.is_merchandiser:
+        #     return Sample.objects.filter(Q(merchandiser=loginuser.merchandiser),
+        #                                  Q(created_date__range=(one_year,today)),
+        #                                  Q(status='COMPLETED'))
+        # elif loginuser.is_factory:
+        #     return Sample.objects.filter(Q(factory=loginuser.factory),
+        #                                  Q(created_date__range=(one_year,today)),
+        #                                  Q(status='COMPLETED'))
+        # else:
+        #     return Sample.objects.filter(created_date__range=(one_year,today), status='COMPLETED')
 
     def get_context_data(self, **kwargs):
         kwargs['type'] = 'COMPLETED'
@@ -120,15 +155,26 @@ class SampleListCompletedall(ListView):
 
     def get_queryset(self):
         loginuser = self.request.user
+        qs = Sample.objects.select_related('brand', 'designer', 'merchandiser', 'factory', 'os_avatar')
 
         if loginuser.is_merchandiser:
-            return Sample.objects.filter(Q(merchandiser=loginuser.merchandiser),
-                                         Q(status='COMPLETED'))
+            queryset = qs.filter(Q(merchandiser=loginuser.merchandiser), Q(status='COMPLETED'))
         elif loginuser.is_factory:
-            return Sample.objects.filter(Q(factory=loginuser.factory),
-                                         Q(status='COMPLETED'))
+            queryset = qs.filter(Q(factory=loginuser.factory), Q(status='COMPLETED'))
         else:
-            return Sample.objects.filter(status='COMPLETED')
+            queryset = qs.filter(status='COMPLETED')
+
+        # 去掉数量限制，仅保留排序
+        return queryset.order_by('-created_date')
+    
+        # if loginuser.is_merchandiser:
+        #     return Sample.objects.filter(Q(merchandiser=loginuser.merchandiser),
+        #                                  Q(status='COMPLETED'))
+        # elif loginuser.is_factory:
+        #     return Sample.objects.filter(Q(factory=loginuser.factory),
+        #                                  Q(status='COMPLETED'))
+        # else:
+        #     return Sample.objects.filter(status='COMPLETED')
 
     def get_context_data(self, **kwargs):
         kwargs['type'] = 'COMPLETED'
