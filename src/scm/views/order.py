@@ -250,7 +250,7 @@ class OrderListShippedall(ListView):
         loginuser = self.request.user
 
         today = datetime.datetime.today()
-        five_years = today - datetime.timedelta(days=365 * 5)
+        five_years = today - datetime.timedelta(days=365)
 
         qs = Order.objects.select_related('avatar', 'brand', 'designer', 'factory', 'merchandiser', 'style')
 
