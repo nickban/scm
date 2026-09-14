@@ -331,40 +331,65 @@ def ordershipbyweek(request, pk):
 def ordershipbyyear(request, pk):
 
     loginuser = request.user
+    now = datetime.datetime.now()
 
-    if pk==0:
-        # 获取当前日期时间
-        now = datetime.datetime.now()
-        # 设置本年度的起始日期为1月1号
+    # 1. 计算时间范围
+    if pk == 0:
         start_date = datetime.datetime(year=now.year, month=1, day=1)
-        # 设置本年度的结束日期为12月31号（根据需要调整）
         end_date = datetime.datetime(year=now.year + 1, month=1, day=1) - datetime.timedelta(days=1)
-
-
-    if pk==999:
-        # 获取当前日期时间
-        now = datetime.datetime.now()
-        # 设置本年度的起始日期为1月1号
-        start_date = datetime.datetime(year=now.year - 20, month=1, day=1)
-        # 设置本年度的结束日期为12月31号（根据需要调整）
+    elif pk == 999:
+        # 建议将“全部”从 20 年缩短为最近 5 年，防止历史数据过多撑爆服务器
+        start_date = datetime.datetime(year=now.year - 5, month=1, day=1)
         end_date = datetime.datetime(year=now.year + 1, month=1, day=1) - datetime.timedelta(days=1)
-
-    if pk!=0 and pk!=999:
-        # 获取当前日期时间
-        now = datetime.datetime.now()
-        # 设置本年度的起始日期为1月1号
+    else:
         start_date = datetime.datetime(year=now.year - pk, month=1, day=1)
-        # 设置本年度的结束日期为12月31号（根据需要调整）
         end_date = datetime.datetime(year=now.year - pk + 1, month=1, day=1) - datetime.timedelta(days=1)
 
+    # 2. 核心优化：统一加上 select_related 预加载关联字段，彻底消除 N+1 查询
+    qs = Order.objects.select_related('avatar', 'brand', 'designer', 'factory', 'merchandiser', 'style')
 
     if loginuser.is_merchandiser:
-        orders = Order.objects.filter(merchandiser=loginuser.merchandiser, handover_date_f__range=(start_date,end_date), status='SHIPPED')
-
+        orders = qs.filter(merchandiser=loginuser.merchandiser, handover_date_f__range=(start_date, end_date), status='SHIPPED')
     elif loginuser.is_factory:
-        orders = Order.objects.filter(factory=loginuser.factory, handover_date_f__range=(start_date, end_date), status='SHIPPED')
+        orders = qs.filter(factory=loginuser.factory, handover_date_f__range=(start_date, end_date), status='SHIPPED')
     else:
-        orders = Order.objects.filter(handover_date_f__range=(start_date, end_date), status='SHIPPED')
+        orders = qs.filter(handover_date_f__range=(start_date, end_date), status='SHIPPED')
+    
+    # 3. 加上统一的倒序排序
+    orders = orders.order_by('-created_date')
+    # if pk==0:
+    #     # 获取当前日期时间
+    #     now = datetime.datetime.now()
+    #     # 设置本年度的起始日期为1月1号
+    #     start_date = datetime.datetime(year=now.year, month=1, day=1)
+    #     # 设置本年度的结束日期为12月31号（根据需要调整）
+    #     end_date = datetime.datetime(year=now.year + 1, month=1, day=1) - datetime.timedelta(days=1)
+
+
+    # if pk==999:
+    #     # 获取当前日期时间
+    #     now = datetime.datetime.now()
+    #     # 设置本年度的起始日期为1月1号
+    #     start_date = datetime.datetime(year=now.year - 20, month=1, day=1)
+    #     # 设置本年度的结束日期为12月31号（根据需要调整）
+    #     end_date = datetime.datetime(year=now.year + 1, month=1, day=1) - datetime.timedelta(days=1)
+
+    # if pk!=0 and pk!=999:
+    #     # 获取当前日期时间
+    #     now = datetime.datetime.now()
+    #     # 设置本年度的起始日期为1月1号
+    #     start_date = datetime.datetime(year=now.year - pk, month=1, day=1)
+    #     # 设置本年度的结束日期为12月31号（根据需要调整）
+    #     end_date = datetime.datetime(year=now.year - pk + 1, month=1, day=1) - datetime.timedelta(days=1)
+
+
+    # if loginuser.is_merchandiser:
+    #     orders = Order.objects.filter(merchandiser=loginuser.merchandiser, handover_date_f__range=(start_date,end_date), status='SHIPPED')
+
+    # elif loginuser.is_factory:
+    #     orders = Order.objects.filter(factory=loginuser.factory, handover_date_f__range=(start_date, end_date), status='SHIPPED')
+    # else:
+    #     orders = Order.objects.filter(handover_date_f__range=(start_date, end_date), status='SHIPPED')
     
 
     if pk==999:
