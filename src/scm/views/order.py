@@ -238,7 +238,7 @@ class OrderListShippedlastyear(ListView):
         # kwargs['type'] = type
         return super().get_context_data(**kwargs)
     
-# 订单列表-已出货(已出货状态),看全部
+# 订单列表-已出货(已出货状态),看全部，改为看最近5年了
 @method_decorator([login_required], name='dispatch')
 class OrderListShippedall(ListView):
     model = Order
@@ -249,16 +249,21 @@ class OrderListShippedall(ListView):
     def get_queryset(self):
         loginuser = self.request.user
 
-        qs = Order.objects.select_related('brand', 'designer', 'factory', 'merchandiser')
+        today = datetime.datetime.today()
+        five_years = today - datetime.timedelta(days=365 * 5)
+
+        qs = Order.objects.select_related('avatar', 'brand', 'designer', 'factory', 'merchandiser', 'style')
 
         if loginuser.is_merchandiser:
-            queryset = qs.filter(Q(merchandiser=loginuser.merchandiser), Q(status='SHIPPED'))
+            return qs.filter(Q(merchandiser=loginuser.merchandiser),
+                             Q(handover_date_f__range=(five_years, today)),
+                             Q(status='SHIPPED'))
         elif loginuser.is_factory:
-            queryset = qs.filter(Q(factory=loginuser.factory), Q(status='SHIPPED'))
+            return qs.filter(Q(factory=loginuser.factory),
+                             Q(handover_date_f__range=(five_years, today)),
+                             Q(status='SHIPPED'))
         else:
-            queryset = qs.filter(status='SHIPPED')
-        # 加上切片限制，防止历史数据过多直接撑爆服务器
-        return queryset.order_by('-created_date')[:3000]
+            return qs.filter(handover_date_f__range=(five_years, today), status='SHIPPED')
     
         # if loginuser.is_merchandiser:
         #     return Order.objects.filter(Q(merchandiser=loginuser.merchandiser),
