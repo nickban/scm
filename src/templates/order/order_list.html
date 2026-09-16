@@ -98,9 +98,9 @@
   <li class="nav-item">
     <a class="nav-link" data-toggle="tab" href="#progress">跟单进度</a>
   </li>
-  <li class="nav-item">
+  <!-- <li class="nav-item">
     <a class="nav-link" data-toggle="tab" href="#qc">生产进度</a>
-  </li>
+  </li> -->
 </ul>
 <!-- Tab 标签项 -->
 <div class="tab-content">
@@ -182,6 +182,9 @@
               <th>买手</th>
               <!-- <th>跟单</th> -->
               <th>工厂</th>
+              {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
+              <th>工厂价格</th>
+              {% endif %}
               <!-- <th>运输</th> -->
               <th>款式</th>
               <th>工厂交期</th>
@@ -198,9 +201,9 @@
               <!-- <th>目的地</th> -->
               <!-- <th>小单</th> -->
               <th>资料</th>
-              {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
+              <!-- {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
               <th>生产进度</th>
-              {% endif %}
+              {% endif %} -->
               <!-- <th>状态</th> -->
             </tr>
           </thead>
@@ -239,6 +242,13 @@
                 <td></td>
                 {% else %}
                 <td>{{ order.factory }}</td>
+                {% endif %}
+                {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
+                {% if order.factory_price == None %}
+                <td></td>
+                {% else %}
+                <td>{{ order.factory_price }}</td>
+                {% endif %}
                 {% endif %}
                 <td>{{ order.style }}</td>
                 <!-- <td>{{ order.get_tran_type_display }}</td> -->
@@ -283,13 +293,13 @@
                 <!-- <td>{{ order.get_childorder_display }}</td> -->
                 <td>{{ order.get_ziliao_display }}</td>
                 <!-- <td>{{ order.get_status_display }}</td> -->
-                {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
+                <!-- {% if request.user.is_merchandiser or request.user.is_merchandiser_manager%}
                 {% if order.product_status%}
                 <td>已创建</td>
                 {% else %}
                 <td></td>
                 {% endif %}
-                {% endif %}
+                {% endif %} -->
               </tr>
             {% endfor %}
           </tbody>
